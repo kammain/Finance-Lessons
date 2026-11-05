@@ -1,0 +1,1488 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Rules of Time Travel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;1,6..72,500&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a 1280×720 slide stage scaled to fit, with a slim control bar beneath; on phones slides flow at full width. */
+:root{
+  --paper:#fcfcfb; --ink:#1c1e23; --muted:#5b616d; --rule:#dcdfe4; --panel:#f1f2f4; --panel-2:#e7e9ed;
+  --accent:#9d0a1f; --accent-ink:#ffffff; --accent-soft:#f6e3e6;
+  --c1:#9d0a1f; --c2:#2a64ad; --c3:#1f8466; --c4:#b67409;
+  --good:#1f7a5c; --bad:#b3261e; --stage-bg:#e9eaed;
+  --display:"Newsreader", Georgia, "Times New Roman", serif;
+  --body:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --paper:#15171b; --ink:#eceef2; --muted:#a3a9b5; --rule:#2d3139; --panel:#1e2127; --panel-2:#272b33;
+  --accent:#ff7184; --accent-ink:#1a0207; --accent-soft:#3a1a20;
+  --c1:#ff7184; --c2:#6ea8ff; --c3:#4cc79e; --c4:#efb64f;
+  --good:#4cc79e; --bad:#ff8a80; --stage-bg:#0d0e11; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --paper:#15171b; --ink:#eceef2; --muted:#a3a9b5; --rule:#2d3139; --panel:#1e2127; --panel-2:#272b33;
+  --accent:#ff7184; --accent-ink:#1a0207; --accent-soft:#3a1a20;
+  --c1:#ff7184; --c2:#6ea8ff; --c3:#4cc79e; --c4:#efb64f;
+  --good:#4cc79e; --bad:#ff8a80; --stage-bg:#0d0e11; color-scheme:dark }
+*,*::before,*::after{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--stage-bg);color:var(--ink);font-family:var(--body);font-size:15px;margin:0;overflow:hidden}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+#app{position:fixed;inset:0;display:flex;flex-direction:column}
+#viewport{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;padding:12px max(16px,env(safe-area-inset-right,0px)) 8px max(16px,env(safe-area-inset-left,0px))}
+#frame{position:relative;flex:none}
+#stage{position:absolute;left:0;top:0;width:1280px;height:720px;transform-origin:0 0;background:var(--paper);box-shadow:0 1px 2px rgba(0,0,0,.08),0 8px 30px rgba(0,0,0,.08);overflow:hidden}
+
+.slide{position:absolute;inset:0;padding:40px 60px 34px;display:none;flex-direction:column;gap:18px}
+.slide.on{display:flex}
+.s-head{display:flex;flex-direction:column;gap:4px}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600}
+h2{font-family:var(--display);font-weight:600;font-size:40px;line-height:1.08;margin:0;color:var(--accent);text-wrap:balance}
+.pg{position:absolute;right:24px;bottom:14px;font:12px var(--mono);color:var(--muted)}
+.s-body{flex:1;min-height:0;display:grid;grid-template-columns:1fr 1fr;gap:36px}
+.s-body.wl{grid-template-columns:5fr 6fr}
+.s-body.wr{grid-template-columns:6fr 5fr}
+.s-body.one{grid-template-columns:1fr}
+.col{min-width:0;display:flex;flex-direction:column;gap:14px}
+p,li{line-height:1.5;margin:0}
+.lead{font-size:21px;line-height:1.45;max-width:60ch}
+.txt{font-size:18px}
+ul.pts{margin:0;padding-left:1.1em;display:flex;flex-direction:column;gap:12px;font-size:19px}
+ul.pts.sm{font-size:16px;gap:8px}
+ul.pts li::marker{color:var(--accent)}
+.note{font-size:14px;color:var(--muted)}
+.q{font-family:var(--display);font-style:italic;font-size:22px;color:var(--ink)}
+b,strong{font-weight:600}
+.hl{color:var(--accent);font-weight:600}
+.mono{font-family:var(--mono)}
+
+/* formulas */
+.tex{font-family:var(--mono);font-size:15px;color:var(--ink)}
+.tex.d{display:block;font-size:14px;overflow-x:auto;overflow-y:hidden;padding:2px 0}
+.tex.big{font-size:17px}
+.tex mjx-container{margin:0!important}
+.tex.d mjx-container{display:block!important;text-align:left!important;margin:0!important}
+[hidden]{display:none!important}
+.formula{background:var(--panel);border-radius:6px;padding:12px 16px;display:flex;flex-direction:column;gap:6px}
+.xl{font:13px var(--mono);background:var(--panel);border:1px solid var(--rule);border-radius:4px;padding:6px 10px;color:var(--muted);overflow-x:auto;white-space:nowrap}
+.xl b{color:var(--ink);font-weight:500}
+
+/* controls */
+.ctls{background:var(--panel);border-radius:8px;padding:12px 16px;display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px 22px}
+.ctl{display:flex;flex-direction:column;gap:4px;min-width:0}
+.ctl .top{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.ctl label{font-size:13px;color:var(--muted);font-weight:500}
+.ctl .nf{display:flex;align-items:baseline;gap:3px;font:500 15px var(--mono)}
+.ctl input[type=number],.cell{width:6.5em;font:500 15px var(--mono);color:var(--ink);background:var(--paper);border:1px solid var(--rule);border-radius:4px;padding:2px 6px;text-align:right}
+.ctl input[type=number]{width:5.6em}
+.ctl .u{color:var(--muted);font-size:13px}
+input[type=range]{width:100%;accent-color:var(--accent);margin:2px 0 0;height:18px}
+.seg{display:flex;flex-wrap:wrap;gap:4px}
+.seg button{border:1px solid var(--rule);background:var(--paper);border-radius:4px;padding:3px 8px;font-size:13px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.tog{align-self:flex-start;border:1px solid var(--accent);background:transparent;color:var(--accent);border-radius:999px;padding:5px 14px;font-size:14px;font-weight:600;cursor:pointer}
+.tog[aria-pressed=true]{background:var(--accent);color:var(--accent-ink)}
+
+/* results */
+.results{display:flex;flex-wrap:wrap;gap:10px 28px}
+.res{display:flex;flex-direction:column;gap:2px}
+.res .rl{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.res .rv{font:500 26px var(--mono);font-variant-numeric:tabular-nums}
+.res.main .rv{font-size:34px;color:var(--accent)}
+.verdict{font-size:17px;font-weight:600;padding:8px 12px;border-radius:6px;background:var(--panel)}
+.verdict.good{color:var(--good)} .verdict.bad{color:var(--bad)}
+.sol{display:flex;flex-direction:column;gap:12px}
+.sol[hidden]{display:none!important}
+
+/* tables */
+.tw{overflow:auto;min-height:0}
+table{border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:14px;width:100%}
+th,td{padding:5px 10px;text-align:right;border-bottom:1px solid var(--rule);white-space:nowrap}
+th{font-weight:600;color:var(--muted);font-size:12px;letter-spacing:.04em;text-transform:uppercase}
+th:first-child,td:first-child{text-align:left}
+td{font-family:var(--mono)}
+tr.tot td{font-weight:600;border-top:2px solid var(--ink);border-bottom:none}
+tr.cur td{background:var(--accent-soft)}
+.neg{color:var(--bad)}
+
+/* charts */
+.chart{width:100%;min-height:0}
+.chart svg{display:block;width:100%;height:auto;overflow:visible}
+.chart .gl{stroke:var(--rule);stroke-width:1}
+.chart .ax{stroke:var(--muted);stroke-width:1}
+.chart text{fill:var(--muted);font:12px var(--body)}
+.chart text.lab{fill:var(--ink);font-weight:600}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:13px;color:var(--muted)}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:2px;margin-right:6px;vertical-align:-1px}
+.ctitle{font-size:13px;font-weight:600;color:var(--ink)}
+
+/* diagram bits */
+.flow{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.box{border:1.5px solid var(--ink);border-radius:10px;padding:16px 20px;font-size:18px;text-align:center;background:var(--paper)}
+.box.acc{border-color:var(--accent);color:var(--accent);font-weight:600}
+.arrow{font-size:28px;color:var(--muted)}
+.tl{display:flex;align-items:flex-end;gap:0;margin:4px 0 0;overflow-x:auto}
+.tl .tk{flex:1;min-width:46px;border-top:2px solid var(--ink);position:relative;padding-top:6px;text-align:center;font:12px var(--mono);color:var(--muted)}
+.tl .tk::before{content:"";position:absolute;left:50%;top:-7px;height:12px;border-left:2px solid var(--ink)}
+.tl .cf{font:500 13px var(--mono);color:var(--ink);height:20px}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.card{border-top:3px solid var(--accent);background:var(--panel);padding:12px 14px;border-radius:0 0 6px 6px;display:flex;flex-direction:column;gap:6px;font-size:14px}
+.card h3{margin:0;font-size:16px}
+.news{border-left:3px solid var(--rule);padding:4px 12px;font-size:13px;color:var(--muted)}
+.title-slide{justify-content:center;gap:28px;padding-left:96px}
+.title-slide h1{font-family:var(--display);font-weight:500;font-size:68px;line-height:1.02;margin:0;color:var(--ink);max-width:16ch;text-wrap:balance}
+.title-slide h1 em{color:var(--accent)}
+.howto{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;max-width:980px}
+.howto div{border-top:1px solid var(--rule);padding-top:10px;font-size:15px;color:var(--muted)}
+.howto b{display:block;color:var(--ink);margin-bottom:4px}
+
+/* toolbar */
+#bar{flex:none;display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:8px max(16px,env(safe-area-inset-right,0px)) calc(8px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));background:var(--paper);border-top:1px solid var(--rule)}
+.bbtn{border:1px solid var(--rule);background:var(--paper);border-radius:6px;padding:6px 12px;font-size:14px;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+.bbtn:hover{background:var(--panel)}
+.bbtn.pri{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+#count{font:14px var(--mono);color:var(--muted);min-width:5.5em;text-align:center}
+.sp{flex:1}
+#live{display:inline-flex;align-items:center;gap:8px;font-size:14px;padding:5px 12px;border-radius:999px;background:var(--panel)}
+#live .dot{width:9px;height:9px;border-radius:50%;background:var(--muted)}
+#live.on .dot{background:var(--good);box-shadow:0 0 0 3px color-mix(in srgb,var(--good) 25%,transparent)}
+#live.bc .dot{background:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 25%,transparent)}
+#live.off .dot{background:var(--c4)}
+#toc{position:fixed;left:0;top:0;bottom:0;width:min(380px,90vw);background:var(--paper);border-right:1px solid var(--rule);z-index:20;overflow:auto;padding:16px max(16px,env(safe-area-inset-left,0px)) 16px 16px;box-shadow:4px 0 30px rgba(0,0,0,.15)}
+#toc h4{margin:14px 0 4px;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+#toc button{display:flex;gap:10px;width:100%;text-align:left;border:0;background:none;padding:6px 8px;border-radius:4px;cursor:pointer;font-size:14px}
+#toc button:hover{background:var(--panel)}
+#toc button.cur{background:var(--accent-soft);color:var(--accent);font-weight:600}
+#toc button span{font:12px var(--mono);color:var(--muted);min-width:1.8em}
+#toast{position:fixed;left:50%;bottom:70px;transform:translateX(-50%);background:var(--ink);color:var(--paper);padding:8px 14px;border-radius:6px;font-size:14px;z-index:30}
+
+/* phone / narrow: slides flow */
+@media (max-width:760px), (max-height:430px){
+  body{overflow:auto}
+  #app{position:static;min-height:100%}
+  #viewport{display:block;padding:12px max(16px,env(safe-area-inset-right,0px)) 12px max(16px,env(safe-area-inset-left,0px))}
+  #frame{width:auto!important;height:auto!important}
+  #stage{position:static;width:auto;height:auto;transform:none!important;border-radius:8px}
+  .slide{position:static;padding:22px 18px 30px}
+  .s-body,.s-body.wl,.s-body.wr{grid-template-columns:1fr;gap:20px}
+  h2{font-size:28px}
+  .title-slide{padding-left:18px}
+  .title-slide h1{font-size:40px}
+  .howto,.cards{grid-template-columns:1fr}
+  .lead{font-size:18px} ul.pts{font-size:16px}
+  #bar{position:sticky;bottom:0}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+
+<div id="app">
+<div id="viewport"><div id="frame"><div id="stage">
+
+<!-- ============ 1 TITLE ============ -->
+<section class="slide title-slide" data-sec="Introduction" data-t="Moving money through time">
+  <div class="eyebrow">Lesson 3 · The rules of time travel</div>
+  <h1>Moving money through time: <em>PV</em> and <em>FV</em></h1>
+  <div style="font-size:17px">Professor Sreenivas Kamma<br><span class="note">Kelley School of Business</span></div>
+  <div class="howto">
+    <div><b>Follow along live</b>When your instructor changes a number, your slide updates too.</div>
+    <div><b>Experiment</b>Change any number yourself. You switch to your own copy.</div>
+    <div><b>Rejoin</b>Press <i>Rejoin live</i> in the bar below to go back to the instructor's view.</div>
+  </div>
+</section>
+
+<!-- ============ 2 ============ -->
+<section class="slide" data-sec="Introduction" data-t="In this lesson">
+  <div class="s-head"><div class="eyebrow">Introduction</div><h2>In this lesson</h2></div>
+  <div class="s-body one"><div class="col">
+    <p class="lead">We learn how to value particular patterns of cash flows and see why these patterns are useful in general valuation:</p>
+    <ul class="pts"><li>A stream of cash flows</li><li>An annuity</li><li>A perpetuity</li><li>A growing perpetuity</li></ul>
+    <p class="lead">Both with formulae and with Excel.</p>
+  </div></div>
+</section>
+
+<!-- ============ 3 ============ -->
+<section class="slide" data-sec="Introduction" data-t="The basic idea">
+  <div class="s-head"><div class="eyebrow">Introduction</div><h2>The basic idea</h2></div>
+  <div class="s-body one"><div class="col" style="gap:30px">
+    <ul class="pts"><li>Most people dislike having to wait</li><li>Most people like to avoid risk</li><li>So a cash payoff expected some time in the future is not valued at its nominal amount</li></ul>
+    <div class="flow">
+      <div class="box">Future amount<br>of cash flow</div>
+      <div class="arrow">→</div>
+      <div style="display:flex;flex-direction:column;gap:8px;font-size:17px">
+        <div><b>When?</b> discount for time <span class="note">(reward for waiting)</span></div>
+        <div><b>How risky?</b> discount for risk <span class="note">(reward for risk)</span></div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="box acc">Value we place today<br>on this cash flow</div>
+    </div>
+  </div></div>
+</section>
+
+<!-- ============ 4 ============ -->
+<section class="slide" data-sec="Introduction" data-t="The rules of time travel">
+  <div class="s-head"><div class="eyebrow">Introduction</div><h2>The rules of time travel</h2></div>
+  <div class="s-body one"><div class="col" style="gap:22px">
+    <p class="lead">Only cash flows at the <span class="hl">same time</span> and of the <span class="hl">same risk</span> can be compared or combined.</p>
+    <div class="formula"><p class="txt">To move a cash flow <b>forward</b> in time, compound it:</p><div class="tex d big">FV_N = PV \times (1+r)^N</div></div>
+    <div class="formula"><p class="txt">To move a cash flow <b>backward</b> in time, discount it:</p><div class="tex d big">PV = \dfrac{FV_N}{(1+r)^N}</div></div>
+    <p class="q">What r should we use?</p>
+  </div></div>
+</section>
+
+<!-- ============ 5 ============ -->
+<section class="slide" data-sec="Introduction" data-t="The short-cut to apply the discounts" data-r="shortcut">
+  <div class="s-head"><div class="eyebrow">Introduction</div><h2>The short-cut to apply the discounts</h2></div>
+  <div class="s-body wr">
+    <div class="col">
+      <p class="lead">Since people dislike waiting and dislike risk, r should compensate them for both:</p>
+      <div class="formula"><div class="tex d">\text{Return} = \text{Reward for patience} + \text{Risk premium}</div><div class="tex d">r = \text{Risk-free rate} + \text{Risk premium}</div></div>
+      <p class="txt">One way to estimate r: ask what return we could get on a financial market security of <i>similar</i> risk.</p>
+      <p class="txt">This r<sub>similar sub</sub> is the <span class="hl">opportunity cost of capital</span>.</p>
+    </div>
+    <div class="col">
+      <div class="ctls"><div class="ctl" data-k="sc_rf"></div><div class="ctl" data-k="sc_rp"></div></div>
+      <div class="results"><div class="res main"><span class="rl">Discount rate r</span><span class="rv" data-o="r"></span></div></div>
+      <div class="chart" data-c="bars"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 6 ============ -->
+<section class="slide" data-sec="Future value" data-t="FV: moving money forward" data-r="fv1">
+  <div class="s-head"><div class="eyebrow">Future value</div><h2>FV: moving money forward</h2></div>
+  <div class="s-body wr">
+    <div class="col">
+      <p class="lead">Are you indifferent between receiving <span data-o="pv"></span> right now and <span data-o="pv"></span> one year from now?</p>
+      <p class="lead">If <span data-o="r"></span> is the return on the “similar substitute”, then <span data-o="pv"></span> invested now becomes <b data-o="fv"></b> one year later.</p>
+      <p class="lead">So you are indifferent between <span data-o="pv"></span> now and <b data-o="fv"></b> one year later. <b data-o="fv"></b> is the <span class="hl">future value</span> of <span data-o="pv"></span> now.</p>
+    </div>
+    <div class="col">
+      <div class="ctls"><div class="ctl" data-k="fv_pv"></div><div class="ctl" data-k="fv_r"></div></div>
+      <div class="formula"><div class="tex d big" data-x="f"></div></div>
+      <div class="results"><div class="res main"><span class="rl">FV in one year</span><span class="rv" data-o="fv"></span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 7 ============ -->
+<section class="slide" data-sec="Future value" data-t="Compounding" data-r="fvn">
+  <div class="s-head"><div class="eyebrow">Future value</div><h2>Compounding</h2></div>
+  <div class="s-body wl">
+    <div class="col">
+      <p class="txt">What if you invest the money at r for N years? How much will you have?</p>
+      <div class="ctls"><div class="ctl" data-k="fv_pv"></div><div class="ctl" data-k="fv_r"></div><div class="ctl" data-k="fv_n"></div></div>
+      <div class="tw" style="max-height:210px"><table data-o="tbl"></table></div>
+      <div class="formula"><div class="tex d" data-x="f"></div></div>
+      <div class="xl" data-o="xl"></div>
+    </div>
+    <div class="col">
+      <div class="ctitle">Where the money comes from</div>
+      <div class="legend"><span><i style="background:var(--panel-2);border:1px solid var(--muted)"></i>Original amount</span><span><i style="background:var(--c2)"></i>Interest on principal</span><span><i style="background:var(--c1)"></i>Interest on interest</span></div>
+      <div class="chart" data-c="c"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 8 ============ -->
+<section class="slide" data-sec="Future value" data-t="The power of compounding" data-r="powc">
+  <div class="s-head"><div class="eyebrow">Future value</div><h2>The power of compounding</h2></div>
+  <div class="s-body wr">
+    <div class="col">
+      <div class="ctitle">Future value of $1 today</div>
+      <div class="chart" data-c="c"></div>
+    </div>
+    <div class="col">
+      <p class="q">Which line goes with which r?</p>
+      <div class="ctls"><div class="ctl" data-k="pc_r1"></div><div class="ctl" data-k="pc_r2"></div><div class="ctl" data-k="pc_r3"></div><div class="ctl" data-k="pc_r4"></div><div class="ctl" data-k="pc_n"></div></div>
+      <button class="tog" data-k="pc_rev">Reveal the rates</button>
+      <div class="tw"><table data-o="tbl"></table></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 9 ============ -->
+<section class="slide" data-sec="Present value" data-t="PV: moving money backward" data-r="pv1">
+  <div class="s-head"><div class="eyebrow">Present value</div><h2>PV: moving money backward</h2></div>
+  <div class="s-body wr">
+    <div class="col">
+      <p class="lead">Alternatively, <span data-o="pv"></span> is the <span class="hl">present value</span> of <span data-o="fv"></span> one year later.</p>
+      <div class="formula"><div class="tex d big" data-x="f"></div></div>
+      <p class="txt"><span class="tex">\dfrac{1}{1+r}</span> is called the <span class="hl">discount factor</span>. Here it equals <b data-o="df"></b>.</p>
+    </div>
+    <div class="col">
+      <div class="ctls"><div class="ctl" data-k="pv_fv"></div><div class="ctl" data-k="pv_r"></div></div>
+      <div class="results"><div class="res main"><span class="rl">PV today</span><span class="rv" data-o="pv"></span></div><div class="res"><span class="rl">Discount factor</span><span class="rv" data-o="df"></span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 10 ============ -->
+<section class="slide" data-sec="Present value" data-t="PV: multiple years" data-r="pvn">
+  <div class="s-head"><div class="eyebrow">Present value</div><h2>PV: multiple years</h2></div>
+  <div class="s-body wl">
+    <div class="col">
+      <div class="formula"><div class="tex d">PV \times (1+r) \times (1+r) = FV_2 \;\Rightarrow\; PV = \dfrac{FV_2}{(1+r)^2}</div><div class="tex d">\text{In general: } PV = \dfrac{FV_N}{(1+r)^N}</div></div>
+      <div class="ctls"><div class="ctl" data-k="pv_fv"></div><div class="ctl" data-k="pv_r"></div><div class="ctl" data-k="pv_n"></div></div>
+      <div class="formula"><div class="tex d" data-x="f"></div></div>
+      <div class="results"><div class="res main"><span class="rl">PV today</span><span class="rv" data-o="pv"></span></div><div class="res"><span class="rl">Discount factor 1/(1+r)<sup>N</sup></span><span class="rv" data-o="df"></span></div></div>
+    </div>
+    <div class="col">
+      <div class="ctitle">PV as the wait N changes (r fixed)</div><div class="chart" data-c="vn"></div>
+      <div class="ctitle">PV as the discount rate r changes (N fixed)</div><div class="chart" data-c="vr"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 11 ============ -->
+<section class="slide" data-sec="Present value" data-t="The effect of discounting" data-r="disc">
+  <div class="s-head"><div class="eyebrow">Present value</div><h2>The effect of discounting</h2></div>
+  <div class="s-body wr">
+    <div class="col"><div class="ctitle">Present value of $1 received in the future</div><div class="chart" data-c="c"></div></div>
+    <div class="col">
+      <p class="q">Which line goes with which r?</p>
+      <div class="ctls"><div class="ctl" data-k="dc_r1"></div><div class="ctl" data-k="dc_r2"></div><div class="ctl" data-k="dc_r3"></div><div class="ctl" data-k="dc_r4"></div><div class="ctl" data-k="dc_n"></div></div>
+      <button class="tog" data-k="dc_rev">Reveal the rates</button>
+      <div class="tw"><table data-o="tbl"></table></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 12 ============ -->
+<section class="slide" data-sec="Present value" data-t="PV of a future saving" data-r="it">
+  <div class="s-head"><div class="eyebrow">Present value</div><h2>Present value of a future cash flow</h2></div>
+  <div class="s-body wl">
+    <div class="col">
+      <p class="txt">A new IT implementation will save costs by <b data-o="amt"></b> one time, <b data-o="t1"></b> years after implementation. What is the most we should spend on it now? r<sub>sim sub</sub> = <b data-o="r"></b>.</p>
+      <p class="txt">What if delays mean the savings only occur in year <b data-o="t2"></b>?</p>
+      <div class="ctls"><div class="ctl" data-k="it_amt"></div><div class="ctl" data-k="it_r"></div><div class="ctl" data-k="it_t1"></div><div class="ctl" data-k="it_t2"></div></div>
+      <div class="formula"><div class="tex d" data-x="f1"></div><div class="tex d" data-x="f2"></div></div>
+      <div class="verdict" data-o="v"></div>
+    </div>
+    <div class="col"><div class="ctitle">PV of the saving, by the year it arrives</div><div class="chart" data-c="c"></div><p class="note">Highlighted bars: the on-time year and the delayed year.</p></div>
+  </div>
+</section>
+
+<!-- ============ 13 ============ -->
+<section class="slide" data-sec="Annuities" data-t="Present value of an annuity" data-r="ann">
+  <div class="s-head"><div class="eyebrow">Annuities</div><h2>Present value of an annuity</h2></div>
+  <div class="s-body wl">
+    <div class="col">
+      <p class="txt">You receive the same amount every year for N years. This is an <span class="hl">annuity</span>: the same amount received each period for a finite number of periods.</p>
+      <div class="ctls"><div class="ctl" data-k="an_c"></div><div class="ctl" data-k="an_r"></div><div class="ctl" data-k="an_n"></div></div>
+      <div class="tw" style="max-height:220px"><table data-o="tbl"></table></div>
+      <p class="txt">The <b data-o="af"></b> multiplier is called the <span class="hl">annuity factor</span>.</p>
+    </div>
+    <div class="col">
+      <div class="legend"><span><i style="background:var(--panel-2);border:1px solid var(--muted)"></i>Cash flow received</span><span><i style="background:var(--c2)"></i>Its value today</span></div>
+      <div class="chart" data-c="c"></div>
+      <div class="results"><div class="res main"><span class="rl">PV of the annuity</span><span class="rv" data-o="pv"></span></div><div class="res"><span class="rl">Nominal total</span><span class="rv" data-o="nom"></span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 14 ============ -->
+<section class="slide" data-sec="Annuities" data-t="The annuity factors" data-r="af">
+  <div class="s-head"><div class="eyebrow">Annuities</div><h2>The annuity factors</h2></div>
+  <div class="s-body wl">
+    <div class="col">
+      <p class="txt">But there is an easier way:</p>
+      <div class="formula">
+        <div class="tex d">PV = \dfrac{C}{(1+r)^1} + \dfrac{C}{(1+r)^2} + \cdots + \dfrac{C}{(1+r)^N}</div>
+        <div class="tex d">PV = C \times \left[\dfrac{1}{(1+r)^1} + \cdots + \dfrac{1}{(1+r)^N}\right]</div>
+        <div class="tex d big">PV = C \times \dfrac{1}{r}\left[1 - \dfrac{1}{(1+r)^N}\right] = C \times \dfrac{1-PVF_N}{r}</div>
+      </div>
+      <p class="q">What if r = 0? <span class="note" style="font-style:normal">Set r to 0 and watch the factor.</span></p>
+    </div>
+    <div class="col">
+      <div class="ctls"><div class="ctl" data-k="an_c"></div><div class="ctl" data-k="an_r"></div><div class="ctl" data-k="an_n"></div></div>
+      <div class="formula"><div class="tex d" data-x="f"></div></div>
+      <div class="results"><div class="res"><span class="rl">Annuity factor</span><span class="rv" data-o="af"></span></div><div class="res main"><span class="rl">PV</span><span class="rv" data-o="pv"></span></div></div>
+      <p class="txt" data-o="z"></p>
+      <div class="xl" data-o="xl"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 15 ============ -->
+<section class="slide" data-sec="Annuities" data-t="Single vs. annuity" data-r="sva">
+  <div class="s-head"><div class="eyebrow">Annuities</div><h2>Single vs. annuity</h2></div>
+  <div class="s-body wl">
+    <div class="col">
+      <p class="txt">Distinguish between</p>
+      <div class="formula"><p class="txt"><b>PVF</b> for a single cash flow</p><div class="tex d">\dfrac{1}{(1+r)^N}</div></div>
+      <div class="formula"><p class="txt"><b>PVAF</b> for an annuity</p><div class="tex d">\dfrac{1}{r}\left[1-\dfrac{1}{(1+r)^N}\right] \quad\text{textbook: }\; \dfrac{1-\frac{1}{(1+r)^N}}{r}</div></div>
+      <div class="ctls"><div class="ctl" data-k="an_r"></div><div class="ctl" data-k="an_n"></div></div>
+      <div class="results"><div class="res"><span class="rl">PVF</span><span class="rv" data-o="pvf"></span></div><div class="res main"><span class="rl">PVAF</span><span class="rv" data-o="pvaf"></span></div></div>
+    </div>
+    <div class="col">
+      <div class="ctitle">PVAF grows with N, but never past 1/r</div>
+      <div class="chart" data-c="c"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 16 ============ -->
+<section class="slide" data-sec="Annuities" data-t="Example: the lottery prize" data-r="lot">
+  <div class="s-head"><div class="eyebrow">Annuities · example</div><h2>Example: what is the prize really worth?</h2></div>
+  <div class="s-body wl">
+    <div class="col">
+      <p class="lead">Hoosier lottery claims its prize is <b data-o="prize"></b> but pays it in <b data-o="n"></b> annual installments. Say the discount rate is <b data-o="r"></b>.</p>
+      <div class="ctls"><div class="ctl" data-k="lot_prize"></div><div class="ctl" data-k="lot_n"></div><div class="ctl" data-k="lot_r"></div></div>
+      <button class="tog" data-k="lot_sol">Show solution</button>
+    </div>
+    <div class="col">
+      <div class="sol" data-sol="lot_sol">
+        <div class="formula"><div class="tex d" data-x="f0"></div><div class="tex d" data-x="f1"></div><div class="tex d" data-x="f2"></div></div>
+        <div class="results"><div class="res main"><span class="rl">Prize really worth</span><span class="rv" data-o="pv"></span></div><div class="res"><span class="rl">As % of headline</span><span class="rv" data-o="pct"></span></div></div>
+        <div class="ctitle">Value of the prize at different discount rates</div><div class="chart" data-c="c"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 17 ============ -->
+<section class="slide" data-sec="Annuities" data-t="Future values of an annuity" data-r="fva">
+  <div class="s-head"><div class="eyebrow">Annuities</div><h2>Future values</h2></div>
+  <div class="s-body wl">
+    <div class="col">
+      <p class="txt">Sometimes it is useful to obtain the future value of an annuity: the FV at the end of period N of payments of C each period for N periods, if the opportunity cost is r.</p>
+      <div class="formula"><div class="tex d">FV_N = C \times \dfrac{1}{r}\left[(1+r)^N - 1\right] \quad\text{or}\quad FV_N = PV \times (1+r)^N</div></div>
+      <div class="ctls"><div class="ctl" data-k="an_c"></div><div class="ctl" data-k="an_r"></div><div class="ctl" data-k="an_n"></div></div>
+      <div class="formula"><div class="tex d" data-x="f"></div></div>
+      <p class="note">The FV of an annuity is computed as of time N, the same time as the last payment. The PV is computed as of one period <i>before</i> the first payment.</p>
+    </div>
+    <div class="col">
+      <div class="legend"><span><i style="background:var(--panel-2);border:1px solid var(--muted)"></i>Payment</span><span><i style="background:var(--c3)"></i>Its value at time N</span></div>
+      <div class="chart" data-c="c"></div>
+      <div class="results"><div class="res main"><span class="rl">FV at N</span><span class="rv" data-o="fv"></span></div><div class="res"><span class="rl">PV today</span><span class="rv" data-o="pv"></span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 18 ============ -->
+<section class="slide" data-sec="Annuities" data-t="Types of annuities" data-r="due">
+  <div class="s-head"><div class="eyebrow">Annuities</div><h2>Types of annuities</h2></div>
+  <div class="s-body wl">
+    <div class="col">
+      <div class="tw"><table>
+        <tr><th>Type</th><th style="text-align:left">Examples</th></tr>
+        <tr><td style="font-family:var(--body)">Ordinary annuity<br><span class="note">payment at end of period</span></td><td style="text-align:left;font-family:var(--body)">Auto loan, mortgage payment</td></tr>
+        <tr><td style="font-family:var(--body)">Annuity due<br><span class="note">payment at beginning of period</span></td><td style="text-align:left;font-family:var(--body)">Rent payment</td></tr>
+      </table></div>
+      <div><div class="ctitle">Ordinary</div><div class="tl" data-o="tlo"></div></div>
+      <div><div class="ctitle">Due</div><div class="tl" data-o="tld"></div></div>
+      <p class="q">Which PV will be higher?</p>
+      <p class="txt">For the PV of an annuity due, compute the PV of the ordinary annuity and multiply by (1 + r). Unless explicitly specified, assume an annuity is ordinary.</p>
+    </div>
+    <div class="col">
+      <div class="ctls"><div class="ctl" data-k="an_c"></div><div class="ctl" data-k="an_r"></div><div class="ctl" data-k="an_n"></div></div>
+      <div class="chart" data-c="c"></div>
+      <div class="formula"><div class="tex d" data-x="f"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 19 ============ -->
+<section class="slide" data-sec="Compounding frequency" data-t="Compounding frequency" data-r="freq">
+  <div class="s-head"><div class="eyebrow">Compounding frequency</div><h2>Compounding frequency</h2></div>
+  <div class="s-body wl">
+    <div class="col">
+      <ul class="pts sm">
+        <li>Often interest is paid at more frequent intervals than one year.</li>
+        <li>The annual interest rate is then translated to a rate <b>per period</b>.</li>
+        <li>The timing of the cash flow is the <b>total number of periods</b> that have elapsed, and discounting is over that total number of periods.</li>
+        <li>Everything else is exactly the same.</li>
+      </ul>
+      <div class="ctls"><div class="ctl" data-k="fq_apr"></div><div class="ctl" data-k="fq_yrs"></div></div>
+    </div>
+    <div class="col">
+      <p class="txt">If the annual rate is <b data-o="apr"></b> and the cash flow occurs <b data-o="yrs"></b> years from now:</p>
+      <div class="tw"><table data-o="tbl"></table></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 20 ============ -->
+<section class="slide" data-sec="Compounding frequency" data-t="Example: paying off a mortgage early" data-r="mpay">
+  <div class="s-head"><div class="eyebrow">Compounding frequency · example</div><h2>Example: should you take the offer?</h2></div>
+  <div class="s-body wl">
+    <div class="col">
+      <p class="txt">You have to make a monthly mortgage payment of <b data-o="pmt"></b> for <b data-o="term"></b>. The bank offers to let you retire the mortgage by paying <b data-o="offer"></b>. If the stated annual rate is <b data-o="apr"></b>, should you take the offer?</p>
+      <div class="ctls"><div class="ctl" data-k="mp_pmt"></div><div class="ctl" data-k="mp_apr"></div><div class="ctl" data-k="mp_yrs"></div><div class="ctl" data-k="mp_mos"></div><div class="ctl" data-k="mp_offer"></div></div>
+      <button class="tog" data-k="mp_sol">Show solution</button>
+    </div>
+    <div class="col"><div class="sol" data-sol="mp_sol">
+      <p class="txt">Payments are monthly, so the monthly rate is <b data-o="rm"></b>. The total number of payments is <b data-o="n"></b> months.</p>
+      <div class="formula"><div class="tex d" data-x="f1"></div><div class="tex d" data-x="f2"></div></div>
+      <div class="results"><div class="res main"><span class="rl">PV of remaining payments</span><span class="rv" data-o="pv"></span></div><div class="res"><span class="rl">Bank's offer</span><span class="rv" data-o="offer"></span></div></div>
+      <div class="verdict" data-o="v"></div>
+    </div></div>
+  </div>
+</section>
+
+<!-- ============ 21 ============ -->
+<section class="slide" data-sec="Compounding frequency" data-t="Determining the payment" data-r="mort">
+  <div class="s-head"><div class="eyebrow">Compounding frequency</div><h2>How does the bank set the payment?</h2></div>
+  <div class="s-body wl">
+    <div class="col">
+      <p class="txt">You take out a <b data-o="loan"></b> mortgage for <b data-o="yrs"></b> years at a stated rate of <b data-o="apr"></b>. The bank sets the payment so the loan equals the PV of the payments at the bank's rate.</p>
+      <div class="ctls"><div class="ctl" data-k="mo_loan"></div><div class="ctl" data-k="mo_apr"></div><div class="ctl" data-k="mo_yrs"></div><div class="ctl" style="grid-column:1/-1"><label>Payments per year</label><div class="seg" data-k="mo_m"></div></div></div>
+      <div class="formula"><div class="tex d" data-x="f1"></div><div class="tex d" data-x="f2"></div><div class="tex d" data-x="f3"></div></div>
+      <div class="xl" data-o="xl"></div>
+    </div>
+    <div class="col">
+      <div class="results"><div class="res main"><span class="rl" data-o="pl"></span><span class="rv" data-o="pmt"></span></div><div class="res"><span class="rl">Total interest paid</span><span class="rv" data-o="int"></span></div></div>
+      <div class="ctitle">Each year's payments: interest vs. principal</div>
+      <div class="legend"><span><i style="background:var(--c1)"></i>Interest</span><span><i style="background:var(--c2)"></i>Principal repaid</span></div>
+      <div class="chart" data-c="c"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 22 ============ -->
+<section class="slide" data-sec="Compounding frequency" data-t="Example: 0% financing or a discount?" data-r="gm">
+  <div class="s-head"><div class="eyebrow">Compounding frequency · example</div><h2>Example: 0% financing or a cash discount?</h2></div>
+  <div class="s-body wl">
+    <div class="col">
+      <p class="txt">GM offers either <b data-o="dr"></b> financing or a <b data-o="disc"></b> discount. You want to buy a <b data-o="price"></b> car with a <b data-o="mos"></b>-month loan. The IU credit union offers auto loans at <b data-o="cu"></b> per year, with monthly payments. Which option should you choose?</p>
+      <div class="ctls"><div class="ctl" data-k="gm_price"></div><div class="ctl" data-k="gm_disc"></div><div class="ctl" data-k="gm_dr"></div><div class="ctl" data-k="gm_cu"></div><div class="ctl" data-k="gm_mos"></div></div>
+      <button class="tog" data-k="gm_sol">Show solution</button>
+    </div>
+    <div class="col"><div class="sol" data-sol="gm_sol">
+      <div class="tw"><table data-o="tbl"></table></div>
+      <div class="formula"><div class="tex d" data-x="f1"></div><div class="tex d" data-x="f2"></div></div>
+      <div class="verdict" data-o="v"></div>
+    </div></div>
+  </div>
+</section>
+
+<!-- ============ 23 ============ -->
+<section class="slide" data-sec="Effective annual rate" data-t="Effective annual rate (EAR)" data-r="eartab">
+  <div class="s-head"><div class="eyebrow">Effective annual rate</div><h2>Effective annual rate (EAR)</h2></div>
+  <div class="s-body wl">
+    <div class="col">
+      <p class="txt">The compounding frequency (how often a year you pay or receive interest) can make the true effective rate higher than the stated or quoted annual rate.</p>
+      <div class="ctls"><div class="ctl" data-k="ea_apr"></div></div>
+      <div class="tw"><table data-o="tbl"></table></div>
+    </div>
+    <div class="col"><div class="ctitle">Effective annual rate by compounding frequency</div><div class="chart" data-c="c"></div></div>
+  </div>
+</section>
+
+<!-- ============ 24 ============ -->
+<section class="slide" data-sec="Effective annual rate" data-t="EAR: the credit card" data-r="ear">
+  <div class="s-head"><div class="eyebrow">Effective annual rate</div><h2>EAR: the credit card</h2></div>
+  <div class="s-body">
+    <div class="col">
+      <p class="txt">A credit card's quoted rate or annual percentage rate (APR) is <b data-o="apr"></b> per year, but interest is charged <b data-o="mn"></b>. If you carry a $100 balance for one year, what will you owe?</p>
+      <div class="ctls"><div class="ctl" data-k="ear_apr"></div><div class="ctl" style="grid-column:1/-1"><label>Compounding frequency m</label><div class="seg" data-k="ear_m"></div></div></div>
+      <div class="formula"><div class="tex d" data-x="f1"></div><div class="tex d" data-x="f2"></div></div>
+      <div class="results"><div class="res"><span class="rl">You owe</span><span class="rv" data-o="fv"></span></div><div class="res main"><span class="rl">EAR</span><span class="rv" data-o="ear"></span></div></div>
+    </div>
+    <div class="col">
+      <div class="formula"><div class="tex d big">EAR = \left[1 + \dfrac{APR}{m}\right]^m - 1</div><p class="note">where m is the compounding frequency per year.</p></div>
+      <p class="txt">On an episode of <i>The Sopranos</i>, Vito Spatafore loaned a fellow soldier $2,000 at “2.5 points” (mob talk for 2.5% per week, or 130% APR). What is the EAR on this loan?</p>
+      <div class="ctls"><div class="ctl" data-k="ear_wk"></div></div>
+      <div class="formula"><div class="tex d" data-x="f3"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 25 ============ -->
+<section class="slide" data-sec="Effective annual rate" data-t="Converting APR and EAR" data-r="conv">
+  <div class="s-head"><div class="eyebrow">Effective annual rate</div><h2>Converting</h2></div>
+  <div class="s-body">
+    <div class="col">
+      <p class="txt">EAR is useful when comparing options with different compounding periods. m = the number of periods per year, the frequency with which cash flows are paid or received.</p>
+      <div class="formula"><div class="eyebrow">APR to EAR</div><div class="tex d">EAR = \left[1 + \dfrac{APR}{m}\right]^{m} - 1</div></div>
+      <div class="formula"><div class="eyebrow">EAR to APR</div><div class="tex d">\text{APR per period} = [1+EAR]^{1/m} - 1</div><p class="note">The APR per period is what we use in all PV and FV expressions.</p></div>
+    </div>
+    <div class="col">
+      <div class="ctls"><div class="ctl" data-k="cv_apr"></div><div class="ctl" style="grid-column:1/-1"><label>Quoted with compounding</label><div class="seg" data-k="cv_m1"></div></div><div class="ctl" style="grid-column:1/-1"><label>Convert to payments made</label><div class="seg" data-k="cv_m2"></div></div></div>
+      <div class="formula"><div class="tex d" data-x="f1"></div><div class="tex d" data-x="f2"></div></div>
+      <div class="results"><div class="res main"><span class="rl">EAR</span><span class="rv" data-o="ear"></span></div><div class="res"><span class="rl">Rate per period</span><span class="rv" data-o="rp"></span></div><div class="res"><span class="rl">Equivalent APR</span><span class="rv" data-o="apr2"></span></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 26 ============ -->
+<section class="slide" data-sec="Effective annual rate" data-t="Which is lower cost?" data-r="lowc">
+  <div class="s-head"><div class="eyebrow">Effective annual rate · example</div><h2>Which is lower cost?</h2></div>
+  <div class="s-body">
+    <div class="col">
+      <div class="ctls"><div class="ctl" data-k="lc_aapr"></div><div class="ctl" style="grid-column:1/-1"><label>Loan A compounding</label><div class="seg" data-k="lc_am"></div></div></div>
+      <div class="ctls"><div class="ctl" data-k="lc_bapr"></div><div class="ctl" style="grid-column:1/-1"><label>Loan B compounding</label><div class="seg" data-k="lc_bm"></div></div></div>
+      <p class="lead">Loan A: <b data-o="a"></b>.<br>Loan B: <b data-o="b"></b>.</p>
+      <button class="tog" data-k="lc_sol">Show solution</button>
+    </div>
+    <div class="col"><div class="sol" data-sol="lc_sol">
+      <div class="formula"><div class="tex d" data-x="f1"></div><div class="tex d" data-x="f2"></div></div>
+      <div class="verdict" data-o="v"></div>
+    </div></div>
+  </div>
+</section>
+
+<!-- ============ 27 ============ -->
+<section class="slide" data-sec="Effective annual rate" data-t="Quoting conventions">
+  <div class="s-head"><div class="eyebrow">Effective annual rate</div><h2>Quoting conventions</h2></div>
+  <div class="s-body one"><div class="col">
+    <ul class="pts"><li>EAR has another name: Annual Percentage <i>Yield</i>, or AP<span class="hl">Y</span>.</li><li>This is different from AP<span class="hl">R</span>.</li><li>Savings vehicles: the quote is the <span class="hl">APY or EAR</span>.</li><li>Loan vehicles: the quote is the <span class="hl">APR</span>.</li></ul>
+    <p class="q">You want to invest in a CD: what will the bank quote you?<br>You want a mortgage: what will the bank quote you?</p>
+  </div></div>
+</section>
+
+<!-- ============ 28 ============ -->
+<section class="slide" data-sec="Effective annual rate" data-t="Need for EAR">
+  <div class="s-head"><div class="eyebrow">Effective annual rate</div><h2>Need for EAR</h2></div>
+  <div class="s-body one"><div class="col">
+    <ul class="pts"><li>EAR is useful for comparing loans that have different compounding or payment frequencies.</li><li>You need a server farm. You can lease it, or borrow money and purchase it.
+      <ul class="pts sm" style="margin-top:8px"><li>Lease: the vendor quotes you <i>monthly</i> payments.</li><li>Borrow and buy: the bank quotes you a loan with <i>quarterly</i> compounding.</li></ul></li></ul>
+  </div></div>
+</section>
+
+<!-- ============ 29 ============ -->
+<section class="slide" data-sec="Effective annual rate" data-t="Example: lease or buy the server farm" data-r="lease">
+  <div class="s-head"><div class="eyebrow">Effective annual rate · example</div><h2>Example: lease or borrow and buy?</h2></div>
+  <div class="s-body wl">
+    <div class="col">
+      <p class="txt">Life of equipment = <b data-o="yrs"></b> years.<br><b>Option 1:</b> buy for <b data-o="price"></b>, financed with a bank loan at <b data-o="apr"></b> APR, compounded quarterly (quarterly payments of <b data-o="qp"></b>).<br><b>Option 2:</b> lease for <b data-o="lease"></b>/month.</p>
+      <p class="txt">The bank loan requires quarterly payments and the lease monthly payments, so we need to make them comparable.</p>
+      <div class="ctls"><div class="ctl" data-k="lb_price"></div><div class="ctl" data-k="lb_apr"></div><div class="ctl" data-k="lb_yrs"></div><div class="ctl" data-k="lb_lease"></div></div>
+      <button class="tog" data-k="lb_sol">Show solution</button>
+    </div>
+    <div class="col"><div class="sol" data-sol="lb_sol">
+      <p class="txt">1. Convert the 8% APR with quarterly compounding to an EAR:</p>
+      <div class="formula"><div class="tex d" data-x="f1"></div></div>
+      <p class="txt">2. Convert the EAR on the bank loan to a monthly rate:</p>
+      <div class="formula"><div class="tex d" data-x="f2"></div></div>
+      <p class="txt">3. Find the equivalent monthly payment on the bank loan:</p>
+      <div class="formula"><div class="tex d" data-x="f3"></div></div>
+      <div class="verdict" data-o="v"></div>
+    </div></div>
+  </div>
+</section>
+
+<!-- ============ 30 ============ -->
+<section class="slide" data-sec="Effective annual rate" data-t="Summary: rates">
+  <div class="s-head"><div class="eyebrow">Effective annual rate</div><h2>Summary</h2></div>
+  <div class="s-body one"><div class="col">
+    <ul class="pts"><li>All the r's in the PV and FV formulae are the APR per period, and N is the total number of periods.</li><li>To compare loans with different compounding frequencies, compare their EARs.</li><li>Know how to convert APR to EAR and vice versa.</li></ul>
+  </div></div>
+</section>
+
+<!-- ============ 31 ============ -->
+<section class="slide" data-sec="Perpetuities" data-t="Perpetuity" data-r="perp">
+  <div class="s-head"><div class="eyebrow">Perpetuities</div><h2>Perpetuity</h2></div>
+  <div class="s-body wl">
+    <div class="col">
+      <p class="txt">A perpetuity is an annuity (a level cash flow stream) that continues forever: C, C, C, …</p>
+      <div class="formula"><div class="tex d">PV_{\text{annuity}} = C \times \dfrac{1}{r}\left[1 - \dfrac{1}{(1+r)^N}\right] \quad\xrightarrow{N\to\infty}\quad PV = \dfrac{C}{r}</div></div>
+      <p class="txt">Note: the PV is one period before the first cash flow. Example: a perpetuity whose first payment is in year 5 has <span class="tex">PV_4 = \frac{C_5}{r}</span>.</p>
+      <div class="ctls"><div class="ctl" data-k="pp_c"></div><div class="ctl" data-k="pp_r"></div></div>
+      <div class="results"><div class="res main"><span class="rl">PV of perpetuity C/r</span><span class="rv" data-o="pv"></span></div></div>
+    </div>
+    <div class="col"><div class="ctitle">What happens as N increases and tends to infinity?</div><div class="chart" data-c="c"></div><p class="note" data-o="nt"></p></div>
+  </div>
+</section>
+
+<!-- ============ 32 ============ -->
+<section class="slide" data-sec="Perpetuities" data-t="Example: the consol bond" data-r="consol">
+  <div class="s-head"><div class="eyebrow">Perpetuities · example</div><h2>Price and yield: the consol bond</h2></div>
+  <div class="s-body wl">
+    <div class="col">
+      <p class="txt">A consol bond pays interest in perpetuity. What is the value of a <b data-o="face"></b> face value bond that pays <b data-o="cpn"></b> interest every period if the market rate for that risk is <b data-o="r"></b> per period?</p>
+      <p class="note">The coupon rate is the stated rate offered by the bond. The discount rate is the opportunity cost of capital, the rate on a similar substitute.</p>
+      <div class="ctls"><div class="ctl" data-k="cb_face"></div><div class="ctl" data-k="cb_cpn"></div><div class="ctl" data-k="cb_r"></div></div>
+      <div class="formula"><div class="tex d" data-x="f"></div></div>
+      <div class="verdict" data-o="v"></div>
+      <div class="news">May 27, 2021 (Reuters): Oman Arab Bank was set to raise $250 million in its first foray into international debt markets with an Additional Tier 1 perpetual bond issue, launched at a yield of 7.625%.</div>
+    </div>
+    <div class="col">
+      <div class="tw"><table data-o="tbl"></table></div>
+      <button class="tog" data-k="cb_rev">Reveal prices</button>
+      <div class="ctitle">Bond price as the market rate changes</div>
+      <div class="chart" data-c="c"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 33 ============ -->
+<section class="slide" data-sec="Perpetuities" data-t="Example: a stock as a perpetuity" data-r="stock">
+  <div class="s-head"><div class="eyebrow">Perpetuities · example</div><h2>Examples: a stock as a perpetuity</h2></div>
+  <div class="s-body">
+    <div class="col">
+      <p class="lead">A stock pays an annual dividend of <b data-o="d"></b>. What is the most you would pay for it if the appropriate discount rate for that risk is <b data-o="r"></b>?</p>
+      <div class="formula"><div class="tex d big" data-x="f1"></div></div>
+      <p class="lead">Suppose the dividend commences only in year <b data-o="s"></b>?</p>
+      <div class="formula"><div class="tex d" data-x="f2"></div></div>
+    </div>
+    <div class="col">
+      <div class="ctls"><div class="ctl" data-k="st_d"></div><div class="ctl" data-k="st_r"></div><div class="ctl" data-k="st_s"></div></div>
+      <div class="results"><div class="res"><span class="rl">Dividends from year 1</span><span class="rv" data-o="v1"></span></div><div class="res main"><span class="rl" data-o="l2"></span><span class="rv" data-o="v2"></span></div></div>
+      <div class="ctitle">Value today, by the year dividends begin</div><div class="chart" data-c="c"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 34 ============ -->
+<section class="slide" data-sec="Perpetuities" data-t="Growing perpetuity" data-r="gperp">
+  <div class="s-head"><div class="eyebrow">Perpetuities</div><h2>Growing perpetuity</h2></div>
+  <div class="s-body wl">
+    <div class="col">
+      <p class="txt">A growing perpetuity is one in which the cash flows grow at a constant rate g.</p>
+      <div class="tw"><table data-o="tbl"></table></div>
+      <p class="txt">The PV of a growing perpetuity that starts one year from now at C and grows at g is</p>
+      <div class="formula"><div class="tex d big">PV = \dfrac{C}{r-g}</div></div>
+      <p class="txt">Example: the <b data-o="c"></b> dividend one year from now is expected to grow at <b data-o="g"></b> per year. The rate on a similar substitute is <b data-o="r"></b>.</p>
+    </div>
+    <div class="col">
+      <div class="ctls"><div class="ctl" data-k="gp_c"></div><div class="ctl" data-k="gp_g"></div><div class="ctl" data-k="gp_r"></div></div>
+      <div class="formula"><div class="tex d" data-x="f"></div></div>
+      <div class="ctitle">Value of the share as the growth rate g changes</div><div class="chart" data-c="c"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 35 ============ -->
+<section class="slide" data-sec="Perpetuities" data-t="Example: two stages of dividends" data-r="gx">
+  <div class="s-head"><div class="eyebrow">Perpetuities · example</div><h2>Example: flat first, then growing</h2></div>
+  <div class="s-body wl">
+    <div class="col">
+      <p class="txt">Suppose the dividend is expected to be <b data-o="d"></b> each year for the first <b data-o="k"></b> years and then grow at <b data-o="g"></b>. What would you pay for this stock if your opportunity cost of capital is <b data-o="r"></b>?</p>
+      <div class="ctls"><div class="ctl" data-k="gx_d"></div><div class="ctl" data-k="gx_k"></div><div class="ctl" data-k="gx_g"></div><div class="ctl" data-k="gx_r"></div></div>
+      <div class="tl" data-o="tl"></div>
+      <button class="tog" data-k="gx_sol">Show solution</button>
+    </div>
+    <div class="col"><div class="sol" data-sol="gx_sol">
+      <p class="txt">The growing perpetuity starts in year <b data-o="k1"></b>, so its value sits at year <b data-o="k"></b>:</p>
+      <div class="formula"><div class="tex d" data-x="f1"></div><div class="tex d" data-x="f2"></div></div>
+      <div class="results"><div class="res main"><span class="rl">Value of the share</span><span class="rv" data-o="pv"></span></div></div>
+    </div></div>
+  </div>
+</section>
+
+<!-- ============ 36 ============ -->
+<section class="slide" data-sec="Discounted cash flow" data-t="The formulae">
+  <div class="s-head"><div class="eyebrow">Summary</div><h2>The formulae</h2></div>
+  <div class="s-body">
+    <div class="col">
+      <div class="formula"><div class="eyebrow">Single cash flow</div><div class="tex d">PV = \dfrac{C}{(1+r)^N} \qquad FV_N = C \times (1+r)^N</div></div>
+      <div class="formula"><div class="eyebrow">Annuity</div><div class="tex d">PV = C \times \dfrac{1}{r}\left[1-\dfrac{1}{(1+r)^N}\right]</div><div class="tex d">FV_N = C \times \dfrac{1}{r}\left[(1+r)^N - 1\right]</div></div>
+    </div>
+    <div class="col">
+      <div class="formula"><div class="eyebrow">Perpetuity</div><div class="tex d big">PV = \dfrac{C}{r}</div></div>
+      <div class="formula"><div class="eyebrow">Growing perpetuity</div><div class="tex d big">PV = \dfrac{C}{r-g}</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 37 ============ -->
+<section class="slide" data-sec="Discounted cash flow" data-t="Discounted cash flow">
+  <div class="s-head"><div class="eyebrow">Discounted cash flow</div><h2>Discounted cash flow</h2></div>
+  <div class="s-body wr">
+    <div class="col">
+      <p class="txt">All the examples we have seen involve discounting cash flows. This method is called <span class="hl">DCF</span> (discounted cash flows), and it is the general approach to valuing any asset.</p>
+      <ul class="pts"><li><b>Step 1:</b> Lay out the time line of cash flows C<sub>1</sub>, C<sub>2</sub>, C<sub>3</sub>, …</li><li><b>Step 2:</b> Find the return r on a similar-risk security: measure risk, then use the risk–return relationship.</li><li><b>Step 3:</b> Discount the cash flows at r to get value.</li></ul>
+    </div>
+    <div class="col"><div class="formula"><p class="txt">Remember, this is short-cut 2: the asset must be priced to offer the same reward as a similar-risk security, or there will be arbitrage opportunities.</p></div></div>
+  </div>
+</section>
+
+<!-- ============ 38 ============ -->
+<section class="slide" data-sec="Discounted cash flow" data-t="DCF in four settings">
+  <div class="s-head"><div class="eyebrow">Discounted cash flow</div><h2>The same three steps, four settings</h2></div>
+  <div class="s-body one"><div class="cards">
+    <div class="card"><h3>Stock</h3><p>Buy, hold for two years, and sell.</p><p><b>Cash flows:</b> dividends and the selling price, D<sub>1</sub>, D<sub>2</sub> + P<sub>2</sub></p><p><b>r:</b> R<sub>e</sub>, the cost of equity (required return to shareholders)</p><div class="tex d">P_0 = \frac{D_1}{1+R_e} + \frac{D_2+P_2}{(1+R_e)^2}</div></div>
+    <div class="card"><h3>Bond</h3><p>Buy, hold for two years, and sell or get principal repayment.</p><p><b>Cash flows:</b> coupons and promised repayment</p><p><b>r:</b> R<sub>d</sub>, the cost of debt (required return to lenders, the yield to maturity)</p><div class="tex d">P_0 = \frac{CPN_1}{1+R_d} + \frac{CPN_2+FV_2}{(1+R_d)^2}</div></div>
+    <div class="card"><h3>Firm</h3><p>Operate the firm, collect cash flows, and sell.</p><p><b>Cash flows:</b> free cash flows and terminal value</p><p><b>r:</b> WACC, the weighted average of the after-tax cost of debt and the cost of equity</p><div class="tex d">P_0 = \frac{FCF_1}{1+W} + \frac{FCF_2+TV_2}{(1+W)^2}</div></div>
+    <div class="card"><h3>Project</h3><p>Invest, collect free cash flow, and liquidate or sell.</p><p><b>Cash flows:</b> FCF<sub>0</sub>, FCF<sub>1</sub>, FCF<sub>2</sub> + TV<sub>2</sub></p><p><b>r:</b> WACC</p><div class="tex d">P_0 = FCF_0 + \frac{FCF_1}{1+W} + \frac{FCF_2+TV_2}{(1+W)^2}</div></div>
+  </div><p class="note">W = WACC.</p></div>
+</section>
+
+<!-- ============ 39 ============ -->
+<section class="slide" data-sec="Applications" data-t="How might we use this idea?">
+  <div class="s-head"><div class="eyebrow">Applications</div><h2>How might we use this idea?</h2></div>
+  <div class="s-body one"><div class="col">
+    <ul class="pts"><li>You wish to introduce a new product.</li><li>The upfront R&amp;D will be $1 million each in years 0 and 1.</li><li>Then you expect cash flows of $0.5 million each year starting in year 2, for 3 years.</li><li>Should you allocate money to this venture?</li><li>The rate on a similar substitute is 5%.</li></ul>
+    <p class="note">The next slide is a live spreadsheet: type in any cash flow.</p>
+  </div></div>
+</section>
+
+<!-- ============ 40 ============ -->
+<section class="slide" data-sec="Applications" data-t="Corporate example: NPV" data-r="npv">
+  <div class="s-head"><div class="eyebrow">Applications</div><h2>Corporate example</h2></div>
+  <div class="s-body one" style="grid-template-rows:auto auto 1fr">
+    <div class="ctls" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))">
+      <div class="ctl" data-k="np_r"></div>
+      <div class="ctl"><label>After the last year</label><div class="seg" data-k="np_tv"></div></div>
+      <div class="ctl" data-k="np_tvc"></div><div class="ctl" data-k="np_tvs"></div><div class="ctl" data-k="np_tvg"></div>
+    </div>
+    <div class="tw"><table data-o="tbl"></table></div>
+    <div class="s-body wr" style="gap:28px">
+      <div class="col"><div class="xl" data-o="xl"></div><div class="formula"><div class="tex d" data-x="f"></div></div><div class="results"><div class="res main"><span class="rl">NPV ($m)</span><span class="rv" data-o="npv"></span></div></div><div class="verdict" data-o="v"></div></div>
+      <div class="col"><div class="chart" data-c="c"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 41 ============ -->
+<section class="slide" data-sec="Applications" data-t="Breakout: the POSCO coal mine" data-r="posco">
+  <div class="s-head"><div class="eyebrow">Applications · breakout</div><h2>Breakout: the coal mine</h2></div>
+  <div class="s-body wl">
+    <div class="col">
+      <p class="txt">POSCO, a mining company, is considering opening a new coal mine. It will cost <b data-o="cost"></b> to open, spent immediately (t = 0). The mine will generate <b data-o="cf"></b> each year for the next <b data-o="n"></b> years (starting year 1). After that the coal runs out and the site must be cleaned and maintained, costing <b data-o="cl"></b> per year in perpetuity starting in year <b data-o="n1"></b>. If the cost of capital is <b data-o="r"></b>, what is the NPV?</p>
+      <div class="ctls"><div class="ctl" data-k="po_cost"></div><div class="ctl" data-k="po_cf"></div><div class="ctl" data-k="po_n"></div><div class="ctl" data-k="po_cl"></div><div class="ctl" data-k="po_r"></div></div>
+      <p class="note">Step 1: lay out the time line. Step 2: find r. Step 3: discount (first find the terminal value of the clean-up costs).</p>
+      <button class="tog" data-k="po_sol">Show solution</button>
+    </div>
+    <div class="col"><div class="sol" data-sol="po_sol">
+      <div class="formula"><div class="tex d" data-x="f1"></div><div class="tex d" data-x="f2"></div><div class="tex d" data-x="f3"></div></div>
+      <div class="results"><div class="res main"><span class="rl">NPV (W billion)</span><span class="rv" data-o="npv"></span></div></div>
+      <div class="ctitle">NPV at different costs of capital</div><div class="chart" data-c="c"></div><p class="note" data-o="nt"></p>
+    </div></div>
+  </div>
+</section>
+
+<!-- ============ 42 ============ -->
+<section class="slide" data-sec="Applications" data-t="Personal example: saving for retirement" data-r="ret">
+  <div class="s-head"><div class="eyebrow">Applications</div><h2>Personal example</h2></div>
+  <div class="s-body wl">
+    <div class="col">
+      <p class="txt">You are <b data-o="age"></b> years old today and your salary next year will be <b data-o="sal"></b> until you retire at <b data-o="ret"></b>. If you save <b data-o="sv"></b> of your salary at the end of every year and invest at <b data-o="r"></b>, how much can you withdraw each year from age <b data-o="ret1"></b> to <b data-o="end"></b>?</p>
+      <div class="ctls"><div class="ctl" data-k="re_age"></div><div class="ctl" data-k="re_ret"></div><div class="ctl" data-k="re_end"></div><div class="ctl" data-k="re_sal"></div><div class="ctl" data-k="re_sv"></div><div class="ctl" data-k="re_g"></div><div class="ctl" data-k="re_r"></div></div>
+      <div class="formula"><div class="tex d" data-x="f1"></div><div class="tex d" data-x="f2"></div></div>
+    </div>
+    <div class="col">
+      <div class="results"><div class="res"><span class="rl">Balance at retirement</span><span class="rv" data-o="bal"></span></div><div class="res main"><span class="rl">Annual withdrawal</span><span class="rv" data-o="w"></span></div></div>
+      <div class="ctitle">Account balance by age</div><div class="chart" data-c="c"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 43 ============ -->
+<section class="slide" data-sec="Applications" data-t="Valuing Apple with the dividend discount model" data-r="apple">
+  <div class="s-head"><div class="eyebrow">Applications</div><h2>Example: the dividend discount model</h2></div>
+  <div class="s-body wl">
+    <div class="col">
+      <p class="txt">Apple, Inc. is paying a dividend of <b data-o="d0"></b> in 2021. This dividend is expected to grow at <b data-o="g1"></b> for each of the next <b data-o="n1"></b> years. After that, dividend growth slows to <b data-o="g2"></b>. The appropriate discount rate is <b data-o="r"></b>. What is each share worth?</p>
+      <div class="ctls"><div class="ctl" data-k="ap_d0"></div><div class="ctl" data-k="ap_g1"></div><div class="ctl" data-k="ap_n1"></div><div class="ctl" data-k="ap_g2"></div><div class="ctl" data-k="ap_r"></div></div>
+      <div class="formula"><div class="tex d" data-x="f"></div></div>
+    </div>
+    <div class="col">
+      <div class="tw"><table data-o="tbl"></table></div>
+      <div class="results"><div class="res main"><span class="rl">Value per share</span><span class="rv" data-o="p"></span></div><div class="res"><span class="rl">Share from terminal value</span><span class="rv" data-o="sh"></span></div></div>
+      <div class="chart" data-c="c"></div>
+    </div>
+  </div>
+</section>
+
+</div></div></div>
+
+<div id="bar">
+  <button class="bbtn" id="tocBtn" aria-label="Contents">☰ Contents</button>
+  <button class="bbtn" id="prev" aria-label="Previous slide">←</button>
+  <span id="count">1 / 1</span>
+  <button class="bbtn" id="next" aria-label="Next slide">→</button>
+  <button class="bbtn" id="reset" title="Put this slide's numbers back to the original example">Reset numbers</button>
+  <span class="sp"></span>
+  <span id="live" class="off"><span class="dot"></span><span id="liveTxt">Connecting…</span></span>
+  <button class="bbtn pri" id="rejoin" hidden>Rejoin live</button>
+  <button class="bbtn" id="bcast" hidden></button>
+  <button class="bbtn" id="signin" hidden>Sign in to present</button>
+  <button class="bbtn" id="signout" hidden>Sign out</button>
+</div>
+</div>
+<nav id="toc" hidden></nav>
+<div id="toast" hidden></div>
+
+<script>
+window.MathJax = { startup:{ typeset:false }, svg:{ fontCache:'local' }, options:{ enableMenu:false } };
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js" async id="mjx"></script>
+<script>
+"use strict";
+/* ---------------- parameters ---------------- */
+// [label, default, min, max, step, unit]; unit: '%' stored as decimal, '$', '$m', 'yr', '' ; bool/choice handled separately
+const FREQ = [[1,'Annual'],[2,'Semiannual'],[4,'Quarterly'],[12,'Monthly'],[52,'Weekly'],[365,'Daily']];
+const PARAMS = {
+  sc_rf:['Risk-free rate',.04,0,.10,.25,'%'], sc_rp:['Risk premium',.01,0,.15,.25,'%'],
+  fv_pv:['Amount today (PV)',1,0,100,.05,'$'], fv_r:['Rate r',.05,0,.25,.25,'%'], fv_n:['Years N',2,1,30,1,'yr'],
+  pc_r1:['Rate A',0,0,.25,.5,'%'], pc_r2:['Rate B',.05,0,.25,.5,'%'], pc_r3:['Rate C',.07,0,.25,.5,'%'], pc_r4:['Rate D',.10,0,.25,.5,'%'], pc_n:['Horizon (years)',50,5,100,5,'yr'],
+  pc_rev:{type:'bool',def:false},
+  pv_fv:['Future amount (FV)',1.05,0,100,.05,'$'], pv_r:['Rate r',.05,0,.25,.25,'%'], pv_n:['Years N',2,1,50,1,'yr'],
+  dc_r1:['Rate A',0,0,.25,.5,'%'], dc_r2:['Rate B',.05,0,.25,.5,'%'], dc_r3:['Rate C',.07,0,.25,.5,'%'], dc_r4:['Rate D',.10,0,.25,.5,'%'], dc_n:['Horizon (years)',50,5,100,5,'yr'],
+  dc_rev:{type:'bool',def:false},
+  it_amt:['Saving ($m)',1.2,0,10,.1,'$m'], it_r:['Rate r',.10,0,.25,.5,'%'], it_t1:['On-time year',2,1,10,1,'yr'], it_t2:['Delayed year',3,1,10,1,'yr'],
+  an_c:['Payment C',100,0,1000,10,'$'], an_r:['Rate r',.08,0,.25,.25,'%'], an_n:['Periods N',3,1,40,1,''],
+  lot_prize:['Headline prize',1e6,0,1e8,1e5,'$'], lot_n:['Installments',20,1,40,1,''], lot_r:['Discount rate',.10,0,.25,.5,'%'], lot_sol:{type:'bool',def:false},
+  fq_apr:['Annual rate',.08,0,.25,.25,'%'], fq_yrs:['Years N',1,1,30,1,'yr'],
+  mp_pmt:['Monthly payment',1200,0,10000,50,'$'], mp_apr:['Stated annual rate',.12,0,.25,.25,'%'], mp_yrs:['Years left',4,0,30,1,'yr'], mp_mos:['Plus months',2,0,11,1,''], mp_offer:['Payoff offer',55000,0,500000,1000,'$'], mp_sol:{type:'bool',def:false},
+  mo_loan:['Loan amount',200000,0,2e6,5000,'$'], mo_apr:['Stated annual rate',.08,0,.20,.125,'%'], mo_yrs:['Term (years)',15,1,40,1,'yr'], mo_m:{type:'choice',def:12,opts:[[1,'Annual'],[4,'Quarterly'],[12,'Monthly'],[26,'Biweekly'],[52,'Weekly']]},
+  gm_price:['Car price',25000,0,100000,500,'$'], gm_disc:['Cash discount',2000,0,20000,100,'$'], gm_dr:['Dealer rate',0,0,.15,.25,'%'], gm_cu:['Credit union rate',.05,0,.20,.25,'%'], gm_mos:['Loan term (months)',24,6,84,6,''], gm_sol:{type:'bool',def:false},
+  ea_apr:['Stated annual rate (APR)',.12,0,.40,.5,'%'],
+  ear_apr:['APR',.18,0,.40,.5,'%'], ear_m:{type:'choice',def:12,opts:FREQ}, ear_wk:['Weekly rate',.025,0,.10,.1,'%'],
+  cv_apr:['APR',.08,0,.30,.25,'%'], cv_m1:{type:'choice',def:4,opts:FREQ}, cv_m2:{type:'choice',def:12,opts:FREQ},
+  lc_aapr:['Loan A APR',.10,0,.30,.05,'%'], lc_am:{type:'choice',def:365,opts:FREQ}, lc_bapr:['Loan B APR',.102,0,.30,.05,'%'], lc_bm:{type:'choice',def:2,opts:FREQ}, lc_sol:{type:'bool',def:false},
+  lb_price:['Purchase price',65000,0,200000,1000,'$'], lb_apr:['Bank APR (quarterly)',.08,0,.20,.25,'%'], lb_yrs:['Life (years)',3,1,10,1,'yr'], lb_lease:['Lease per month',1800,0,6000,25,'$'], lb_sol:{type:'bool',def:false},
+  pp_c:['Cash flow C',5,0,100,1,'$'], pp_r:['Rate r',.10,.005,.25,.5,'%'],
+  cb_face:['Face value',100,0,1000,10,'$'], cb_cpn:['Coupon rate',.05,0,.20,.25,'%'], cb_r:['Market rate',.10,.0025,.20,.25,'%'], cb_rev:{type:'bool',def:false},
+  st_d:['Dividend',2,0,20,.25,'$'], st_r:['Discount rate',.10,.005,.25,.5,'%'], st_s:['First dividend in year',4,1,20,1,'yr'],
+  gp_c:['Next dividend C',2,0,20,.25,'$'], gp_g:['Growth g',.04,-.05,.15,.25,'%'], gp_r:['Discount rate r',.10,0,.25,.25,'%'],
+  gx_d:['Dividend',2,0,20,.25,'$'], gx_k:['Flat years',2,1,10,1,'yr'], gx_g:['Growth after',.04,-.05,.15,.25,'%'], gx_r:['Discount rate',.10,0,.25,.25,'%'], gx_sol:{type:'bool',def:false},
+  np_r:['Rate r',.05,0,.25,.25,'%'], np_tv:{type:'choice',def:0,opts:[[0,'Project ends'],[1,'Perpetuity']]},
+  np_tvc:['Perpetual cash flow ($m)',.2,0,2,.05,'$m'], np_tvs:['Perpetuity starts in year',5,5,10,1,'yr'], np_tvg:['Perpetuity growth',0,-.05,.04,.25,'%'],
+  np_c0:{type:'cell',def:-1}, np_c1:{type:'cell',def:-1}, np_c2:{type:'cell',def:.5}, np_c3:{type:'cell',def:.5}, np_c4:{type:'cell',def:.5},
+  po_cost:['Cost to open (W bn)',120,0,300,5,''], po_cf:['Annual cash flow (W bn)',20,0,60,1,''], po_n:['Producing years',10,1,30,1,'yr'], po_cl:['Clean-up per year (W bn)',2,0,10,.5,''], po_r:['Cost of capital',.08,.005,.25,.25,'%'], po_sol:{type:'bool',def:false},
+  re_age:['Age today',30,18,60,1,'yr'], re_ret:['Retire at',60,40,75,1,'yr'], re_end:['Withdraw until',80,60,100,1,'yr'], re_sal:['Salary',100000,0,500000,5000,'$'], re_sv:['Savings rate',.05,0,.40,.5,'%'], re_g:['Salary growth',0,0,.08,.25,'%'], re_r:['Return',.08,0,.15,.25,'%'],
+  ap_d0:['2021 dividend',.88,0,5,.01,'$'], ap_g1:['Early growth',.18,0,.40,.5,'%'], ap_n1:['Early-growth years',5,1,15,1,'yr'], ap_g2:['Long-run growth',.065,0,.10,.25,'%'], ap_r:['Discount rate',.08,0,.20,.25,'%'],
+};
+const spec = k => { const s = PARAMS[k]; return Array.isArray(s) ? {type:'num',label:s[0],def:s[1],min:s[2],max:s[3],step:s[4],unit:s[5]} : s; };
+const DEF = {}; for (const k in PARAMS) DEF[k] = spec(k).def;
+
+/* ---------------- formatting ---------------- */
+const nf = (d) => new Intl.NumberFormat('en-US',{minimumFractionDigits:d,maximumFractionDigits:d});
+const num = (x,d=2) => isFinite(x) ? nf(d).format(x).replace('-','−') : '—';
+const money = (x,d=2) => !isFinite(x) ? '—' : (x<0?'−':'') + '$' + nf(d).format(Math.abs(x));
+const auto$ = x => money(x, Math.abs(x) >= 1000 ? 0 : 2);
+const pct = (x,d=2) => isFinite(x) ? num(x*100,d)+'%' : '—';
+const pctT = x => { const v=+(x*100).toFixed(4); return (Number.isInteger(v)?v:v.toString())+'%'; };
+const T = (x,d=2) => isFinite(x) ? nf(d).format(x).replace(/,/g,'{,}') : '\\infty';
+const T$ = (x,d=2) => (x<0?'-':'') + '\\$' + T(Math.abs(x),d);
+const TP = (x,d=2) => T(x*100,d) + '\\%';
+const decs = step => { const s=String(step); return s.includes('.') ? s.split('.')[1].length : 0; };
+
+/* ---------------- finance ---------------- */
+const pvaf = (r,n) => r===0 ? n : (1-Math.pow(1+r,-n))/r;
+const fvaf = (r,n) => r===0 ? n : (Math.pow(1+r,n)-1)/r;
+const pmt = (pv,r,n) => r===0 ? pv/n : pv*r/(1-Math.pow(1+r,-n));
+const earOf = (apr,m) => Math.pow(1+apr/m,m)-1;
+const freqName = m => (FREQ.find(f=>f[0]===m)||[0,m+'×/yr'])[1].toLowerCase();
+
+/* ---------------- state + live sync ---------------- */
+const S = {
+  role:'student',        // 'student' | 'presenter'
+  db:null, ref:null, connected:false,
+  broadcasting:true, followNums:true, followSlide:true,
+  live:{slide:0, params:{}}, local:{},
+  cur:0, gotFirst:false,
+};
+function values(){
+  if (S.role==='presenter') return {...DEF, ...S.local};
+  if (S.followNums && S.connected) return {...DEF, ...S.live.params};
+  return {...DEF, ...S.local};
+}
+let V = {...DEF};
+function setParam(k, v){
+  if (S.role==='student' && S.followNums && S.connected){ S.local = {...S.live.params}; S.followNums = false; toast('You are exploring on your own. Press “Rejoin live” to follow the instructor again.'); }
+  if (v === DEF[k]) delete S.local[k]; else S.local[k] = v;
+  refresh(); queueWrite(); updateBar();
+}
+
+/* writes: presenter only, coalesced, one in flight */
+let wTimer=null, wBusy=false, wAgain=false;
+function queueWrite(){
+  if (S.role!=='presenter' || !S.broadcasting || !S.ref) return;
+  clearTimeout(wTimer); wTimer = setTimeout(doWrite, 300);
+}
+async function doWrite(){
+  if (wBusy){ wAgain=true; return; }
+  wBusy=true;
+  try { await S.ref.set({slide:S.cur, params:{...S.local}}); }
+  catch(e){ if (e && e.code==='permission-denied'){ S.broadcasting=false; toast('Firebase refused the update. Check that your email is in firestore.rules.'); updateBar(); } }
+  wBusy=false;
+  if (wAgain){ wAgain=false; doWrite(); }
+}
+
+/* ---- Firebase live layer (GitHub Pages version) ---- */
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyBXIJUmFkXd1s8vxwE_e1h2t5PGbxZWxRE",
+  authDomain: "finance-lessons.firebaseapp.com",
+  projectId: "finance-lessons",
+  storageBucket: "finance-lessons.firebasestorage.app",
+  messagingSenderId: "540812585638",
+  appId: "1:540812585638:web:b5dd7571467ba17e0d2267"
+};
+// Who may present. This only decides which buttons appear; firestore.rules is what actually enforces it.
+const PRESENTER_EMAILS = ["kammain@gmail.com"];
+const LIVE_DOC = ["live", "lesson3"];   // one document per lesson
+const FB = "https://www.gstatic.com/firebasejs/10.12.2/";
+const PRESENT_MODE = new URLSearchParams(location.search).has("present");
+let FBA = null; // auth helpers
+
+async function initLive(){
+  let appM, fsM, auM;
+  try { [appM, fsM, auM] = await Promise.all([import(FB+"firebase-app.js"), import(FB+"firebase-firestore.js"), import(FB+"firebase-auth.js")]); }
+  catch(e){ setOffline("Your own copy · live updates could not load"); return; }
+  const app = appM.initializeApp(FIREBASE_CONFIG);
+  const db = fsM.getFirestore(app);
+  const ref = fsM.doc(db, ...LIVE_DOC);
+  S.ref = { set: (d) => fsM.setDoc(ref, d) };
+
+  const auth = auM.getAuth(app);
+  FBA = { signIn: () => auM.signInWithPopup(auth, new auM.GoogleAuthProvider()), signOut: () => auM.signOut(auth) };
+  auM.onAuthStateChanged(auth, (u) => {
+    const email = (u && u.email || "").toLowerCase();
+    const ok = !!u && PRESENTER_EMAILS.map(x=>x.toLowerCase()).includes(email);
+    if (u && !ok){ toast("The account " + email + " is not set up to present."); auM.signOut(auth); }
+    const was = S.role;
+    S.role = ok ? "presenter" : "student";
+    if (ok && was !== "presenter"){ S.local = {...S.live.params}; S.gotFirst = S.connected; S.broadcasting = true; if (S.connected && !hadHash) go(S.live.slide, true); }
+    if (!ok && was === "presenter"){ S.followNums = true; S.followSlide = true; S.local = {}; }
+    refresh(); updateBar();
+  });
+
+  const t = setTimeout(()=>{ if(!S.connected) setOffline("Live updates can’t be reached yet"); }, 10000);
+  fsM.onSnapshot(ref, (snap) => {
+    clearTimeout(t);
+    S.connected = true;
+    const d = snap.exists() ? snap.data() : {slide:0, params:{}};
+    S.live = {slide: Number.isInteger(d.slide) ? d.slide : 0, params: (d.params && typeof d.params === "object") ? d.params : {}};
+    if (S.role === "presenter"){
+      if (!S.gotFirst){ S.gotFirst = true; S.local = {...S.live.params}; if (!hadHash) go(S.live.slide, true); refresh(); }
+    } else {
+      if (S.followSlide && S.live.slide !== S.cur) go(S.live.slide, true);
+      if (S.followNums) refresh();
+    }
+    updateBar();
+  }, (err) => { clearTimeout(t); S.connected = false; setOffline("Live updates stopped · working on your own copy"); });
+  updateBar();
+}
+function setOffline(msg){ if(typeof S!=='undefined' && S.role==='presenter') S.role='student'; const l=document.getElementById('live'); l.className='off'; document.getElementById('liveTxt').textContent=msg; document.getElementById('rejoin').hidden=true; }
+function updateBar(){
+  const l=document.getElementById('live'), lt=document.getElementById('liveTxt'), rj=document.getElementById('rejoin'), bc=document.getElementById('bcast');
+  document.getElementById('signin').hidden = !(PRESENT_MODE && FBA && S.role!=='presenter');
+  document.getElementById('signout').hidden = S.role!=='presenter';
+  if (!S.ref) { bc.hidden=true; return; }
+  if (S.role==='presenter'){
+    bc.hidden=false; rj.hidden=true;
+    bc.textContent = S.broadcasting ? 'Pause broadcast' : 'Resume broadcast';
+    l.className = S.broadcasting ? 'bc' : 'off';
+    lt.textContent = S.broadcasting ? 'You are presenting · students see your slide and numbers' : 'Broadcast paused · students see your last shared state';
+    return;
+  }
+  bc.hidden=true;
+  if (!S.connected) return;
+  const following = S.followNums && S.followSlide;
+  l.className = following ? 'on' : 'off';
+  if (following) lt.textContent='Live · following the instructor';
+  else if (!S.followNums) lt.textContent='Exploring on your own';
+  else lt.textContent='Instructor is on slide '+(S.live.slide+1);
+  rj.hidden = following;
+}
+function rejoin(){ S.followNums=true; S.followSlide=true; S.local={}; go(S.live.slide,true); refresh(); updateBar(); }
+
+/* ---------------- controls ---------------- */
+let uid=0;
+function buildControls(root){
+  root.querySelectorAll('.ctl[data-k]').forEach(el=>{
+    const k=el.dataset.k, s=spec(k), id='c'+(uid++), d=decs(s.step);
+    const f = s.unit==='%' ? 100 : 1;
+    const pre = (s.unit==='$'||s.unit==='$m') ? '$' : '', suf = s.unit==='%' ? '%' : s.unit==='$m' ? 'm' : s.unit==='yr' ? 'yr' : '';
+    el.innerHTML = `<div class="top"><label for="${id}n">${s.label}</label><span class="nf">${pre?`<span class="u">${pre}</span>`:''}<input type="number" id="${id}n" step="any" data-bind="${k}" data-f="${f}" data-d="${d}"><span class="u">${suf}</span></span></div>
+      <input type="range" id="${id}r" aria-label="${s.label}" min="${s.min*f}" max="${s.max*f}" step="${s.step}" data-bind="${k}" data-f="${f}">`;
+  });
+  root.querySelectorAll('.seg[data-k]').forEach(el=>{
+    const k=el.dataset.k, s=spec(k);
+    el.innerHTML = s.opts.map(([v,l])=>`<button type="button" data-bind="${k}" data-v="${v}">${l}</button>`).join('');
+  });
+  root.querySelectorAll('.tog[data-k]').forEach(el=>{ el.dataset.bind=el.dataset.k; el.dataset.label=el.textContent; });
+}
+function readInput(el){
+  const k=el.dataset.bind, s=spec(k);
+  if (s.type==='cell'){ const v=parseFloat(el.value); return isFinite(v)? v : null; }
+  let v = parseFloat(el.value); if (!isFinite(v)) return null;
+  v = v / (+el.dataset.f||1);
+  const lo = s.min, hi = Math.max(s.max*20, s.max+1);
+  v = Math.min(hi, Math.max(lo, v));
+  if (s.step>=1 && s.unit!=='$' && s.unit!=='') v=Math.round(v);
+  if ((s.unit==='' || s.unit==='yr') && s.step===1) v=Math.round(v);
+  return +v.toPrecision(12);
+}
+document.addEventListener('input', e=>{
+  const el=e.target; if (!el.dataset || !el.dataset.bind || el.tagName!=='INPUT') return;
+  const v=readInput(el); if (v===null) return; setParam(el.dataset.bind, v);
+});
+document.addEventListener('click', e=>{
+  const b=e.target.closest('button[data-bind]'); if(!b) return;
+  const k=b.dataset.bind, s=spec(k);
+  if (s.type==='bool') setParam(k, !V[k]);
+  else if (s.type==='choice') setParam(k, +b.dataset.v);
+});
+function syncInputs(slide){
+  slide.querySelectorAll('[data-bind]').forEach(el=>{
+    const k=el.dataset.bind, v=V[k], s=spec(k);
+    if (el.tagName==='INPUT'){
+      if (el.type==='range'){ el.value = v*(+el.dataset.f||1); }
+      else if (document.activeElement!==el){
+        const f=+el.dataset.f||1, d=+el.dataset.d||0;
+        el.value = s.type==='cell' ? String(v) : String(+(v*f).toFixed(Math.max(d,2)));
+      }
+    } else if (s.type==='bool'){
+      el.setAttribute('aria-pressed', v?'true':'false');
+      el.textContent = v ? el.dataset.label.replace(/^Show|^Reveal/, 'Hide') : el.dataset.label;
+    } else if (s.type==='choice'){
+      el.setAttribute('aria-pressed', (+el.dataset.v===v)?'true':'false');
+    }
+  });
+  slide.querySelectorAll('[data-sol]').forEach(el=>{ el.hidden = !V[el.dataset.sol]; });
+}
+
+/* ---------------- output helpers ---------------- */
+function O(slide, name, val){ slide.querySelectorAll(`[data-o="${name}"]`).forEach(el=>{ if (el.tagName==='TABLE'||el.classList.contains('tl')) el.innerHTML=val; else el.textContent=val; }); }
+function OH(slide, name, html){ slide.querySelectorAll(`[data-o="${name}"]`).forEach(el=>el.innerHTML=html); }
+let MJ=false;
+function renderTex(el, tex){
+  if (el.dataset.src===tex && el.dataset.done==='1') return;
+  el.dataset.src = tex;
+  if (!MJ){ el.textContent = tex; el.dataset.done='0'; return; }
+  try { const node = MathJax.tex2svg(tex, {display: el.classList.contains('d')}); el.replaceChildren(node); el.dataset.done='1'; }
+  catch(e){ el.textContent = tex; }
+}
+function X(slide, name, tex){ slide.querySelectorAll(`[data-x="${name}"]`).forEach(el=>renderTex(el, tex)); }
+function C(slide, name, svg){ const el=slide.querySelector(`[data-c="${name}"]`); if(el) el.innerHTML=svg; }
+function rows(head, body, opt={}){
+  return '<tr>'+head.map(h=>`<th>${h}</th>`).join('')+'</tr>' + body.map(r=>{
+    const cls = r.cls ? ` class="${r.cls}"` : ''; const cells = r.cells || r;
+    return `<tr${cls}>`+cells.map(c=>`<td>${c}</td>`).join('')+'</tr>';
+  }).join('');
+}
+
+/* ---------------- charts (hand-drawn SVG) ---------------- */
+function ticks(min,max,n=5){
+  if (!(max>min)) { max=min+1; }
+  const span=max-min, raw=span/n, mag=Math.pow(10,Math.floor(Math.log10(raw))), e=raw/mag;
+  const step=(e>=7.5?10:e>=3.5?5:e>=1.5?2:1)*mag;
+  const hiT=Math.ceil(max/step-1e-9)*step; const out=[]; for(let v=Math.ceil(min/step-1e-9)*step; v<=hiT+step*1e-6; v+=step) out.push(Math.abs(v)<step*1e-6?0:+v.toPrecision(10));
+  return {t:out, lo:Math.floor(min/step+1e-9)*step, hi:Math.ceil(max/step-1e-9)*step};
+}
+const esc = s => String(s).replace(/[&<>]/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+function lineChart(o){
+  const W=o.w||560, H=o.h||250, m={l:o.ml||56, r:o.mr||(o.endLabels?64:14), t:12, b:36};
+  const all = o.series.flatMap(s=>s.pts.map(p=>p[1])).filter(isFinite).concat(o.yExtra||[]);
+  let ymin = o.y ? o.y[0] : Math.min(0, ...all), ymax = o.y ? o.y[1] : Math.max(...all, ymin+1e-9);
+  const ty = ticks(ymin, ymax, o.yt||5); ymin = o.y?ymin:ty.lo; ymax = o.y?ymax:ty.hi;
+  const [xmin,xmax]=o.x; const tx = o.xticks ? {t:o.xticks} : ticks(xmin,xmax,6);
+  const X = x => m.l + (x-xmin)/(xmax-xmin||1)*(W-m.l-m.r), Y = y => H-m.b - (y-ymin)/(ymax-ymin||1)*(H-m.t-m.b);
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(o.aria||'chart')}">`;
+  for (const v of ty.t) if (v>=ymin-1e-9 && v<=ymax+1e-9) s += `<line class="gl" x1="${m.l}" x2="${W-m.r}" y1="${Y(v)}" y2="${Y(v)}"/><text x="${m.l-8}" y="${Y(v)+4}" text-anchor="end">${esc((o.yf||num)(v))}</text>`;
+  for (const v of tx.t) if (v>=xmin-1e-9 && v<=xmax+1e-9) s += `<text x="${X(v)}" y="${H-m.b+18}" text-anchor="middle">${esc((o.xf||(x=>x))(v))}</text>`;
+  s += `<line class="ax" x1="${m.l}" x2="${W-m.r}" y1="${Y(Math.max(ymin,Math.min(ymax,0)))}" y2="${Y(Math.max(ymin,Math.min(ymax,0)))}"/>`;
+  if (o.xl) s += `<text x="${(m.l+W-m.r)/2}" y="${H-4}" text-anchor="middle">${esc(o.xl)}</text>`;
+  for (const h of (o.hlines||[])) if (h.y>=ymin && h.y<=ymax) s += `<line x1="${m.l}" x2="${W-m.r}" y1="${Y(h.y)}" y2="${Y(h.y)}" stroke="${h.c||'var(--muted)'}" stroke-dasharray="5 4" stroke-width="1.5"/><text x="${W-m.r-4}" y="${Y(h.y)-6}" text-anchor="end" class="lab">${esc(h.label)}</text>`;
+  for (const v of (o.vlines||[])) if (v.x>=xmin && v.x<=xmax) s += `<line x1="${X(v.x)}" x2="${X(v.x)}" y1="${m.t}" y2="${H-m.b}" stroke="${v.c||'var(--muted)'}" stroke-dasharray="4 4"/>${v.label?`<text x="${X(v.x)+4}" y="${m.t+10+(v.dy||0)}" class="lab">${esc(v.label)}</text>`:''}`;
+  for (const se of o.series){
+    const pts = se.pts.filter(p=>isFinite(p[1]) && p[1]>=ymin-1e-9 && p[1]<=ymax+(ymax-ymin)*2);
+    if (!pts.length) continue;
+    const clip = p => [X(p[0]), Math.max(m.t-4, Y(p[1]))];
+    if (se.area) s += `<path d="M${X(pts[0][0])},${Y(Math.max(ymin,0))} ${pts.map(p=>'L'+clip(p).join(',')).join(' ')} L${X(pts[pts.length-1][0])},${Y(Math.max(ymin,0))}Z" fill="${se.c}" opacity=".14"/>`;
+    s += `<polyline fill="none" stroke="${se.c}" stroke-width="${se.w||2.5}" stroke-linejoin="round" ${se.dash?'stroke-dasharray="6 5"':''} points="${pts.map(p=>clip(p).join(',')).join(' ')}"/>`;
+    if (o.endLabels && se.label){ const p=pts[pts.length-1]; s += `<text x="${X(p[0])+6}" y="${Math.max(m.t+8,Y(p[1])+4)}" class="lab" style="fill:${se.c}">${esc(se.label)}</text>`; }
+  }
+  for (const mk of (o.marks||[])) if (isFinite(mk.y) && mk.y>=ymin && mk.y<=ymax) s += `<circle cx="${X(mk.x)}" cy="${Y(mk.y)}" r="5.5" fill="${mk.c||'var(--accent)'}" stroke="var(--paper)" stroke-width="2"/>${mk.label?`<text x="${X(mk.x)+(mk.left?-10:10)}" y="${Y(mk.y)-9}" text-anchor="${mk.left?'end':'start'}" class="lab">${esc(mk.label)}</text>`:''}`;
+  return s+'</svg>';
+}
+function barChart(o){
+  const W=o.w||560, H=o.h||250, m={l:o.ml||56, r:12, t:16, b:36};
+  const n=o.cats.length, groups=o.groups;
+  let vals=[];
+  if (o.stacked){ for(let i=0;i<n;i++){ let p=0,q=0; groups.forEach(g=>{ const v=g.v[i]; if(v>=0)p+=v; else q+=v; }); vals.push(p,q); } }
+  else vals = groups.flatMap(g=>g.v);
+  const ty=ticks(Math.min(0,...vals), Math.max(0,...vals)||1, 5), ymin=ty.lo, ymax=ty.hi;
+  const Y=y=>H-m.b-(y-ymin)/(ymax-ymin||1)*(H-m.t-m.b);
+  const bw=(W-m.l-m.r)/n, inner=bw*(n>24?0.86:0.72);
+  let s=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(o.aria||'bar chart')}">`;
+  for (const v of ty.t) s+=`<line class="gl" x1="${m.l}" x2="${W-m.r}" y1="${Y(v)}" y2="${Y(v)}"/><text x="${m.l-8}" y="${Y(v)+4}" text-anchor="end">${esc((o.yf||num)(v))}</text>`;
+  const every = Math.ceil(n/14);
+  for (let i=0;i<n;i++){
+    const x0=m.l+i*bw+(bw-inner)/2;
+    if (o.stacked){ let p=0,q=0; groups.forEach(g=>{ const v=g.v[i]; const a=v>=0?p:q, b=a+v; s+=`<rect x="${x0}" width="${inner}" y="${Math.min(Y(a),Y(b))}" height="${Math.abs(Y(a)-Y(b))}" fill="${g.c}" ${g.stroke?`stroke="${g.stroke}"`:''}/>`; if(v>=0)p=b; else q=b; }); }
+    else { const gw=inner/groups.length; groups.forEach((g,j)=>{ const v=g.v[i]; const hl=o.hl&&o.hl.includes(i); s+=`<rect x="${x0+j*gw}" width="${gw-1}" y="${Math.min(Y(0),Y(v))}" height="${Math.max(0.5,Math.abs(Y(0)-Y(v)))}" fill="${hl&&g.hc?g.hc:g.c}" ${g.stroke?`stroke="${g.stroke}"`:''}/>`; }); }
+    if (o.labels && o.labels[i]!=null){ const v=o.stacked?groups.reduce((a,g)=>a+g.v[i],0):Math.max(...groups.map(g=>g.v[i])); s+=`<text x="${x0+inner/2}" y="${(v>=0?Y(v)-5:Y(v)+14)}" text-anchor="middle" class="lab">${esc(o.labels[i])}</text>`; }
+    if (i%every===0 || i===n-1) s+=`<text x="${x0+inner/2}" y="${H-m.b+18}" text-anchor="middle">${esc(o.cats[i])}</text>`;
+  }
+  s+=`<line class="ax" x1="${m.l}" x2="${W-m.r}" y1="${Y(0)}" y2="${Y(0)}"/>`;
+  if (o.xl) s+=`<text x="${(m.l+W-m.r)/2}" y="${H-4}" text-anchor="middle">${esc(o.xl)}</text>`;
+  return s+'</svg>';
+}
+const range = (a,b,step=1) => { const o=[]; for(let x=a; x<=b+1e-9; x+=step) o.push(+x.toFixed(10)); return o; };
+const NEU = 'var(--panel-2)', NEUS = 'var(--muted)';
+
+/* ---------------- slide renderers ---------------- */
+const R = {
+shortcut(s,v){ const r=v.sc_rf+v.sc_rp; O(s,'r',pct(r));
+  C(s,'bars', barChart({cats:['Risk-free rate','Risk premium','r'], groups:[{v:[v.sc_rf*100,v.sc_rp*100,r*100], c:'var(--c2)'}], labels:[pct(v.sc_rf),pct(v.sc_rp),pct(r)], yf:x=>x+'%', h:200})); },
+fv1(s,v){ const fv=v.fv_pv*(1+v.fv_r); O(s,'pv',money(v.fv_pv)); O(s,'r',pct(v.fv_r)); O(s,'fv',money(fv));
+  X(s,'f',`FV_1 = PV(1+r) = ${T$(v.fv_pv)} \\times (1 + ${TP(v.fv_r)}) = ${T$(fv)}`); },
+fvn(s,v){ const {fv_pv:pv, fv_r:r, fv_n:n}=v, fv=pv*Math.pow(1+r,n);
+  const body=[]; for(let t=1;t<=n;t++){ const st=pv*Math.pow(1+r,t-1); body.push([t, money(st), money(pv*r), money(st*r-pv*r), money(st*(1+r))]); }
+  O(s,'tbl', rows(['Year','Start','Interest on PV','Interest on interest','End'], body));
+  X(s,'f',`FV_N = PV(1+r)^N = ${T$(pv)} \\times (1+${TP(r)})^{${n}} = ${T$(fv)}`);
+  O(s,'xl',''); OH(s,'xl',`Excel: <b>=${pv}*(1+${pctT(r)})^${n}</b> &nbsp;→ ${money(fv)} &nbsp;&nbsp; or &nbsp;<b>=FV(${pctT(r)}, ${n}, 0, -${pv})</b>`);
+  const cats=range(0,n).map(String), base=cats.map(()=>pv), si=cats.map((_,t)=>pv*r*t), ii=cats.map((_,t)=>pv*Math.pow(1+r,t)-pv-pv*r*t);
+  C(s,'c', barChart({cats, stacked:true, groups:[{v:base,c:NEU,stroke:NEUS},{v:si,c:'var(--c2)'},{v:ii,c:'var(--c1)'}], yf:x=>money(x, pv>=100?0:2), xl:'Year', h:300})); },
+powc(s,v){ const rs=[v.pc_r1,v.pc_r2,v.pc_r3,v.pc_r4], N=v.pc_n, cs=['var(--c1)','var(--c2)','var(--c3)','var(--c4)'], L='ABCD';
+  const series=rs.map((r,i)=>({pts:range(0,N,Math.max(1,N/100)).map(t=>[t,Math.pow(1+r,t)]), c:cs[i], label: v.pc_rev? pct(r,1) : 'Line '+L[i]}));
+  C(s,'c', lineChart({x:[0,N], series, endLabels:true, yf:x=>'$'+num(x, x<10?1:0), xl:'Years', h:320, aria:'Future value of one dollar'}));
+  O(s,'tbl', rows(['Line','Rate',`FV of $1 at year ${N}`], rs.map((r,i)=>[`<span style="color:${cs[i]};font-weight:600">${L[i]}</span>`, v.pc_rev? pct(r,1) : '?', money(Math.pow(1+r,N))]))); },
+pv1(s,v){ const pv=v.pv_fv/(1+v.pv_r), df=1/(1+v.pv_r); O(s,'pv',money(pv,4)); O(s,'fv',money(v.pv_fv)); O(s,'df',num(df,4));
+  X(s,'f',`PV = \\dfrac{FV_1}{1+r} = \\dfrac{${T$(v.pv_fv)}}{1 + ${TP(v.pv_r)}} = ${T$(pv,4)}`); },
+pvn(s,v){ const {pv_fv:f, pv_r:r, pv_n:n}=v, pv=f/Math.pow(1+r,n);
+  O(s,'pv',money(pv,4)); O(s,'df',num(1/Math.pow(1+r,n),4));
+  X(s,'f',`PV = \\dfrac{${T$(f)}}{(1+${TP(r)})^{${n}}} = ${T$(pv,4)}`);
+  const Nmax=Math.max(30,n*2);
+  C(s,'vn', lineChart({x:[0,Nmax], series:[{pts:range(0,Nmax).map(t=>[t,f/Math.pow(1+r,t)]), c:'var(--c2)', area:true}], marks:[{x:n,y:pv,label:'N = '+n}], y:[0,Math.max(f,1e-9)*1.05], yf:x=>money(x,f>=100?0:2), xl:'Years until received', h:190}));
+  const rmax=Math.max(.2, r*1.5);
+  C(s,'vr', lineChart({x:[0,rmax], series:[{pts:range(0,rmax,rmax/80).map(q=>[q,f/Math.pow(1+q,n)]), c:'var(--c1)', area:true}], marks:[{x:r,y:pv,label:'r = '+pct(r,1)}], y:[0,Math.max(f,1e-9)*1.05], yf:x=>money(x,f>=100?0:2), xf:x=>pct(x,0), xl:'Discount rate', h:190})); },
+disc(s,v){ const rs=[v.dc_r1,v.dc_r2,v.dc_r3,v.dc_r4], N=v.dc_n, cs=['var(--c1)','var(--c2)','var(--c3)','var(--c4)'], L='ABCD';
+  const series=rs.map((r,i)=>({pts:range(0,N,Math.max(1,N/100)).map(t=>[t,1/Math.pow(1+r,t)]), c:cs[i], label: v.dc_rev? pct(r,1) : 'Line '+L[i]}));
+  C(s,'c', lineChart({x:[0,N], series, y:[0,1.1], endLabels:true, yf:x=>'$'+num(x,1), xl:'Years until received', h:320, aria:'Present value of one dollar'}));
+  O(s,'tbl', rows(['Line','Rate',`PV of $1 at year ${Math.min(N,10)}`,`at year ${N}`], rs.map((r,i)=>[`<span style="color:${cs[i]};font-weight:600">${L[i]}</span>`, v.dc_rev? pct(r,1) : '?', money(1/Math.pow(1+r,Math.min(N,10)),4), money(1/Math.pow(1+r,N),4)]))); },
+it(s,v){ const a=v.it_amt, r=v.it_r, t1=v.it_t1, t2=v.it_t2, p1=a/Math.pow(1+r,t1), p2=a/Math.pow(1+r,t2);
+  O(s,'amt','$'+num(a,1)+'m'); O(s,'t1',t1); O(s,'t2',t2); O(s,'r',pct(r,1));
+  X(s,'f1',`\\text{Year ${t1}: } ${T(a,1)}\\text{m} \\times \\dfrac{1}{(1+${TP(r,1)})^{${t1}}} = ${T(a,1)}\\text{m} \\times ${T(1/Math.pow(1+r,t1),3)} = \\$${T(p1*1e6,0)}`);
+  X(s,'f2',`\\text{Year ${t2}: } ${T(a,1)}\\text{m} \\times \\dfrac{1}{(1+${TP(r,1)})^{${t2}}} = ${T(a,1)}\\text{m} \\times ${T(1/Math.pow(1+r,t2),3)} = \\$${T(p2*1e6,0)}`);
+  const d=p1-p2; O(s,'v', d>=0 ? `The delay lowers the value of the savings by ${money(d*1e6,0)}.` : `Arriving in year ${t2} instead of ${t1} raises the value by ${money(-d*1e6,0)}.`);
+  const cats=range(1,10).map(String);
+  C(s,'c', barChart({cats, groups:[{v:range(1,10).map(t=>a/Math.pow(1+r,t)), c:NEU, stroke:NEUS, hc:'var(--c2)'}], hl:[t1-1,t2-1], labels:range(1,10).map(t=>(t===t1||t===t2)?'$'+num(a/Math.pow(1+r,t),3)+'m':null), yf:x=>'$'+num(x,1)+'m', xl:'Year the saving arrives', h:300})); },
+ann(s,v){ const {an_c:c, an_r:r, an_n:n}=v; const body=[]; let tot=0;
+  for(let t=1;t<=n;t++){ const df=1/Math.pow(1+r,t); tot+=c*df; body.push([t, money(c), num(df,4), money(c*df)]); }
+  body.push({cls:'tot', cells:['Total', money(c*n), num(pvaf(r,n),4), money(tot)]});
+  O(s,'tbl', rows(['Period','Cash flow','Discount factor','PV'], body)); O(s,'af', num(pvaf(r,n),3)); O(s,'pv', money(tot)); O(s,'nom', money(c*n));
+  const cats=range(1,n).map(String);
+  C(s,'c', barChart({cats, groups:[{v:cats.map(()=>c),c:NEU,stroke:NEUS},{v:cats.map((_,i)=>c/Math.pow(1+r,i+1)),c:'var(--c2)'}], yf:x=>money(x,0), xl:'Period', h:280})); },
+af(s,v){ const {an_c:c, an_r:r, an_n:n}=v, a=pvaf(r,n);
+  X(s,'f', r===0 ? `PV = ${T$(c)} \\times ${n} = ${T$(c*n)}` : `PV = ${T$(c)} \\times \\dfrac{1}{${T(r,4)}}\\left[1 - \\dfrac{1}{(1+${T(r,4)})^{${n}}}\\right] = ${T$(c)} \\times ${T(a,4)} = ${T$(c*a)}`);
+  O(s,'af', num(a,4)); O(s,'pv', money(c*a));
+  O(s,'z', r===0 ? 'With r = 0 there is no discount for time, so the annuity factor is just N and the PV is C × N.' : 'With r = 0 the factor would be N = '+n+', because nothing is discounted.');
+  OH(s,'xl', `Excel: <b>=PV(${pctT(r)}, ${n}, -${c})</b> &nbsp;→ ${money(c*a)}`); },
+sva(s,v){ const r=v.an_r, n=v.an_n; O(s,'pvf', num(1/Math.pow(1+r,n),4)); O(s,'pvaf', num(pvaf(r,n),4));
+  const Nmax=Math.max(60,n+10);
+  C(s,'c', lineChart({x:[0,Nmax], series:[{pts:range(0,Nmax).map(t=>[t,pvaf(r,t)]), c:'var(--c2)', area:true}], hlines: r>0?[{y:1/r, label:'1/r = '+num(1/r,2), c:'var(--c1)'}]:[], marks:[{x:n,y:pvaf(r,n),label:'N = '+n+': '+num(pvaf(r,n),3)}], yExtra: r>0?[1/r*1.05]:[], xl:'Number of payments N', h:320, aria:'Annuity factor as N grows'})); },
+lot(s,v){ const P=v.lot_prize, n=v.lot_n, r=v.lot_r, c=P/n, a=pvaf(r,n), pv=c*a;
+  O(s,'prize', auto$(P)); O(s,'n',n); O(s,'r',pct(r,1)); O(s,'pv',money(pv,0)); O(s,'pct',pct(pv/P,1));
+  X(s,'f0',`\\text{Annual installment} = ${T$(P,0)} / ${n} = ${T$(c,0)}`);
+  X(s,'f1',`PV = ${T$(c,0)} \\times \\dfrac{1}{${T(r,4)}}\\left[1-\\dfrac{1}{(1+${T(r,4)})^{${n}}}\\right]`);
+  X(s,'f2',`PV = ${T$(c,0)} \\times ${T(a,4)} = ${T$(pv,0)}`);
+  C(s,'c', lineChart({x:[0,.2], series:[{pts:range(0,.2,.0025).map(q=>[q,c*pvaf(q,n)]), c:'var(--c1)', area:true}], hlines:[{y:P,label:'Headline '+auto$(P)}], marks:[{x:r,y:pv,label:money(pv,0)}], y:[0,P*1.08], yf:x=>'$'+num(x/1e3,0)+'k', xf:x=>pct(x,0), xl:'Discount rate', h:220})); },
+fva(s,v){ const {an_c:c, an_r:r, an_n:n}=v, fv=c*fvaf(r,n);
+  O(s,'fv',money(fv)); O(s,'pv',money(c*pvaf(r,n)));
+  X(s,'f', r===0 ? `FV_{${n}} = ${T$(c)} \\times ${n} = ${T$(fv)}` : `FV_{${n}} = ${T$(c)} \\times \\dfrac{1}{${T(r,4)}}\\left[(1+${T(r,4)})^{${n}} - 1\\right] = ${T$(fv)}`);
+  const cats=range(1,n).map(t=>'Pmt '+t);
+  C(s,'c', barChart({cats, groups:[{v:cats.map(()=>c),c:NEU,stroke:NEUS},{v:cats.map((_,i)=>c*Math.pow(1+r,n-i-1)),c:'var(--c3)'}], yf:x=>money(x,0), h:280})); },
+due(s,v){ const {an_c:c, an_r:r, an_n:n}=v, po=c*pvaf(r,n), pd=po*(1+r);
+  const tl=(due)=>range(0,n).map(t=>`<div class="tk"><div class="cf">${(due? t<n : t>0) ? num(c,0) : ''}</div>${t}</div>`).join('');
+  O(s,'tlo', tl(false)); O(s,'tld', tl(true));
+  X(s,'f',`PV_{\\text{due}} = PV_{\\text{ord}} \\times (1+r) = ${T$(po)} \\times ${T(1+r,4)} = ${T$(pd)}`);
+  C(s,'c', barChart({cats:['Ordinary','Due'], groups:[{v:[po,pd], c:'var(--c2)'}], labels:[money(po),money(pd)], yf:x=>money(x,0), h:220})); },
+freq(s,v){ const a=v.fq_apr, N=v.fq_yrs; O(s,'apr',pct(a,2)); O(s,'yrs',N);
+  O(s,'tbl', rows(['Compounding','m','Rate per period','Discount over',`FV of $100`], FREQ.map(([m,l])=>[l, m, `${pctT(a)}/${m} = ${pct(a/m,4)}`, `${N}×${m} = ${N*m}`, money(100*Math.pow(1+a/m,N*m))]))); },
+mpay(s,v){ const p=v.mp_pmt, r=v.mp_apr/12, n=v.mp_yrs*12+v.mp_mos, a=pvaf(r,n), pv=p*a;
+  O(s,'pmt',money(p,0)); O(s,'term', `${v.mp_yrs} years and ${v.mp_mos} month${v.mp_mos===1?'':'s'}`); O(s,'offer',money(v.mp_offer,0)); O(s,'apr',pct(v.mp_apr,2)); O(s,'rm',pct(r,3)); O(s,'n',`${v.mp_yrs}×12 + ${v.mp_mos} = ${n}`); O(s,'pv',money(pv,0));
+  X(s,'f1',`PV = ${T$(p,0)} \\times \\dfrac{1}{${T(r,5)}}\\left[1-\\dfrac{1}{(1+${T(r,5)})^{${n}}}\\right]`);
+  X(s,'f2',`PV = ${T$(p,0)} \\times ${T(a,4)} = ${T$(pv,0)}`);
+  const el=s.querySelector('[data-o="v"]'); const yes = v.mp_offer < pv;
+  el.className='verdict '+(yes?'good':'bad');
+  el.textContent = yes ? `Take it: paying ${money(v.mp_offer,0)} retires debt worth ${money(pv,0)} today.` : `Decline: ${money(v.mp_offer,0)} is more than the ${money(pv,0)} the remaining payments are worth today.`; },
+mort(s,v){ const L=v.mo_loan, m=v.mo_m, r=v.mo_apr/m, n=Math.round(v.mo_yrs*m), P=pmt(L,r,n);
+  O(s,'loan',money(L,0)); O(s,'yrs',v.mo_yrs); O(s,'apr',pct(v.mo_apr,3)); O(s,'pmt',money(P)); O(s,'pl', (FREQ.find(f=>f[0]===m)?freqName(m):(m===26?'biweekly':m+'×/yr'))+' payment'); O(s,'int',money(P*n-L,0));
+  X(s,'f1',`\\text{Rate per period} = ${TP(v.mo_apr,3)}/${m} = ${TP(r,4)}, \\quad N = ${v.mo_yrs}\\times${m} = ${n}`);
+  X(s,'f2',`${T$(L,0)} = PMT \\times \\dfrac{1}{r}\\left[1-\\dfrac{1}{(1+r)^{${n}}}\\right] = PMT \\times ${T(pvaf(r,n),4)}`); X(s,'f3',`PMT = ${T$(L,0)} / ${T(pvaf(r,n),4)} = ${T$(P)}`);
+  OH(s,'xl',`Excel: <b>=PMT(${pctT(v.mo_apr)}/${m}, ${n}, ${L})</b> &nbsp;→ (${num(P)}) &nbsp;&nbsp;<span>add type = 1 for payments at the start of each period</span>`);
+  const Y=v.mo_yrs, ints=[], prs=[]; let bal=L;
+  for(let y=0;y<Y;y++){ let iy=0, py=0; for(let k=0;k<m;k++){ const i=bal*r; const pr=P-i; iy+=i; py+=pr; bal-=pr; } ints.push(iy); prs.push(py); }
+  C(s,'c', barChart({cats:range(1,Y).map(String), stacked:true, groups:[{v:ints,c:'var(--c1)'},{v:prs,c:'var(--c2)'}], yf:x=>'$'+num(x/1000,0)+'k', xl:'Year of loan', h:300})); },
+gm(s,v){ const n=v.gm_mos, L1=v.gm_price, L2=v.gm_price-v.gm_disc, r1=v.gm_dr/12, r2=v.gm_cu/12, p1=pmt(L1,r1,n), p2=pmt(L2,r2,n), a2=pvaf(r2,n), sv=(p1-p2)*a2;
+  O(s,'dr',pct(v.gm_dr,1)); O(s,'disc',money(v.gm_disc,0)); O(s,'price',money(v.gm_price,0)); O(s,'mos',n); O(s,'cu',pct(v.gm_cu,2));
+  O(s,'tbl', rows(['','Dealer financing','Cash discount'], [['Loan needed',money(L1,0),money(L2,0)],['Rate per month',pct(r1,3),pct(r2,3)],['Annuity factor',num(pvaf(r1,n),4),num(a2,4)],{cls:'tot',cells:['Monthly payment',money(p1),money(p2)]}]));
+  X(s,'f1',`\\text{Monthly saving} = ${T$(p1)} - ${T$(p2)} = ${T$(p1-p2)}`);
+  X(s,'f2',`\\text{PV of savings} = ${T$(p1-p2)} \\times ${T(a2,4)} = ${T$(sv,0)}`);
+  const el=s.querySelector('[data-o="v"]'); el.className='verdict '+(sv>=0?'good':'bad');
+  el.textContent = sv>=0 ? `Take the cash discount and the credit union loan: it is worth ${money(sv,0)} more today.` : `Take the dealer financing: it is worth ${money(-sv,0)} more today.`; },
+eartab(s,v){ const a=v.ea_apr, fs=[[1,'Annually'],[2,'Semiannually'],[4,'Quarterly'],[12,'Monthly'],[52,'Weekly'],[365,'Daily']];
+  O(s,'tbl', rows(['Compounded','Rate per period','FV of $100 after 1 year','Effective rate'], fs.map(([m,l])=>[l, pct(a/m,4), money(100*Math.pow(1+a/m,m)), pct(earOf(a,m),3)]).concat([['Continuously','—',money(100*Math.exp(a)),pct(Math.exp(a)-1,3)]])));
+  const vals=fs.map(([m])=>earOf(a,m)*100).concat([(Math.exp(a)-1)*100]);
+  C(s,'c', barChart({cats:['Annual','Semi','Qtr','Month','Week','Day','Cont.'], groups:[{v:vals, c:'var(--c2)'}], labels:vals.map(x=>num(x,2)+'%'), yf:x=>x+'%', h:300})); },
+ear(s,v){ const a=v.ear_apr, m=v.ear_m, fv=100*Math.pow(1+a/m,m);
+  O(s,'apr',pct(a,1)); O(s,'mn', m===1?'once a year':m===2?'twice a year':m===4?'every quarter':m===12?'every month':m===52?'every week':'every day'); O(s,'fv',money(fv)); O(s,'ear',pct(fv/100-1,2));
+  X(s,'f1',`\\text{Rate per period} = APR/m = ${TP(a,1)}/${m} = ${TP(a/m,4)}`);
+  X(s,'f2',`FV = 100 \\times (1 + ${T(a/m,5)})^{1\\times ${m}} = ${T(fv)} \\;\\Rightarrow\\; EAR = ${TP(fv/100-1)}`);
+  const w=v.ear_wk; X(s,'f3',`APR = 52 \\times ${TP(w,2)} = ${TP(52*w,1)}, \\qquad EAR = (1+${T(w,4)})^{52} - 1 = ${TP(Math.pow(1+w,52)-1,0)}`); },
+conv(s,v){ const a=v.cv_apr, m1=v.cv_m1, m2=v.cv_m2, e=earOf(a,m1), rp=Math.pow(1+e,1/m2)-1;
+  X(s,'f1',`EAR = \\left[1 + \\dfrac{${T(a,4)}}{${m1}}\\right]^{${m1}} - 1 = ${TP(e,4)}`);
+  X(s,'f2',`\\text{rate per period} = (1 + ${T(e,6)})^{1/${m2}} - 1 = ${TP(rp,5)}`);
+  O(s,'ear',pct(e,4)); O(s,'rp',pct(rp,4)); O(s,'apr2',pct(rp*m2,4)); },
+lowc(s,v){ const A=[v.lc_aapr,v.lc_am], B=[v.lc_bapr,v.lc_bm], ea=earOf(...A), eb=earOf(...B);
+  O(s,'a',`${pct(A[0],2)} APR with ${freqName(A[1])} compounding`); O(s,'b',`${pct(B[0],2)} APR with ${freqName(B[1])} compounding`);
+  X(s,'f1',`EAR_A = \\left[1+\\dfrac{${T(A[0],4)}}{${A[1]}}\\right]^{${A[1]}} - 1 = ${TP(ea,4)}`);
+  X(s,'f2',`EAR_B = \\left[1+\\dfrac{${T(B[0],4)}}{${B[1]}}\\right]^{${B[1]}} - 1 = ${TP(eb,4)}`);
+  const el=s.querySelector('[data-o="v"]'); el.className='verdict good';
+  el.textContent = Math.abs(ea-eb)<1e-10 ? 'They cost the same.' : (ea<eb ? `Loan A is cheaper, even though its quoted APR is ${A[0]>B[0]?'higher':'not lower'}.` : `Loan B is cheaper, even though its quoted APR is ${B[0]>A[0]?'higher':'not lower'}.`); },
+lease(s,v){ const L=v.lb_price, a=v.lb_apr, Y=v.lb_yrs, rq=a/4, qp=pmt(L,rq,Y*4), e=earOf(a,4), rm=Math.pow(1+e,1/12)-1, mp=pmt(L,rm,Y*12);
+  O(s,'yrs',Y); O(s,'price',money(L,0)); O(s,'apr',pct(a,2)); O(s,'qp',money(qp)); O(s,'lease',money(v.lb_lease,0));
+  X(s,'f1',`EAR = \\left(1+\\dfrac{${T(a,4)}}{4}\\right)^4 - 1 = ${TP(e,4)}`);
+  X(s,'f2',`r_{\\text{month}} = (1+EAR)^{1/12} - 1 = (1+${T(e,6)})^{1/12} - 1 = ${TP(rm,5)}`);
+  X(s,'f3',`${T$(L,0)} = PMT \\times \\dfrac{1}{${T(rm,6)}}\\left(1 - \\dfrac{1}{(1+${T(rm,6)})^{${Y*12}}}\\right) \\Rightarrow PMT = ${T$(mp,0)}`);
+  const el=s.querySelector('[data-o="v"]'); const lease = v.lb_lease < mp; el.className='verdict good';
+  el.textContent = lease ? `Lease: ${money(v.lb_lease,0)} a month is less than the bank loan's equivalent ${money(mp,0)} a month.` : `Borrow and buy: the bank loan's equivalent ${money(mp,0)} a month is less than the ${money(v.lb_lease,0)} lease.`; },
+perp(s,v){ const c=v.pp_c, r=v.pp_r, pv=c/r; O(s,'pv',money(pv));
+  const Nmax=Math.min(400,Math.max(60, Math.ceil(Math.log(100)/Math.log(1+r)))), n90=Math.ceil(Math.log(10)/Math.log(1+r));
+  C(s,'c', lineChart({x:[0,Nmax], series:[{pts:range(0,Nmax,Math.max(1,Math.floor(Nmax/150))).map(t=>[t,c*pvaf(r,t)]), c:'var(--c2)', area:true}], hlines:[{y:pv,label:'C/r = '+money(pv),c:'var(--c1)'}], yExtra:[pv*1.08], yf:x=>money(x,0), xl:'Number of payments N', h:300}));
+  O(s,'nt', `At ${pct(r,1)}, the first ${n90} payments already make up 90% of the perpetuity's value.`); },
+consol(s,v){ const F=v.cb_face, c=F*v.cb_cpn, r=v.cb_r, p=c/r;
+  O(s,'face',money(F,0)); O(s,'cpn',pct(v.cb_cpn,2)); O(s,'r',pct(r,2));
+  X(s,'f',`\\text{Interest} = ${T$(F,0)} \\times ${TP(v.cb_cpn)} = ${T$(c)}, \\qquad PV = \\dfrac{C}{r} = \\dfrac{${T$(c)}}{${T(r,4)}} = ${T$(p)}`);
+  const el=s.querySelector('[data-o="v"]'); el.className='verdict';
+  el.textContent = Math.abs(p-F)<1e-9 ? 'The bond trades at its face value (par).' : p<F ? 'The bond trades at a discount from face value.' : 'The bond trades at a premium over face value.';
+  const rt=[.10,.05,.04], cur=rt.findIndex(x=>Math.abs(x-r)<1e-9);
+  O(s,'tbl', rows([`Face ${money(F,0)}, coupon ${pct(v.cb_cpn,2)}: if the return on a similar substitute is`, 'Price of bond'], rt.map((q,i)=>({cls:i===cur?'cur':'', cells:[pct(q,0), v.cb_rev?money(c/q):'?']}))));
+  C(s,'c', lineChart({x:[.01,.2], series:[{pts:range(.01,.2,.0025).map(q=>[q,c/q]), c:'var(--c2)'}], hlines:[{y:F,label:'Face value'}], marks:[{x:r,y:p,label:money(p)}], y:[0,Math.max(F*2.2,p*1.15)], yf:x=>money(x,0), xf:x=>pct(x,0), xl:'Return on a similar substitute', h:220})); },
+stock(s,v){ const d=v.st_d, r=v.st_r, k=v.st_s, v1=d/r, v2=v1/Math.pow(1+r,k-1);
+  O(s,'d',money(d)); O(s,'r',pct(r,1)); O(s,'s',k); O(s,'v1',money(v1)); O(s,'v2',money(v2)); O(s,'l2','Dividends from year '+k);
+  X(s,'f1',`PV = \\dfrac{C}{r} = \\dfrac{${T$(d)}}{${T(r,4)}} = ${T$(v1)}`);
+  X(s,'f2',`PV_{${k-1}} = \\dfrac{${T$(d)}}{${T(r,4)}} = ${T$(v1)}, \\qquad PV_0 = \\dfrac{${T$(v1)}}{(1+${T(r,4)})^{${k-1}}} = ${T$(v2)}`);
+  C(s,'c', barChart({cats:range(1,15).map(String), groups:[{v:range(1,15).map(t=>v1/Math.pow(1+r,t-1)), c:NEU, stroke:NEUS, hc:'var(--c2)'}], hl:[k-1], yf:x=>money(x,0), xl:'Year of first dividend', h:230})); },
+gperp(s,v){ const c=v.gp_c, g=v.gp_g, r=v.gp_r;
+  O(s,'tbl', rows(['Year','Cash flow',''], range(1,4).map(t=>[t, money(c*Math.pow(1+g,t-1),4), t===1?'C':`C(1+g)${t>2?'<sup>'+(t-1)+'</sup>':''}`]).concat([['…','…','']])));
+  O(s,'c',money(c)); O(s,'g',pct(g,2)); O(s,'r',pct(r,2));
+  if (g>=r){ X(s,'f',`g \\ge r: \\text{ the value is not defined}`); }
+  else X(s,'f',`PV = \\dfrac{${T$(c)}}{${T(r,4)} - ${T(g,4)}} = ${T$(c/(r-g))}`);
+  const gmax=r-0.005, gmin=Math.min(-.05,g);
+  const pts=range(gmin,gmax,(gmax-gmin)/120).map(q=>[q,c/(r-q)]);
+  C(s,'c', lineChart({x:[gmin,r], series:[{pts, c:'var(--c1)'}], vlines:[{x:r,label:'g = r',c:'var(--bad)'}], marks: g<r?[{x:g,y:c/(r-g),label:money(c/(r-g)),left:true}]:[], y:[0, Math.max(c/(r-gmin)*6, g<r?c/(r-g)*1.3:0)], yf:x=>money(x,0), xf:x=>pct(x,0), xl:'Growth rate g', h:230})); },
+gx(s,v){ const d=v.gx_d, k=v.gx_k, g=v.gx_g, r=v.gx_r;
+  O(s,'d',money(d)); O(s,'k',k); O(s,'k1',k+1); O(s,'g',pct(g,2)); O(s,'r',pct(r,2));
+  O(s,'tl', range(0,Math.min(k+3,12)).map(t=>`<div class="tk"><div class="cf">${t===0?'':num(t<=k?d:d*Math.pow(1+g,t-k),2)}</div>${t}</div>`).join('')+'<div class="tk" style="border-top-style:dashed"><div class="cf">…</div>&nbsp;</div>');
+  if (g>=r){ X(s,'f1','g \\ge r: \\text{ the value is not defined}'); X(s,'f2',''); O(s,'pv','—'); return; }
+  const tv=d*(1+g)/(r-g), flat=d*pvaf(r,k), pv=flat+tv/Math.pow(1+r,k);
+  X(s,'f1',`TV_{${k}} = \\dfrac{C_{${k+1}}}{r-g} = \\dfrac{${T$(d)}\\times${T(1+g,4)}}{${T(r,4)}-${T(g,4)}} = ${T$(tv)}`);
+  X(s,'f2',`P_0 = ${k<=3 ? range(1,k).map(t=>`\\dfrac{${T(d)}}{${T(1+r,2)}^{${t}}}`).join(' + ') : `${T$(d)}\\times PVAF_{${k}}`} + \\dfrac{${T(tv)}}{${T(1+r,2)}^{${k}}} = ${T$(flat)} + ${T$(tv/Math.pow(1+r,k))} = ${T$(pv)}`);
+  O(s,'pv',money(pv)); },
+npv(s,v){ const r=v.np_r, cfs=[v.np_c0,v.np_c1,v.np_c2,v.np_c3,v.np_c4];
+  const perp=v.np_tv===1, S0=v.np_tvs, last=perp?Math.max(4,S0-1):4; const g=v.np_tvg;
+  const tvAt = S0-1, years=range(0,last), cf=years.map(t=>t<=4?cfs[t]:0), tv=years.map(t=> (perp && t===tvAt && r>g) ? v.np_tvc/(r-g) : 0);
+  const tot=years.map(t=>cf[t]+tv[t]), df=years.map(t=>1/Math.pow(1+r,t)), dc=tot.map((x,t)=>x*df[t]), npv=dc.reduce((a,b)=>a+b,0);
+  const fmt=x=> x<0?`<span class="neg">(${num(-x,2)})</span>`:num(x,2);
+  let h='<tr><th>Year</th>'+years.map(t=>`<th>${t}</th>`).join('')+'</tr>';
+  h+='<tr><td>Cash flow (a)</td>'+years.map(t=> t<=4 ? `<td><input class="cell" type="number" step="0.1" aria-label="Cash flow year ${t}" data-bind="np_c${t}"></td>` : `<td>0.00</td>`).join('')+'</tr>';
+  if (perp) h+='<tr><td>Terminal value (b)</td>'+years.map(t=>`<td>${tv[t]?num(tv[t],2):''}</td>`).join('')+'</tr>';
+  h+='<tr><td>Total cash flow</td>'+tot.map(x=>`<td>${fmt(x)}</td>`).join('')+'</tr>';
+  h+='<tr><td>Discount factor</td>'+df.map(x=>`<td>${num(x,2)}</td>`).join('')+'</tr>';
+  h+='<tr><td>Discounted cash flow</td>'+dc.map(x=>`<td>${fmt(x)}</td>`).join('')+'</tr>';
+  const tbl=s.querySelector('[data-o="tbl"]'); const key=years.length+'|'+perp;
+  if (tbl.dataset.key!==key){ tbl.innerHTML=h; tbl.dataset.key=key; }
+  else { // update non-input cells only to keep typing focus
+    const tmp=document.createElement('table'); tmp.innerHTML=h; [...tmp.rows].forEach((row,i)=>{ if(i===1) return; tbl.rows[i].innerHTML=row.innerHTML; });
+  }
+  syncInputs(s);
+  O(s,'npv', npv<0?`(${num(-npv,2)})`:num(npv,2));
+  OH(s,'xl',`Excel: <b>=NPV(${pctT(r)}, year 1 : year ${last} cash flows) + year 0 cash flow</b> &nbsp;→ ${npv<0?'('+num(-npv,2)+')':num(npv,2)}`);
+  X(s,'f', perp ? (r>g ? `TV_{${tvAt}} = \\dfrac{${T(v.np_tvc)}}{${T(r,4)} - ${T(g,4)}} = ${T(v.np_tvc/(r-g))}\\text{m, the value at year ${tvAt} of cash flows from year ${S0} on}` : `g \\ge r:\\ \\text{terminal value not defined}`) : `NPV = \\sum_{t=0}^{4} \\dfrac{C_t}{(1+r)^t}`);
+  const el=s.querySelector('[data-o="v"]'); el.className='verdict '+(npv>=0?'good':'bad'); el.textContent = npv>=0 ? 'NPV is positive: allocate the money.' : 'NPV is negative: do not allocate the money.';
+  C(s,'c', barChart({cats:years.map(String), groups:[{v:tot,c:NEU,stroke:NEUS},{v:dc,c:'var(--c2)'}], yf:x=>num(x,1), xl:'Year ($m: total vs. discounted)', h:220})); },
+posco(s,v){ const {po_cost:K, po_cf:c, po_n:n, po_cl:cl, po_r:r}=v;
+  const f=q=> -K + c*pvaf(q,n) - (cl/q)/Math.pow(1+q,n), npv=f(r);
+  O(s,'cost','W'+num(K,0)+' billion'); O(s,'cf','W'+num(c,0)+' billion'); O(s,'n',n); O(s,'n1',n+1); O(s,'cl','W'+num(cl,1)+' billion'); O(s,'r',pct(r,2));
+  X(s,'f1',`PV(\\text{cash flows}) = ${T(c,0)} \\times PVAF(${TP(r,1)}, ${n}) = ${T(c,0)} \\times ${T(pvaf(r,n),4)} = ${T(c*pvaf(r,n))}`);
+  X(s,'f2',`TV_{${n}} = \\dfrac{${T(cl,1)}}{${T(r,4)}} = ${T(cl/r)}, \\qquad PV = \\dfrac{${T(cl/r)}}{(1+${T(r,4)})^{${n}}} = ${T((cl/r)/Math.pow(1+r,n))}`);
+  X(s,'f3',`NPV = -${T(K,0)} + ${T(c*pvaf(r,n))} - ${T((cl/r)/Math.pow(1+r,n))} = ${T(npv)}`);
+  O(s,'npv', num(npv,2));
+  const qs=range(.01,.25,.0025); const pts=qs.map(q=>[q,f(q)]);
+  const roots=[]; for(let i=1;i<pts.length;i++) if (Math.sign(pts[i][1])!==Math.sign(pts[i-1][1])) roots.push((pts[i-1][0]+pts[i][0])/2);
+  C(s,'c', lineChart({x:[.01,.25], series:[{pts, c:'var(--c1)'}], marks:[{x:r,y:npv,label:'NPV '+num(npv,1)}], vlines:roots.map((q,i)=>({x:q,label:'0 at '+pct(q,1),dy:i*16})), yf:x=>num(x,0), xf:x=>pct(x,0), xl:'Cost of capital', y:[Math.max(-80,Math.min(...pts.map(p=>p[1]))), Math.max(10,...pts.map(p=>p[1]))*1.15], h:220}));
+  O(s,'nt', roots.length>=2 ? `NPV is zero at two different rates, so a single “IRR” would be misleading here. The clean-up perpetuity makes low discount rates costly.` : roots.length===1 ? `NPV crosses zero once, near ${pct(roots[0],1)}.` : `NPV does not cross zero between 1% and 25%.`); },
+ret(s,v){ const a0=v.re_age, R=Math.max(v.re_ret,a0+1), E=Math.max(v.re_end,R+1), r=v.re_r, sv=v.re_sv, g=v.re_g;
+  let b=0; const pts=[[a0,0]];
+  for(let t=1;t<=R-a0;t++){ b = b*(1+r) + v.re_sal*Math.pow(1+g,t-1)*sv; pts.push([a0+t,b]); }
+  const B=b, nW=E-R, W=pmt(B,r,nW);
+  for(let t=1;t<=nW;t++){ b = b*(1+r) - W; pts.push([R+t, Math.max(0,b)]); }
+  O(s,'age',a0); O(s,'sal',money(v.re_sal,0)); O(s,'ret',R); O(s,'sv',pct(sv,1)); O(s,'r',pct(r,1)); O(s,'ret1',R+1); O(s,'end',E); O(s,'bal',money(B,0)); O(s,'w',money(W,0));
+  const N=R-a0, C0=v.re_sal*sv;
+  X(s,'f1', g===0 ? `FV_{${R}} = ${T$(C0,0)} \\times \\dfrac{(1+${T(r,4)})^{${N}} - 1}{${T(r,4)}} = ${T$(C0,0)} \\times ${T(fvaf(r,N),3)} = ${T$(B,0)}` : `FV_{${R}} = \\sum_{t=1}^{${N}} ${T$(C0,0)}(1+${T(g,4)})^{t-1}(1+${T(r,4)})^{${N}-t} = ${T$(B,0)}`);
+  X(s,'f2', `W = \\dfrac{${T$(B,0)}}{PVAF(${TP(r,1)}, ${nW})} = \\dfrac{${T$(B,0)}}{${T(pvaf(r,nW),4)}} = ${T$(W,0)}`);
+  C(s,'c', lineChart({x:[a0,E], series:[{pts, c:'var(--c3)', area:true}], marks:[{x:R,y:B,label:'Age '+R+': '+money(B,0), left:true}], yf:x=>'$'+num(x/1000,0)+'k', xl:'Age', h:300})); },
+apple(s,v){ const d0=v.ap_d0, g1=v.ap_g1, n1=v.ap_n1, g2=v.ap_g2, r=v.ap_r;
+  O(s,'d0',money(d0)); O(s,'g1',pct(g1,1)); O(s,'n1',n1); O(s,'g2',pct(g2,2)); O(s,'r',pct(r,2));
+  const ds=range(1,n1).map(t=>d0*Math.pow(1+g1,t)), pvs=ds.map((d,i)=>d/Math.pow(1+r,i+1)), dn1=ds[n1-1]*(1+g2);
+  const ok = r>g2, tv= ok ? dn1/(r-g2) : NaN, pvtv= tv/Math.pow(1+r,n1), P=pvs.reduce((a,b)=>a+b,0)+pvtv;
+  const body=ds.map((d,i)=>[2021+i+1, money(d), ok&&i===n1-1?money(tv):'', num(1/Math.pow(1+r,i+1),4), money(pvs[i]+(i===n1-1&&ok?pvtv:0))]);
+  body.push({cls:'tot',cells:['Value','','','',ok?money(P):'—']});
+  O(s,'tbl', rows(['Year','Dividend','Terminal value','Discount factor','PV'], body));
+  O(s,'p', ok?money(P):'—'); O(s,'sh', ok?pct(pvtv/P,0):'—');
+  X(s,'f', ok ? `TV_{${2021+n1}} = \\dfrac{D_{${2022+n1}}}{r-g} = \\dfrac{${T$(ds[n1-1],4)}\\times${T(1+g2,3)}}{${T(r,3)}-${T(g2,3)}} = \\dfrac{${T$(dn1)}}{${T(r-g2,3)}} = ${T$(tv)}` : `g \\ge r: \\text{ the terminal value is not defined}`);
+  C(s,'c', ok ? barChart({cats:['PV of dividends','PV of terminal value'], groups:[{v:[P-pvtv,pvtv],c:'var(--c2)'}], labels:[money(P-pvtv),money(pvtv)], yf:x=>money(x,0), h:170}) : ''); },
+};
+
+/* ---------------- navigation + rendering ---------------- */
+const slides=[...document.querySelectorAll('.slide')];
+slides.forEach((s,i)=>{ const p=document.createElement('div'); p.className='pg'; p.textContent=(i+1)+' / '+slides.length; s.appendChild(p); buildControls(s); });
+function renderSlide(i){ const s=slides[i]; if(!s) return; syncInputs(s); const f=R[s.dataset.r]; if(f) try{ f(s,V); }catch(e){ console.error(e); } }
+let rq=0; function refresh(){ V=values(); cancelAnimationFrame(rq); rq=requestAnimationFrame(()=>renderSlide(S.cur)); }
+function go(i, fromLive){
+  i=Math.max(0,Math.min(slides.length-1,i));
+  slides[S.cur].classList.remove('on'); S.cur=i; slides[i].classList.add('on');
+  document.getElementById('count').textContent=(i+1)+' / '+slides.length;
+  try { history.replaceState(null,'','#slide-'+(i+1)); } catch(e){}
+  V=values(); renderSlide(i);
+  if (!fromLive){
+    if (S.role==='presenter') queueWrite();
+    else if (S.connected && i!==S.live.slide) S.followSlide=false;
+    updateBar();
+  }
+  document.querySelectorAll('#toc button').forEach((b,j)=>b.classList.toggle('cur',j===i));
+}
+document.getElementById('prev').onclick=()=>go(S.cur-1);
+document.getElementById('next').onclick=()=>go(S.cur+1);
+document.getElementById('rejoin').onclick=rejoin;
+document.getElementById('signin').onclick=()=>{ if(FBA) FBA.signIn().catch(e=>{ if(e && e.code!=='auth/popup-closed-by-user') toast('Sign-in failed: '+(e.code||e.message)); }); };
+document.getElementById('signout').onclick=()=>{ if(FBA) FBA.signOut(); };
+document.getElementById('bcast').onclick=()=>{ S.broadcasting=!S.broadcasting; if(S.broadcasting) doWrite(); updateBar(); };
+document.getElementById('reset').onclick=()=>{
+  const ks=new Set([...slides[S.cur].querySelectorAll('[data-k],[data-bind]')].map(e=>e.dataset.k||e.dataset.bind));
+  if (S.role==='student' && S.followNums && S.connected){ S.local={...S.live.params}; S.followNums=false; }
+  ks.forEach(k=>delete S.local[k]); refresh(); queueWrite(); updateBar();
+};
+document.addEventListener('keydown',e=>{
+  const t=e.target; if (t && (t.tagName==='INPUT'||t.tagName==='TEXTAREA')){ if(e.key==='Escape') t.blur(); return; }
+  if (['ArrowRight','PageDown',' '].includes(e.key)){ e.preventDefault(); go(S.cur+1); }
+  else if (['ArrowLeft','PageUp'].includes(e.key)){ e.preventDefault(); go(S.cur-1); }
+  else if (e.key==='Home') go(0); else if (e.key==='End') go(slides.length-1);
+});
+/* contents */
+const toc=document.getElementById('toc'); let lastSec='';
+toc.innerHTML = slides.map((s,i)=>{ const sec=s.dataset.sec; const h = sec!==lastSec ? `<h4>${sec}</h4>` : ''; lastSec=sec; return h+`<button type="button" data-i="${i}"><span>${i+1}</span>${esc(s.dataset.t)}</button>`; }).join('');
+toc.addEventListener('click',e=>{ const b=e.target.closest('button[data-i]'); if(b){ go(+b.dataset.i); toc.hidden=true; } });
+document.getElementById('tocBtn').onclick=e=>{ e.stopPropagation(); toc.hidden=!toc.hidden; };
+document.addEventListener('click',e=>{ if(!toc.hidden && !toc.contains(e.target)) toc.hidden=true; });
+/* toast */
+let tt; function toast(m){ const t=document.getElementById('toast'); t.textContent=m; t.hidden=false; clearTimeout(tt); tt=setTimeout(()=>t.hidden=true,3800); }
+/* scale stage */
+function fit(){
+  const vp=document.getElementById('viewport'), fr=document.getElementById('frame'), st=document.getElementById('stage');
+  if (matchMedia('(max-width:760px), (max-height:430px)').matches){ st.style.transform=''; fr.style.width=''; fr.style.height=''; return; }
+  const cs=getComputedStyle(vp), w=vp.clientWidth-parseFloat(cs.paddingLeft)-parseFloat(cs.paddingRight), h=vp.clientHeight-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom);
+  const k=Math.min(w/1280,h/720); st.style.transform=`scale(${k})`; fr.style.width=1280*k+'px'; fr.style.height=720*k+'px';
+}
+addEventListener('resize',fit); fit();
+/* MathJax */
+function typesetStatic(){ document.querySelectorAll('.tex:not([data-x])').forEach(el=>renderTex(el, el.dataset.src||el.textContent)); }
+function mjReady(){ try{ document.head.appendChild(MathJax.svgStylesheet()); }catch(e){} MJ=true; document.querySelectorAll('.tex').forEach(el=>el.dataset.done='0'); typesetStatic(); renderSlide(S.cur); }
+const mjs=document.getElementById('mjx');
+function waitMJ(){ if (window.MathJax && MathJax.startup && MathJax.startup.promise) MathJax.startup.promise.then(mjReady).catch(()=>{}); else setTimeout(waitMJ,100); }
+mjs.addEventListener('load', waitMJ); waitMJ();
+/* boot */
+document.querySelectorAll('.tex:not([data-x])').forEach(el=>{ el.dataset.src=el.textContent; });
+const m=/^#slide-(\d+)$/.exec(location.hash); const hadHash=!!m; slides[0].classList.add('on');
+go(m ? (+m[1]-1) : 0, true);
+initLive();
+</script>
+
+</body>
+</html>
