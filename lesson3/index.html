@@ -82,6 +82,9 @@ b,strong{font-weight:600}
 .ctl input[type=number]{width:5.6em}
 .ctl .u{color:var(--muted);font-size:13px}
 input[type=range]{width:100%;accent-color:var(--accent);margin:2px 0 0;height:18px}
+/* number boxes only: whole deck (button in the bar) or one slide (data-ctl="fields" on its <section>) */
+#stage.fields input[type=range], .slide[data-ctl="fields"] input[type=range]{display:none}
+#stage.fields .ctl input[type=number], .slide[data-ctl="fields"] .ctl input[type=number]{width:7.5em;font-size:17px;padding:4px 8px}
 .seg{display:flex;flex-wrap:wrap;gap:4px}
 .seg button{border:1px solid var(--rule);background:var(--paper);border-radius:4px;padding:3px 8px;font-size:13px;cursor:pointer}
 .seg button[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
@@ -891,6 +894,7 @@ tr.cur td{background:var(--accent-soft)}
   <button class="bbtn" id="prev" aria-label="Previous slide">←</button>
   <span id="count">1 / 1</span>
   <button class="bbtn" id="next" aria-label="Next slide">→</button>
+  <button class="bbtn" id="sliders" title="Switch between sliders and number boxes only">Hide sliders</button>
   <button class="bbtn" id="reset" title="Put this slide's numbers back to the original example">Reset numbers</button>
   <span class="sp"></span>
   <span id="live" class="off"><span class="dot"></span><span id="liveTxt">Connecting…</span></span>
@@ -1441,6 +1445,10 @@ function go(i, fromLive){
 document.getElementById('prev').onclick=()=>go(S.cur-1);
 document.getElementById('next').onclick=()=>go(S.cur+1);
 document.getElementById('rejoin').onclick=rejoin;
+(function(){ const st=document.getElementById('stage'), b=document.getElementById('sliders');
+  let on=false; try{ on = localStorage.getItem('fieldsOnly')==='1'; }catch(e){}
+  const apply=()=>{ st.classList.toggle('fields',on); b.textContent = on ? 'Show sliders' : 'Hide sliders'; };
+  b.onclick=()=>{ on=!on; try{ localStorage.setItem('fieldsOnly', on?'1':'0'); }catch(e){} apply(); }; apply(); })();
 document.getElementById('signin').onclick=()=>{ if(FBA) FBA.signIn().catch(e=>{ if(e && e.code!=='auth/popup-closed-by-user') toast('Sign-in failed: '+(e.code||e.message)); }); };
 document.getElementById('signout').onclick=()=>{ if(FBA) FBA.signOut(); };
 document.getElementById('bcast').onclick=()=>{ S.broadcasting=!S.broadcasting; if(S.broadcasting) doWrite(); updateBar(); };

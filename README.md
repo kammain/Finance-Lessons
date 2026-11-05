@@ -35,3 +35,18 @@ Copy `lesson3/` to a new folder such as `lesson4/` and change `LIVE_DOC = ["live
 
 ## Free-tier note
 Firestore's free tier allows 50,000 reads a day. Each change you broadcast is one read per student watching. A 60-student class with a few hundred changes per lecture stays well within the limit.
+
+## Customizing the slides
+
+Each slide is one `<section class="slide">` block in `lesson3/index.html`, in the same order as the deck. Search for a slide's title to find it.
+
+**Number boxes instead of sliders**
+- Whole deck, for one viewer: click **Hide sliders** in the bottom bar. The browser remembers the choice.
+- One slide, for everyone: add `data-ctl="fields"` to that slide's `<section ...>` tag.
+
+**Layout**
+- The two-column area of a slide is `<div class="s-body ...">`. Use `wl` for a narrower left column, `wr` for a narrower right column, `one` for a single column, or neither for two equal columns.
+- Inside it, each `<div class="col">` is a column. Move blocks (controls `ctls`, formulas `formula`, results `results`, charts `chart`, tables `tw`) between columns or reorder them freely.
+- Each input is a line like `<div class="ctl" data-k="an_r"></div>`. Its label, starting value, range and step are set in the `PARAMS` list near the top of the script.
+
+Or describe the change you want to Claude and point it at this repository.
