@@ -149,7 +149,22 @@ tr.cur td{background:var(--accent-soft)}
 .sheetw{display:flex;flex-direction:column;gap:0;max-width:640px;border:1px solid var(--rule);border-radius:6px;overflow:hidden;background:var(--paper);box-shadow:0 1px 3px rgba(0,0,0,.06)}
 .fbar{display:flex;align-items:center;gap:8px;padding:6px 8px;border-bottom:1px solid var(--rule);background:var(--panel)}
 .fbar .nm{font:500 13px var(--mono);min-width:3.2em;padding:2px 6px;border:1px solid var(--rule);border-radius:3px;background:var(--paper);text-align:center}
-.fbar .fxl{font:italic 600 14px var(--display);color:var(--muted)}
+.fbar .fxb{font:italic 600 15px var(--display);color:var(--c3);border:1px solid var(--rule);background:var(--paper);border-radius:3px;padding:0 7px;cursor:pointer}
+.fbar .fxb:hover{border-color:var(--c3)}
+.sheetw{position:relative}
+.fhelp,.flist{position:absolute;left:8px;right:8px;top:40px;z-index:6;background:var(--paper);border:1px solid var(--c3);border-radius:6px;box-shadow:0 8px 24px rgba(0,0,0,.14);padding:8px 10px;font-size:13px;display:flex;flex-direction:column;gap:4px}
+.flist{max-height:300px;overflow:auto}
+.fhelp .fsig{font:14px var(--mono)} .fsig b,.fsug b,.flist b{color:var(--c3)}
+.fhelp .on,.fsug .on{background:color-mix(in srgb,var(--c3) 18%,transparent);font-weight:600;border-radius:3px;padding:0 2px}
+.fhelp .fdesc{font-size:13px} .fnote{font-size:12px;color:var(--muted)}
+.fsug,.flist button{display:flex;flex-direction:column;align-items:flex-start;gap:1px;text-align:left;border:0;background:none;border-radius:4px;padding:4px 6px;cursor:pointer;font:13px var(--mono)}
+.fsug span,.flist button span{font:12px var(--body);color:var(--muted)}
+.fsug:hover,.flist button:hover{background:var(--panel)}
+.gridw{max-height:none}
+.sfoot{display:flex;align-items:center;gap:10px;padding:6px 8px;border-top:1px solid var(--rule);background:var(--panel)}
+.sfoot .ansl{margin-left:auto;font-weight:600;font-size:14px}
+.sfoot .ansin{width:9em;font:14px var(--mono);border:2px solid var(--c4);border-radius:4px;padding:3px 6px;background:var(--paper);color:var(--ink)}
+.sfoot .ansv{font:600 14px var(--mono);color:var(--ink);min-width:7em}
 .fbar input{flex:1;min-width:0;font:14px var(--mono);border:1px solid var(--rule);border-radius:3px;padding:3px 6px;background:var(--paper);color:var(--ink)}
 table.grid{width:100%;table-layout:fixed;font-size:14px}
 table.grid th{background:var(--panel);text-align:center;font:500 12px var(--mono);letter-spacing:0;padding:3px;border:1px solid var(--rule);color:var(--muted);text-transform:none}
@@ -157,6 +172,8 @@ table.grid th.rn{width:34px}
 table.grid td{padding:0;border:1px solid var(--rule)}
 table.grid td input{width:100%;border:0;background:transparent;font:14px var(--mono);color:var(--ink);padding:5px 7px;text-align:right}
 table.grid td input.txt{text-align:left;font-family:var(--body)}
+table.grid td input[placeholder]{text-align:left;font-family:var(--body)}
+table.grid td input::placeholder{color:var(--muted);opacity:.6;font-style:italic}
 table.grid td input.giv{color:var(--c2);font-weight:500}
 table.grid td input.fml{background:color-mix(in srgb,var(--c3) 8%,transparent)}
 table.grid td input.err{color:var(--bad)}
@@ -1294,6 +1311,7 @@ const ANS = {
 /* ---------------- spreadsheet engine (a small subset of Excel) ---------------- */
 const COLS = 'ABCDEFGHIJ';
 const XERR = e => ({__err:e});
+function sheetRows(k){ const e=(V && V[k])||{}; return SHEETS[k].rows + Math.max(0, Math.min(20, +e._rows||0)); }
 function sheetRaw(k){ return {...SHEETS[k].cells, ...((V && V[k]) || {})}; }
 function sheetEval(k){
   const raw = sheetRaw(k), cache = {}, busy = {};
@@ -1342,6 +1360,13 @@ function sheetEval(k){
       case 'PV': { const r=A(0),n=A(1),p=A(2),fv=A(3),ty=A(4); return r===0 ? -(p*n+fv) : -(p*(1+r*ty)*(1-Math.pow(1+r,-n))/r + fv*Math.pow(1+r,-n)); }
       case 'FV': { const r=A(0),n=A(1),p=A(2),pv=A(3),ty=A(4); return r===0 ? -(pv+p*n) : -(pv*Math.pow(1+r,n) + p*(1+r*ty)*(Math.pow(1+r,n)-1)/r); }
       case 'PMT': { const r=A(0),n=A(1),pv=A(2),fv=A(3),ty=A(4); if (n===0) throw XERR('#NUM!'); return r===0 ? -(pv+fv)/n : -(r*(pv*Math.pow(1+r,n)+fv))/((1+r*ty)*(Math.pow(1+r,n)-1)); }
+      case 'NPER': { const r=A(0),p=A(1),pv=A(2),fv=A(3),ty=A(4); if (r===0){ if(p===0) throw XERR('#NUM!'); return -(pv+fv)/p; } const q=p*(1+r*ty), x=(q-fv*r)/(q+pv*r); if (!(x>0)) throw XERR('#NUM!'); return Math.log(x)/Math.log(1+r); }
+      case 'RATE': { const n=A(0),p=A(1),pv=A(2),fv=A(3),ty=A(4); let r = a[5]===undefined ? 0.1 : A(5);
+        const f = r => Math.abs(r)<1e-12 ? pv+p*n+fv : pv*Math.pow(1+r,n) + p*(1+r*ty)*(Math.pow(1+r,n)-1)/r + fv;
+        for (let i=0;i<100;i++){ const h=1e-6, y=f(r), d=(f(r+h)-y)/h; if (!isFinite(d) || d===0) break; const nr=r-y/d; if (Math.abs(nr-r)<1e-10){ r=nr; break; } r=nr; if (r<=-1) r=-0.99; }
+        if (!isFinite(r) || Math.abs(f(r))>1e-6*Math.max(1,Math.abs(pv),Math.abs(fv))) throw XERR('#NUM!'); return r; }
+      case 'EFFECT': { const e=A(0), m=Math.trunc(A(1)); if (m<1) throw XERR('#NUM!'); return Math.pow(1+e/m,m)-1; }
+      case 'NOMINAL': { const e=A(0), m=Math.trunc(A(1)); if (m<1) throw XERR('#NUM!'); return m*(Math.pow(1+e,1/m)-1); }
       default: throw XERR('#NAME?');
     }
   }
@@ -1364,10 +1389,46 @@ function sheetEval(k){
     const v=add(); if (p<tk.length) throw XERR('#ERROR!'); return v;
   }
   const out = {};
-  const d = SHEETS[k];
-  for (let r=1;r<=d.rows;r++) for (let c=0;c<d.cols;c++){ const ref=COLS[c]+r; let v; try { v=get(ref); } catch(e){ v = e && e.__err ? e : XERR('#ERROR!'); } out[ref]=v; }
+  const d = SHEETS[k], nr = sheetRows(k);
+  for (let r=1;r<=nr;r++) for (let c=0;c<d.cols;c++){ const ref=COLS[c]+r; let v; try { v=get(ref); } catch(e){ v = e && e.__err ? e : XERR('#ERROR!'); } out[ref]=v; }
+  if (d.target==='ANSWER'){ let v; try { v=get('ANSWER'); } catch(e){ v = e && e.__err ? e : XERR('#ERROR!'); } out.ANSWER=v; }
   return {raw, val:out};
 }
+
+const FN = {
+  PV:{a:['rate','nper','pmt','[fv]','[type]'], d:'Present value of a stream of equal payments (and/or a single future amount).', h:['interest rate per period, e.g. B3 or 8%/12','number of periods','payment each period; enter it as a negative number to get a positive PV','a lump sum at the end (optional, default 0)','0 = payments at the end of each period, 1 = at the beginning (optional)']},
+  FV:{a:['rate','nper','pmt','[pv]','[type]'], d:'Future value at the end of nper periods.', h:['interest rate per period','number of periods','payment each period (negative = money you put in)','amount invested today (optional)','0 = end of period, 1 = beginning (optional)']},
+  PMT:{a:['rate','nper','pv','[fv]','[type]'], d:'Payment per period that repays pv over nper periods.', h:['interest rate per period','number of payments','the loan amount (present value)','balance left at the end (optional)','0 = end of period, 1 = beginning (optional)']},
+  NPV:{a:['rate','value1','[value2]','…'], d:'Present value of cash flows that start at the END of period 1. Add a year-0 cash flow outside it.', h:['discount rate per period','the year-1 cash flow, or a range such as B3:B6','more cash flows or ranges','more cash flows or ranges']},
+  NPER:{a:['rate','pmt','pv','[fv]','[type]'], d:'Number of periods needed.', h:['interest rate per period','payment each period','present value','future value (optional)','0 = end, 1 = beginning (optional)']},
+  RATE:{a:['nper','pmt','pv','[fv]','[type]','[guess]'], d:'Interest rate per period that makes the payments worth pv.', h:['number of periods','payment each period','present value (opposite sign to pmt)','future value (optional)','0 = end, 1 = beginning (optional)','starting guess (optional)']},
+  EFFECT:{a:['nominal_rate','npery'], d:'Effective annual rate (EAR) from an APR.', h:['the APR, e.g. 18%','compounding periods per year, e.g. 12']},
+  NOMINAL:{a:['effect_rate','npery'], d:'APR from an effective annual rate.', h:['the EAR','compounding periods per year']},
+  SUM:{a:['number1','[number2]','…'], d:'Adds numbers or ranges.', h:['a number, cell or range such as B2:B6','more numbers','more numbers']},
+  AVERAGE:{a:['number1','[number2]','…'], d:'Average of numbers or ranges.', h:['a number, cell or range','more numbers','more numbers']},
+  MIN:{a:['number1','…'], d:'Smallest value.', h:['numbers or ranges','more numbers']},
+  MAX:{a:['number1','…'], d:'Largest value.', h:['numbers or ranges','more numbers']},
+  ROUND:{a:['number','num_digits'], d:'Rounds to a number of decimal places.', h:['the number','decimal places']},
+  POWER:{a:['number','power'], d:'number ^ power. You can also type B2^3.', h:['the base','the exponent']},
+  ABS:{a:['number'], d:'Absolute value.', h:['the number']},
+  SQRT:{a:['number'], d:'Square root.', h:['the number']},
+  EXP:{a:['number'], d:'e raised to a power.', h:['the power']},
+  LN:{a:['number'], d:'Natural logarithm.', h:['a positive number']},
+};
+const FN_ORDER = ['PV','FV','PMT','NPV','NPER','RATE','EFFECT','NOMINAL','SUM','AVERAGE','MIN','MAX','ROUND','POWER','ABS','SQRT','EXP','LN'];
+function fnContext(t){
+  if (!t || t[0]!=='=') return null;
+  const pm=/(^|[=(,+\-*/^&<>:\s])([A-Za-z]+)$/.exec(t);
+  const partial = pm ? pm[2] : null;
+  const stack=[];
+  for (let i=1;i<t.length;i++){ const c=t[i];
+    if (c==='('){ const nm=/([A-Za-z]+)\s*$/.exec(t.slice(0,i)); stack.push({name:nm?nm[1].toUpperCase():'', arg:0}); }
+    else if (c===')') stack.pop();
+    else if (c===',' && stack.length) stack[stack.length-1].arg++; }
+  const top = stack.length ? stack[stack.length-1] : null;
+  return {partial, fn: top && FN[top.name] ? top : null};
+}
+function fnSig(name, arg){ const f=FN[name]; return `<b>${name}</b>(${f.a.map((x,i)=>i===Math.min(arg,f.a.length-1)?`<span class="on">${x}</span>`:x).join(', ')})`; }
 function sheetDisplay(k, ref, raw, v){
   if (v==null) return '';
   if (v.__err) return v.__err;
@@ -1381,16 +1442,20 @@ function sheetDisplay(k, ref, raw, v){
   return trim(v,6);
 }
 function buildSheet(el){
-  const k=el.dataset.k, d=SHEETS[k];
-  let h=`<div class="sheetw"><div class="fbar"><span class="nm">A1</span><span class="fxl">fx</span><input type="text" class="fx" aria-label="Formula bar" spellcheck="false"></div><table class="grid"><tr><th class="rn"></th>`;
+  const k=el.dataset.k, d=SHEETS[k], nr=sheetRows(k);
+  el._rows = nr;
+  let h=`<div class="sheetw"><div class="fbar"><span class="nm">A1</span><button type="button" class="fxb" title="Insert a function">ƒx</button><input type="text" class="fx" aria-label="Formula bar" spellcheck="false" autocomplete="off"></div><div class="fhelp" hidden></div><div class="flist" hidden></div><div class="gridw"><table class="grid"><tr><th class="rn"></th>`;
   for (let c=0;c<d.cols;c++) h+=`<th>${COLS[c]}</th>`;
   h+='</tr>';
-  for (let r=1;r<=d.rows;r++){ h+=`<tr><th class="rn">${r}</th>`; for (let c=0;c<d.cols;c++){ const ref=COLS[c]+r; h+=`<td${ref===d.target?' class="tgt"':''}><input type="text" data-ref="${ref}" aria-label="Cell ${ref}" spellcheck="false"></td>`; } h+='</tr>'; }
-  el.innerHTML = h+'</table></div>';
-  const fx=el.querySelector('.fx'), nm=el.querySelector('.nm');
-  let cur=null;
+  for (let r=1;r<=nr;r++){ h+=`<tr><th class="rn">${r}</th>`; for (let c=0;c<d.cols;c++){ const ref=COLS[c]+r; const work = d.work && r>d.givens && c===0; h+=`<td${ref===d.target?' class="tgt"':''}><input type="text" data-ref="${ref}" aria-label="Cell ${ref}" spellcheck="false" autocomplete="off"${work?' placeholder="step label"':''}></td>`; } h+='</tr>'; }
+  h+='</table></div>';
+  h+=`<div class="sfoot"><button type="button" class="linkbtn addrow">+ Row</button>${nr>d.rows?'<button type="button" class="linkbtn delrow">− Row</button>':''}`;
+  if (d.target==='ANSWER') h+=`<span class="ansl">Answer</span><input type="text" class="ansin" data-ref="ANSWER" aria-label="Answer cell" placeholder="e.g. =B7" spellcheck="false" autocomplete="off"><span class="ansv"></span>`;
+  h+='</div></div>';
+  el.innerHTML = h;
+  const fx=el.querySelector('.fx'), nm=el.querySelector('.nm'), help=el.querySelector('.fhelp'), flist=el.querySelector('.flist');
+  let cur=null, last=null;
   const rawOf = ref => { const r=sheetRaw(k)[ref]; return r==null ? '' : String(r).replace(/^\{(\w+)\}$/, (_,p)=> spec(p).unit==='%' ? trim(V[p]*100,4)+'%' : String(V[p])); };
-  // a linked cell shows the slide's number; editing it overrides the link for this sheet only
   const commit = (ref, text) => {
     const base = SHEETS[k].cells[ref] ?? '';
     const shown = base && /^\{\w+\}$/.test(base) ? rawOf(ref) : null;
@@ -1398,31 +1463,76 @@ function buildSheet(el){
     if (text === base || (shown!==null && text===shown && !(ref in edits))) delete edits[ref]; else edits[ref] = text;
     setParam(k, edits);
   };
-  el.querySelectorAll('td input').forEach(inp=>{
-    inp.addEventListener('focus', ()=>{ cur=inp.dataset.ref; nm.textContent=cur; inp.value=rawOf(cur); fx.value=inp.value; inp.dataset.orig=inp.value; });
-    inp.addEventListener('input', ()=>{ fx.value=inp.value; });
+  const cellOf = ref => el.querySelector(`input[data-ref="${ref}"]`);
+  // function prompts: suggestions while typing a name, argument help inside a function
+  const showHelp = inp => {
+    const t = inp.value.slice(0, inp.selectionStart ?? inp.value.length), cx = fnContext(t);
+    if (!cx){ help.hidden=true; return; }
+    const after = inp.value.slice(inp.selectionStart ?? inp.value.length);
+    const sug = cx.partial && !after.startsWith('(') ? FN_ORDER.filter(n=>n.startsWith(cx.partial.toUpperCase())) : [];
+    if (sug.length){
+      help.innerHTML = sug.slice(0,6).map(n=>`<button type="button" class="fsug" data-fn="${n}" data-p="${cx.partial.length}">${fnSig(n,-1)}<span>${esc(FN[n].d)}</span></button>`).join('') + '<div class="fnote">Tab or click to insert</div>';
+      help.hidden=false; help.dataset.mode='sug'; return; }
+    if (cx.fn){ const f=FN[cx.fn.name], i=Math.min(cx.fn.arg, f.a.length-1);
+      help.innerHTML = `<div class="fsig">${fnSig(cx.fn.name, cx.fn.arg)}</div><div class="fdesc"><b>${esc(f.a[i].replace(/[\[\]]/g,''))}</b>: ${esc(f.h[i]||'')}</div><div class="fnote">${esc(f.d)}</div>`;
+      help.hidden=false; help.dataset.mode='sig'; return; }
+    help.hidden=true;
+  };
+  const insertFn = (inp, name, plen) => {
+    const pos = inp.selectionStart ?? inp.value.length;
+    inp.setRangeText(name+'(', pos-plen, pos, 'end');
+    if (inp===fx){ const c=cur&&cellOf(cur); if (c) c.value=fx.value; } else fx.value=inp.value;
+    inp.focus(); showHelp(inp);
+  };
+  el.addEventListener('mousedown', e=>{ if (e.target.closest('.fsug, .flist button, .fxb')) e.preventDefault(); });
+  help.addEventListener('click', e=>{ const b=e.target.closest('.fsug'); if(!b||!last) return; insertFn(last, b.dataset.fn, +b.dataset.p); });
+  el.querySelector('.fxb').addEventListener('click', ()=>{
+    if (!flist.hidden){ flist.hidden=true; return; }
+    flist.innerHTML = '<div class="fnote">Click a function to insert it in the selected cell.</div>' + FN_ORDER.map(n=>`<button type="button" data-fn="${n}">${fnSig(n,-1)}<span>${esc(FN[n].d)}</span></button>`).join('');
+    flist.hidden=false; });
+  flist.addEventListener('click', e=>{ const b=e.target.closest('button[data-fn]'); if(!b) return; flist.hidden=true;
+    const inp = last || cellOf(d.target) || el.querySelector('td input'); if (!inp) return; inp.focus();
+    if (!inp.value.startsWith('=')){ inp.value='='; }
+    inp.setSelectionRange(inp.value.length, inp.value.length); insertFn(inp, b.dataset.fn, 0); });
+  const cells = [...el.querySelectorAll('td input, .ansin')];
+  cells.forEach(inp=>{
+    inp.addEventListener('focus', ()=>{ cur=inp.dataset.ref; last=inp; nm.textContent=cur==='ANSWER'?'Ans':cur; inp.value=rawOf(cur); fx.value=inp.value; inp.dataset.orig=inp.value; showHelp(inp); });
+    inp.addEventListener('input', ()=>{ fx.value=inp.value; showHelp(inp); });
+    inp.addEventListener('keyup', e=>{ if (e.key.startsWith('Arrow')||e.key==='Home'||e.key==='End') showHelp(inp); });
+    inp.addEventListener('click', ()=>showHelp(inp));
     inp.addEventListener('keydown', e=>{
-      if (e.key==='Enter' || e.key==='Tab'){ e.preventDefault(); const ref=inp.dataset.ref; commit(ref, inp.value.trim()); inp.dataset.orig=inp.value.trim();
+      if (e.key==='Tab' && !help.hidden && help.dataset.mode==='sug'){ e.preventDefault(); const b=help.querySelector('.fsug'); if (b) insertFn(inp, b.dataset.fn, +b.dataset.p); return; }
+      if (e.key==='Enter' || e.key==='Tab'){ e.preventDefault(); const ref=inp.dataset.ref; commit(ref, inp.value.trim()); inp.dataset.orig=inp.value.trim(); help.hidden=true;
+        if (ref==='ANSWER'){ inp.blur(); return; }
         const m=/^([A-Z])(\d+)$/.exec(ref); const next = e.key==='Tab' ? (COLS[COLS.indexOf(m[1])+1]||m[1])+m[2] : m[1]+(+m[2]+1);
-        const n=el.querySelector(`input[data-ref="${next}"]`); if (n) n.focus(); else inp.blur(); }
-      else if (e.key==='Escape'){ inp.value=inp.dataset.orig||''; inp.blur(); }
+        const n=cellOf(next) || (e.key==='Enter' ? el.querySelector('.ansin') : null); if (n) n.focus(); else inp.blur(); }
+      else if (e.key==='Escape'){ inp.value=inp.dataset.orig||''; help.hidden=true; inp.blur(); }
     });
-    inp.addEventListener('blur', ()=>{ if (inp.value.trim()!==(inp.dataset.orig||'')) commit(inp.dataset.ref, inp.value.trim()); setTimeout(()=>renderSheet(el),0); });
+    inp.addEventListener('blur', ()=>{ setTimeout(()=>{ if (!el.contains(document.activeElement) || document.activeElement===fx) {} help.hidden = document.activeElement!==fx && !cells.includes(document.activeElement) ? true : help.hidden; },0);
+      if (inp.value.trim()!==(inp.dataset.orig||'')) commit(inp.dataset.ref, inp.value.trim()); setTimeout(()=>renderSheet(el),0); });
   });
-  fx.addEventListener('input', ()=>{ if(!cur) return; const c=el.querySelector(`input[data-ref="${cur}"]`); if(c && document.activeElement!==c) c.value=fx.value; });
-  fx.addEventListener('keydown', e=>{ if (e.key==='Enter' && cur){ e.preventDefault(); commit(cur, fx.value.trim()); const c=el.querySelector(`input[data-ref="${cur}"]`); if(c) c.dataset.orig=fx.value.trim(); } });
+  fx.addEventListener('input', ()=>{ if(!cur) return; const c=cellOf(cur); if(c && document.activeElement!==c) c.value=fx.value; last=fx; showHelp(fx); });
+  fx.addEventListener('focus', ()=>{ last=fx; showHelp(fx); });
+  fx.addEventListener('blur', ()=>setTimeout(()=>{ if (!cells.includes(document.activeElement)) help.hidden=true; },0));
+  fx.addEventListener('keydown', e=>{
+    if (e.key==='Tab' && !help.hidden && help.dataset.mode==='sug'){ e.preventDefault(); const b=help.querySelector('.fsug'); if (b) insertFn(fx, b.dataset.fn, +b.dataset.p); return; }
+    if (e.key==='Enter' && cur){ e.preventDefault(); commit(cur, fx.value.trim()); const c=cellOf(cur); if(c) c.dataset.orig=fx.value.trim(); help.hidden=true; } });
+  el.querySelector('.addrow').addEventListener('click', ()=>{ const e={...((V[k])||{})}; e._rows=(+e._rows||0)+1; setParam(k, e); });
+  const dr=el.querySelector('.delrow'); if (dr) dr.addEventListener('click', ()=>{ const e={...((V[k])||{})}; const n=sheetRows(k); for (let c=0;c<d.cols;c++) delete e[COLS[c]+n]; e._rows=Math.max(0,(+e._rows||0)-1); if(!e._rows) delete e._rows; setParam(k, e); });
 }
 function renderSheet(el){
   const k=el.dataset.k; if (!SHEETS[k]) return;
+  if (el._rows !== sheetRows(k) && !(el.contains(document.activeElement) && document.activeElement.tagName==='INPUT')) buildSheet(el);
   const {raw, val} = sheetEval(k);
-  el.querySelectorAll('td input').forEach(inp=>{
+  el.querySelectorAll('td input, .ansin').forEach(inp=>{
     const ref=inp.dataset.ref, r=raw[ref], v=val[ref];
     inp.classList.toggle('txt', typeof v==='string' && !(v && v.__err));
     inp.classList.toggle('giv', /^\{\w+\}$/.test(r||'') || (r!=null && r!=='' && typeof v==='number' && !String(r).startsWith('=')));
     inp.classList.toggle('fml', String(r||'').startsWith('='));
     inp.classList.toggle('err', !!(v && v.__err));
-    if (document.activeElement!==inp) inp.value = sheetDisplay(k, ref, r, v);
+    if (document.activeElement!==inp){ inp.value = ref==='ANSWER' ? (r||'') : sheetDisplay(k, ref, r, v); }
   });
+  const av=el.querySelector('.ansv'); if (av){ const r=raw.ANSWER, v=val.ANSWER; av.textContent = r ? '= ' + sheetDisplay(k,'ANSWER',r,v) : ''; }
 }
 function sheetTarget(k){ const {val}=sheetEval(k); const v=val[SHEETS[k].target]; return (typeof v==='number') ? v : NaN; }
 
@@ -1635,20 +1745,19 @@ function buildControls(root){
     const a=el.dataset.a, k='tx_'+a+'_'+(uid++);
     const keys = el.dataset.givens ? el.dataset.givens.split(',') : [...new Set([...root.querySelectorAll('.edi[data-bind], .seg[data-k]')].map(e=>e.dataset.bind||e.dataset.k))];
     const cells={}; keys.forEach((key,i)=>{ cells['A'+(i+1)]=spec(key).label||key; cells['B'+(i+1)]='{'+key+'}'; });
-    const work=keys.length>5?2:keys.length>3?3:4, rows=keys.length+work+1, target='B'+rows;
-    cells['A'+rows] = el.dataset.choices ? 'Scratch' : (el.dataset.label||'Answer').replace(/\?$/,'');
-    SHEETS[k]={cols:3, rows, target, cells, scratch:!!el.dataset.choices}; PARAMS[k]={type:'sheet',def:{}}; DEF[k]={};
+    const work=keys.length>5?3:4, rows=keys.length+work;
+    SHEETS[k]={cols:3, rows, givens:keys.length, work:true, target: el.dataset.choices ? null : 'ANSWER', cells}; PARAMS[k]={type:'sheet',def:{}}; DEF[k]={};
     el.dataset.sheet=k; el.dataset.auto='1';
   });
   root.querySelectorAll('.try').forEach(el=>{
     const u=el.dataset.u||'', ch=el.dataset.choices;
-    const lab = el.dataset.label || (el.dataset.sheet ? 'Check cell '+SHEETS[el.dataset.sheet].target : 'Your answer');
+    const lab = el.dataset.label || (el.dataset.sheet && SHEETS[el.dataset.sheet].target!=='ANSWER' ? 'Check cell '+SHEETS[el.dataset.sheet].target : 'Your answer');
     const pre = (u==='$'||u==='$m') ? '$' : '', suf = u==='%' ? '%' : u==='$m' ? 'm' : (u && u!=='$') ? u : '';
     const auto=el.dataset.auto==='1', sk=el.dataset.sheet;
     el.innerHTML = `<div class="tl1">${auto?'Try it first':sk?'Check your spreadsheet':'Try it first'}</div><div class="txt">${esc(lab)}</div>`+
-      (auto ? `<p class="note">The numbers from the problem are already in column B. Work in the empty cells with formulas such as <b>=B1/B2</b> or <b>=PV(B3,B2,-B4)</b>${ch?'':', and put your answer in '+SHEETS[sk].target}.</p><div class="sheet" data-k="${sk}"></div>` : '')+
+      (auto ? `<p class="note">The problem's numbers are in column B. Work one step per row (label it in column A), add rows with <b>+ Row</b>, ${ch?'then choose below.':'then point the <b>Answer</b> at your last step, e.g. <b>=B7</b>.'} Type <b>=</b> and a function name, or press <b>ƒx</b>, for help with Excel functions.</p><div class="sheet" data-k="${sk}"></div>` : '')+
       (ch ? `<div class="chs">${ch.split(',').map(c=>`<button type="button" class="trych" data-c="${esc(c)}">${esc(c)}</button>`).join('')}</div>`
-       : sk ? `<div class="try-row"><button type="button" class="bbtn pri tryb">Check ${SHEETS[sk].target}</button></div>`
+       : sk ? `<div class="try-row"><button type="button" class="bbtn pri tryb">Check ${SHEETS[sk].target==='ANSWER'?'answer':SHEETS[sk].target}</button></div>`
        : `<div class="try-row"><span class="u">${pre}</span><input type="text" inputmode="decimal" class="tryin" aria-label="${esc(lab)}" autocomplete="off"><span class="u">${esc(suf)}</span><button type="button" class="bbtn pri tryb">Check</button></div>`)+
       `<div class="tryfb" aria-live="polite"></div><div class="tally" hidden></div>`;
   });
@@ -1659,7 +1768,7 @@ function checkTry(el, given){
   let ok=false;
   if (el.dataset.choices){ ok = given===exp; }
   else {
-    if (!isFinite(given)){ fb.textContent = el.dataset.sheet ? 'Put a number or formula in '+SHEETS[el.dataset.sheet].target+' first.' : 'Enter a number first.'; fb.className='tryfb no'; return; }
+    if (!isFinite(given)){ const t=el.dataset.sheet && SHEETS[el.dataset.sheet].target; fb.textContent = t ? (t==='ANSWER' ? 'Fill in the Answer cell first, e.g. =B7.' : 'Put a number or formula in '+t+' first.') : 'Enter a number first.'; fb.className='tryfb no'; return; }
     const g = el.dataset.signed ? given : Math.abs(given), e = el.dataset.signed ? exp : Math.abs(exp);
     ok = isFinite(e) && Math.abs(g-e) <= Math.max(Math.abs(e)*0.005, 0.01);
   }
