@@ -1011,10 +1011,12 @@ table.grid td.tgt{box-shadow:inset 0 0 0 2px var(--c4)}
     <p class="txt">The bank's quarterly payment would be <b data-o="qp"></b>. To compare with the monthly lease:</p>
     <ol class="steps">
       <li data-step="1"><span>Convert the APR with quarterly compounding to an EAR.</span><div class="tex d" data-x="f1"></div></li>
-      <li data-step="2"><span><b>We need a monthly payment, so we need a monthly rate.</b> It is not simply <span data-o="aq"></span>/12, because that APR is quoted with quarterly compounding. Instead, find the monthly rate that gives the same EAR. That monthly rate is the APR with monthly compounding divided by 12: APR<sub>monthly</sub> = 12 × <span data-o="rm"></span> = <b data-o="apr12"></b>.</span><div class="tex d" data-x="f2"></div></li>
-      <li data-step="3"><span>Find the equivalent monthly payment on the bank loan.</span><div class="tex d" data-x="f3"></div></li>
+      <li data-step="2"><span><b>We need a monthly payment, so we need a monthly rate.</b> It is not simply <span data-o="aq"></span>/12, because that APR is quoted with quarterly compounding.</span>
+        <span data-step="3">But what APR with <i>monthly</i> compounding would the bank have charged? <b>It would have charged a rate that results in the same EAR!</b></span>
+        <div class="tex d" data-x="f2a" data-step="4"></div><div class="tex d" data-x="f2b" data-step="5"></div><div class="tex d" data-x="f2c" data-step="6"></div></li>
+      <li data-step="7"><span>Find the equivalent monthly payment on the bank loan.</span><div class="tex d" data-x="f3"></div></li>
     </ol>
-    <div class="verdict" data-o="v" data-step="4"></div>
+    <div class="verdict" data-o="v" data-step="8"></div>
   </div></div>
 </section>
 
@@ -2176,7 +2178,7 @@ function timeline(o){
   // o.box {a,b,label,step}: re-count years from a; o.arrows [{from,to,label,step}]
   const ts=o.ts, W=640, padL=o.padL||(o.box?170:40), padR=o.ell?64:50;
   const idx = t => ts.indexOf(t), X = t => padL + idx(t)/(ts.length-1)*(W-padL-padR);
-  const yA=38, id='ah'+(tlN++);
+  const yA=o.box&&o.box.wrap&&o.box.title?56:38, id='ah'+(tlN++);
   let s=`<defs><marker id="${id}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--c2)"/></marker></defs>`;
   ts.forEach(t=>{ const c=o.cf(t); if (c!=='' && c!=null) s+=`<text x="${X(t)}" y="${yA-14}" text-anchor="middle" class="cf">${esc(c)}</text>`; });
   s+=`<line x1="${padL-14}" x2="${W-padR+(o.ell?14:10)}" y1="${yA}" y2="${yA}" style="stroke:var(--ink)" stroke-width="1.5"/>`;
@@ -2184,7 +2186,7 @@ function timeline(o){
   if (o.ell) s+=`<text x="${W-padR+34}" y="${yA+5}" text-anchor="middle">… ∞</text>`;
   let yy=yA+32;
   if (o.box){ const b=o.box, x1=X(b.a)-18, x2=X(b.b)+18;
-    s+=`<g data-step="${b.step||0}"><rect x="${x1}" y="${yy}" width="${x2-x1}" height="26" rx="6" fill="none" style="stroke:var(--c3)" stroke-width="1.5"/>`;
+    s+=`<g data-step="${b.step||0}">` + (b.wrap ? `<rect x="${x1}" y="${yA-32}" width="${x2-x1}" height="${yy+26-(yA-32)}" rx="8" style="fill:var(--c3);stroke:var(--c3)" fill-opacity=".07" stroke-width="1.5"/><line x1="${x1}" x2="${x2}" y1="${yy}" y2="${yy}" style="stroke:var(--c3)" stroke-dasharray="3 3"/>${b.title?`<text x="${(x1+x2)/2}" y="${yA-37}" text-anchor="middle" class="bl">${esc(b.title)}</text>`:''}` : `<rect x="${x1}" y="${yy}" width="${x2-x1}" height="26" rx="6" fill="none" style="stroke:var(--c3)" stroke-width="1.5"/>`);
     ts.filter(t=>typeof t==='number' && t>=b.a && t<=b.b).forEach(t=>{ s+=`<text x="${X(t)}" y="${yy+17}" text-anchor="middle" class="bl">${t-(b.from??b.a)}</text>`; });
     s+=`<text x="${x1-8}" y="${yy+17}" text-anchor="end" class="bl">${esc(b.label)}</text></g>`; yy+=36; }
   (o.arrows||[]).forEach((a,i)=>{ const d=yy+14+i*28, x1=X(a.from), x2=X(a.to);
@@ -2409,14 +2411,16 @@ lowc(s,v){ const A=[v.lc_aapr,v.lc_am], B=[v.lc_bapr,v.lc_bm], ea=earOf(...A), e
 lease(s,v){ const c=leaseCalc(v);
   O(s,'qp',money(c.qp)); O(s,'aq',pct(c.a,2)); O(s,'rm',pct(c.rm,4)); O(s,'apr12',pct(c.rm*12,4));
   X(s,'f1',`EAR = \\left(1+\\dfrac{${T(c.a,4)}}{4}\\right)^4 - 1 = ${TP(c.e,4)}`);
-  X(s,'f2',`r_{\\text{month}} = (1+EAR)^{1/12} - 1 = (1+${T(c.e,6)})^{1/12} - 1 = ${TP(c.rm,5)}`);
+  X(s,'f2a',`\\left(1 + \\dfrac{APR_{?}}{12}\\right)^{12} = 1 + EAR = ${T(1+c.e,6)}`);
+  X(s,'f2b',`APR_{?} = 12 \\times \\left[(${T(1+c.e,6)})^{1/12} - 1\\right] = ${TP(c.rm*12,4)} \\quad\\text{(APR with monthly compounding)}`);
+  X(s,'f2c',`\\text{Correct monthly rate} = \\dfrac{APR_{?}}{12} = \\dfrac{${TP(c.rm*12,4)}}{12} = ${TP(c.rm,5)}`);
   X(s,'f3',`${T$(c.L,0)} = PMT \\times \\dfrac{1}{${T(c.rm,6)}}\\left(1 - \\dfrac{1}{(1+${T(c.rm,6)})^{${c.Y*12}}}\\right) \\Rightarrow PMT = ${T$(c.mp,0)}`);
   VD(s,'good', v.lb_lease < c.mp ? `Lease: ${money(v.lb_lease,0)} a month is less than the bank loan's equivalent ${money(c.mp,0)} a month.` : `Borrow and buy: the bank loan's equivalent ${money(c.mp,0)} a month is less than the ${money(v.lb_lease,0)} lease.`); },
 perp(s,v){ const c=v.pp_c, r=v.pp_r, pv=c/r; O(s,'pv',money(pv));
   const Nmax=Math.min(400,Math.max(60, Math.ceil(Math.log(100)/Math.log(1+r)))), n90=Math.ceil(Math.log(10)/Math.log(1+r));
   C(s,'c', lineChart({x:[0,Nmax], series:[{pts:range(0,Nmax,Math.max(1,Math.floor(Nmax/150))).map(t=>[t,c*pvaf(r,t)]), c:'var(--c2)', area:true}], hlines:[{y:pv,label:'C/r = '+money(pv),c:'var(--c1)'}], yExtra:[pv*1.08], yf:x=>money(x,0), xl:'Number of payments N', h:250}));
   O(s,'take', `At ${pct(r,1)}, the first ${n90} payments already make up 90% of the perpetuity's value.`);
-  C(s,'tl', timeline({ts:range(0,8), cf:t=> t===4 ? 'PV₄' : t>=5 ? 'C' : '', ell:true, box:{a:4,b:8,label:'seen from year 4:'}})); },
+  C(s,'tl', timeline({ts:range(0,8), padL:120, cf:t=> t===4 ? 'PV₄' : t>=5 ? 'C' : '', ell:true, box:{a:5,b:8,from:4,wrap:true,title:'the perpetuity: C every year, forever',label:'seen from year 4:'}})); },
 consol(s,v){ const F=v.cb_face, c=F*v.cb_cpn, r=v.cb_r, p=c/r;
   INP(s,'inp',[['C',`${money(F,0)} × ${pct(v.cb_cpn,2)} = ${money(c)}`,'interest each period'],['r',pct(r,2)+' = '+trim(r,4),'market rate (similar substitute)']]);
   X(s,'f',`\\text{Interest} = ${T$(F,0)} \\times ${TP(v.cb_cpn)} = ${T$(c)}, \\qquad PV = \\dfrac{C}{r} = \\dfrac{${T$(c)}}{${T(r,4)}} = ${T$(p)}`);
