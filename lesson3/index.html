@@ -221,6 +221,12 @@ table.grid td.tgt{box-shadow:inset 0 0 0 2px var(--c4)}
 .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
 .card{border-top:3px solid var(--accent);background:var(--panel);padding:12px 14px;border-radius:0 0 6px 6px;display:flex;flex-direction:column;gap:6px;font-size:14px}
 .card h3{margin:0;font-size:16px}
+.cards .card{gap:12px;padding:14px 16px}
+.kcf{color:var(--c2)} .kr{color:var(--c1)} .ktv{color:var(--c3)}
+.tex .kcf{fill:var(--c2);color:var(--c2)} .tex .kr{fill:var(--c1);color:var(--c1)} .tex .ktv{fill:var(--c3);color:var(--c3)}
+.dff{display:block;font-size:11px;color:var(--muted)}
+.tlbl{font-size:13px;font-weight:600}
+.tlbl span{font-weight:400;color:var(--muted)}
 .news{border-left:3px solid var(--rule);padding:4px 12px;font-size:13px;color:var(--muted)}
 .title-slide{justify-content:center;gap:28px;padding-left:96px}
 .title-slide h1{font-family:var(--display);font-weight:500;font-size:68px;line-height:1.02;margin:0;color:var(--ink);max-width:16ch;text-wrap:balance}
@@ -360,9 +366,10 @@ table.grid td.tgt{box-shadow:inset 0 0 0 2px var(--c4)}
       <p class="txt" data-step="2">One way to estimate r: ask what return we could get on a financial market security of <i>similar</i> risk.</p>
       <p class="txt" data-step="3">This r<sub>similar sub</sub> is the <span class="hl">opportunity cost of capital</span>.</p>
     </div>
-    <div class="col" data-step="1">
-      <p class="lead">A risk-free rate of <span class="ed" data-k="sc_rf"></span> plus a risk premium of <span class="ed" data-k="sc_rp"></span> gives r = <b data-o="r"></b>.</p>
-      <div class="chart sm" data-c="bars"></div>
+    <div class="col cbox" data-step="1">
+      <p class="txt">A risk-free rate of <span class="ed" data-k="sc_rf"></span> plus a risk premium of <span class="ed" data-k="sc_rp"></span> gives r = <b data-o="r"></b>.</p>
+      <div class="cbar"><span class="ctitle">The more risk, the higher the return investors require</span><button class="replay">↺ Replay</button></div>
+      <div class="chart" data-c="sml"></div>
     </div>
   </div>
 </section>
@@ -388,15 +395,16 @@ table.grid td.tgt{box-shadow:inset 0 0 0 2px var(--c4)}
   <div class="s-body wl">
     <div class="col">
       <p class="txt">What if you invest <span class="ed" data-k="fv_pv"></span> at <span class="ed" data-k="fv_r"></span> for <span class="ed" data-k="fv_n"></span> years? How much will you have?</p>
-      <div class="tw" style="max-height:190px" data-step="1"><table data-o="tbl"></table></div>
+      <div class="tw" style="max-height:170px" data-step="1"><table data-o="tbl"></table></div>
+      <p class="txt" data-o="y2" data-step="1"></p>
       <div class="formula" data-step="2"><div class="tex d">FV_N = PV \times (1+r)^N</div></div>
       <div class="inputs" data-o="inp" data-step="3"></div>
       <div class="formula" data-step="4"><div class="tex d" data-x="f"></div></div>
       <div class="xl" data-o="xl" data-step="4"></div>
     </div>
     <div class="col cbox" data-step="5">
-      <div class="cbar"><span class="ctitle">Where the money comes from</span><button class="replay">↺ Replay</button></div>
-      <div class="legend"><span><i style="background:var(--panel-2);border:1px solid var(--muted)"></i>Original amount</span><span><i style="background:var(--c2)"></i>Interest on principal</span><span><i style="background:var(--c1)"></i>Interest on interest</span></div>
+      <div class="cbar"><span class="ctitle">Simple interest vs. compound interest</span><button class="replay">↺ Replay</button></div>
+      <div class="legend"><span><i style="background:var(--c2)"></i>Simple: interest only on the original amount</span><span><i style="background:var(--c1)"></i>Compound: interest on interest too</span></div>
       <div class="chart" data-c="c"></div>
       <p class="take" data-o="take"></p>
     </div>
@@ -412,10 +420,8 @@ table.grid td.tgt{box-shadow:inset 0 0 0 2px var(--c4)}
     </div>
     <div class="col">
       <p class="q">Which line goes with which r?</p>
-      <div class="ctls"><div class="ctl" data-k="pc_r1"></div><div class="ctl" data-k="pc_r2"></div><div class="ctl" data-k="pc_r3"></div><div class="ctl" data-k="pc_r4"></div><div class="ctl" data-k="pc_n"></div></div>
-      <button class="tog" data-k="pc_rev">Reveal the rates</button>
-      <div class="tw"><table data-o="tbl"></table></div>
-      <p class="take" data-o="take" data-step="1"></p>
+      <div class="ctls"><div class="ctl" data-k="pc_r2"></div><div class="ctl" data-k="pc_r4"></div><div class="ctl" data-k="pc_n"></div></div>
+      <p class="note">Press → to label the lines.</p>
     </div>
   </div>
 </section>
@@ -444,11 +450,13 @@ table.grid td.tgt{box-shadow:inset 0 0 0 2px var(--c4)}
       <div class="inputs" data-o="inp" data-step="2"></div>
       <div class="formula" data-step="3"><div class="tex d" data-x="f"></div></div>
       <div class="results" data-step="3"><div class="res main"><span class="rl">PV today</span><span class="rv" data-o="pv"></span></div><div class="res"><span class="rl">Discount factor 1/(1+r)<sup>N</sup></span><span class="rv" data-o="df"></span></div></div>
+      <p class="take" data-o="take" data-step="5"></p>
     </div>
     <div class="col">
-      <div class="cbox" data-step="4"><div class="cbar"><span class="ctitle">PV as the wait N changes</span><button class="replay">↺ Replay</button></div><div class="chart" data-c="vn"></div></div>
+      <div class="cbox" data-step="4"><div class="cbar"><span class="ctitle">PV as the wait N changes</span><button class="replay">↺ Replay</button></div><div class="chart" data-c="vn"></div>
+        <div class="ctls"><div class="ctl" data-k="pv_n"></div><div class="ctl" data-k="pv_r"></div></div></div>
       <div class="cbox" data-step="5"><div class="cbar"><span class="ctitle">PV as the discount rate r changes</span><button class="replay">↺ Replay</button></div><div class="chart" data-c="vr"></div></div>
-      <p class="take" data-o="take" data-step="5"></p>
+      <p class="note" data-step="4">Drag N to move the point along the curve; drag r to change the curve itself. The dashed line is the starting example.</p>
     </div>
   </div>
 </section>
@@ -459,19 +467,18 @@ table.grid td.tgt{box-shadow:inset 0 0 0 2px var(--c4)}
     <div class="col cbox"><div class="cbar"><span class="ctitle">Present value of $1 received in the future</span><button class="replay">↺ Replay</button></div><div class="chart" data-c="c"></div></div>
     <div class="col">
       <p class="q">Which line goes with which r?</p>
-      <div class="ctls"><div class="ctl" data-k="dc_r1"></div><div class="ctl" data-k="dc_r2"></div><div class="ctl" data-k="dc_r3"></div><div class="ctl" data-k="dc_r4"></div><div class="ctl" data-k="dc_n"></div></div>
-      <button class="tog" data-k="dc_rev">Reveal the rates</button>
-      <div class="tw"><table data-o="tbl"></table></div>
-      <p class="take" data-o="take" data-step="1"></p>
+      <div class="ctls"><div class="ctl" data-k="dc_r2"></div><div class="ctl" data-k="dc_r4"></div><div class="ctl" data-k="dc_n"></div></div>
+      <p class="note">Press → to label the lines.</p>
     </div>
   </div>
 </section>
 
-<section class="slide" data-sec="Present value" data-t="IT savings: problem">
+<section class="slide" data-sec="Present value" data-t="IT savings: problem" data-r="it">
   <div class="s-head"><div class="eyebrow">Present value · example<span class="tag">Problem</span></div><h2>Present value of a future saving</h2></div>
   <div class="s-body wr">
     <div class="col">
       <p class="prob">A new IT implementation will save costs by <span class="ed" data-k="it_amt"></span>, one time, <span class="ed" data-k="it_t1"></span> years after implementation. What is the most we should spend on it now? r<sub>sim sub</sub> = <span class="ed" data-k="it_r"></span>.</p>
+      <div class="tline" data-c="tl0"></div>
       <p class="prob" data-step="1">What if delays mean the savings only occur in year <span class="ed" data-k="it_t2"></span>?</p>
     </div>
     <div class="col"><div class="try" data-a="it" data-u="$" data-hint="Discount the saving back to today: divide by (1 + r) raised to the year it arrives. Answer in dollars, e.g. 991,736."></div></div>
@@ -554,7 +561,7 @@ table.grid td.tgt{box-shadow:inset 0 0 0 2px var(--c4)}
         <div class="tex d" data-step="1">PV = C \times \left[\dfrac{1}{(1+r)^1} + \cdots + \dfrac{1}{(1+r)^N}\right]</div>
         <div class="tex d big" data-step="2">PV = C \times \dfrac{1}{r}\left[1 - \dfrac{1}{(1+r)^N}\right] = C \times \dfrac{1-PVF_N}{r}</div>
       </div>
-      <p class="q" data-step="5">What if r = 0? <span class="note" style="font-style:normal">Set r to 0 and watch the factor.</span></p>
+      <p class="q" data-step="5">What if r = 0? <span class="note" style="font-style:normal">Use the first expression, not the final formula.</span></p>
     </div>
     <div class="col">
       <p class="txt" data-step="3">Example: <span class="ed" data-k="an_c"></span> a year for <span class="ed" data-k="an_n"></span> years at <span class="ed" data-k="an_r"></span>. The inputs are:</p>
@@ -575,8 +582,9 @@ table.grid td.tgt{box-shadow:inset 0 0 0 2px var(--c4)}
       <div class="formula" data-step="1"><p class="txt"><b>PVF</b> for a single cash flow</p><div class="tex d">\dfrac{1}{(1+r)^N}</div></div>
       <div class="formula" data-step="2"><p class="txt"><b>PVAF</b> for an annuity</p><div class="tex d">\dfrac{1}{r}\left[1-\dfrac{1}{(1+r)^N}\right] \quad\text{textbook: }\; \dfrac{1-\frac{1}{(1+r)^N}}{r}</div></div>
       <p class="txt" data-step="3">At r = <span class="ed" data-k="an_r"></span> and N = <span class="ed" data-k="an_n"></span>: PVF = <b data-o="pvf"></b>, PVAF = <b data-o="pvaf"></b>.</p>
+      <div class="try" data-step="4" data-a="svaq" data-nosheet="1" data-choices="Discount factor,Annuity factor" data-label="A factor equals 1.4. Is it a discount factor or an annuity factor?" data-hint="What is the largest a discount factor 1/(1+r)^N can be when r is positive?" data-why="A discount factor 1/(1+r)^N is always below 1 when r > 0. An annuity factor adds up several discount factors, so it can be larger than 1."></div>
     </div>
-    <div class="col cbox" data-step="4">
+    <div class="col cbox" data-step="5">
       <div class="cbar"><span class="ctitle">PVAF grows with N, but never past 1/r</span><button class="replay">↺ Replay</button></div>
       <div class="chart sm" data-c="c"></div>
       <p class="take" data-o="take"></p>
@@ -584,10 +592,11 @@ table.grid td.tgt{box-shadow:inset 0 0 0 2px var(--c4)}
   </div>
 </section>
 
-<section class="slide" data-sec="Annuities" data-t="Lottery: problem">
+<section class="slide" data-sec="Annuities" data-t="Lottery: problem" data-r="lot">
   <div class="s-head"><div class="eyebrow">Annuities · example<span class="tag">Problem</span></div><h2>Example: what is the prize really worth?</h2></div>
   <div class="s-body wr">
-    <div class="col"><p class="prob">Hoosier lottery claims its prize is <span class="ed" data-k="lot_prize"></span> but pays it in <span class="ed" data-k="lot_n"></span> annual installments. What is this prize really worth? Say the discount rate is <span class="ed" data-k="lot_r"></span>.</p></div>
+    <div class="col"><p class="prob">Hoosier lottery claims its prize is <span class="ed" data-k="lot_prize"></span> but pays it in <span class="ed" data-k="lot_n"></span> annual installments. What is this prize really worth? Say the discount rate is <span class="ed" data-k="lot_r"></span>.</p>
+      <div class="tline" data-c="tl0"></div></div>
     <div class="col"><div class="try" data-a="lot" data-u="$" data-hint="First find the annual installment (prize ÷ number of installments). Then multiply it by the annuity factor."></div></div>
   </div>
 </section>
@@ -657,12 +666,12 @@ table.grid td.tgt{box-shadow:inset 0 0 0 2px var(--c4)}
       <div class="formula" data-step="1"><div class="tex d">FV_N = C \times \dfrac{1}{r}\left[(1+r)^N - 1\right] \quad\text{or}\quad FV_N = PV \times (1+r)^N</div></div>
       <div class="inputs" data-o="inp" data-step="2"></div>
       <div class="formula" data-step="3"><div class="tex d" data-x="f"></div></div>
-      <p class="note" data-step="4">The FV of an annuity is computed as of time N, the same time as the last payment. The PV is computed as of one period <i>before</i> the first payment.</p>
+      <div class="results" data-step="3"><div class="res main"><span class="rl">FV at N</span><span class="rv" data-o="fv"></span></div><div class="res"><span class="rl">PV today</span><span class="rv" data-o="pv"></span></div></div>
     </div>
-    <div class="col cbox" data-step="3">
-      <div class="cbar"><div class="legend"><span><i style="background:var(--panel-2);border:1px solid var(--muted)"></i>Payment</span><span><i style="background:var(--c3)"></i>Its value at time N</span></div><button class="replay">↺ Replay</button></div>
-      <div class="chart" data-c="c"></div>
-      <div class="results"><div class="res main"><span class="rl">FV at N</span><span class="rv" data-o="fv"></span></div><div class="res"><span class="rl">PV today</span><span class="rv" data-o="pv"></span></div></div>
+    <div class="col">
+      <div data-step="4"><div class="tlbl">PV is computed at time 0 <span>one period before the first payment</span></div><div class="tline" data-c="tlpv"></div></div>
+      <div data-step="5"><div class="tlbl">FV is computed at time N <span>the same time as the last payment</span></div><div class="tline" data-c="tlfv"></div></div>
+      <p class="note" data-step="5">The two are linked: FV<sub>N</sub> = PV × (1 + r)<sup>N</sup>.</p>
     </div>
   </div>
 </section>
@@ -678,8 +687,9 @@ table.grid td.tgt{box-shadow:inset 0 0 0 2px var(--c4)}
 <section class="slide" data-sec="Annuities" data-t="Practice 3: solution" data-r="pr3">
   <div class="s-head"><div class="eyebrow">Practice<span class="tag t3">Practice 3 · Solution</span></div><h2>Saving a fixed amount each year</h2></div>
   <div class="s-body one"><div class="col">
+    <div class="tline" data-c="tl"></div>
     <ol class="steps">
-      <li data-step="1"><span>The future value of an annuity.</span><div class="tex d">FV_N = C \times \dfrac{(1+r)^N - 1}{r}</div></li>
+      <li data-step="1"><span>The future value of an annuity, measured at the last deposit.</span><div class="tex d">FV_N = C \times \dfrac{(1+r)^N - 1}{r}</div></li>
       <li data-step="2"><span>The inputs.</span><div class="inputs" data-o="inp"></div></li>
       <li data-step="3"><span>Plug them in.</span><div class="tex d" data-x="f1"></div></li>
     </ol>
@@ -878,10 +888,15 @@ table.grid td.tgt{box-shadow:inset 0 0 0 2px var(--c4)}
   <div class="s-head"><div class="eyebrow">Effective annual rate</div><h2>Effective annual rate (EAR)</h2></div>
   <div class="s-body wl">
     <div class="col">
-      <p class="txt">The compounding frequency (how often a year you pay or receive interest) can make the true effective rate higher than the stated or quoted annual rate. Here the stated rate is <span class="ed" data-k="ea_apr"></span>.</p>
+      <p class="txt">The compounding frequency (how often a year you pay or receive interest) can make the true effective rate higher than the stated or quoted annual rate. Here the stated rate is <span class="ed" data-k="ea_apr"></span>, and you invest $100 for one year.</p>
       <div class="tw" data-step="1"><table data-o="tbl"></table></div>
     </div>
-    <div class="col cbox" data-step="2"><div class="cbar"><span class="ctitle">Effective annual rate by compounding frequency</span><button class="replay">↺ Replay</button></div><div class="chart" data-c="c"></div><p class="take" data-o="take"></p></div>
+    <div class="col">
+      <div data-step="2"><div class="tlbl" data-o="l1"></div><div class="tline" data-c="t1"></div></div>
+      <div data-step="3"><div class="tlbl" data-o="l2"></div><div class="tline" data-c="t2"></div></div>
+      <div data-step="4"><div class="tlbl" data-o="l4"></div><div class="tline" data-c="t4"></div></div>
+      <p class="take" data-o="take" data-step="4"></p>
+    </div>
   </div>
 </section>
 
@@ -996,7 +1011,7 @@ table.grid td.tgt{box-shadow:inset 0 0 0 2px var(--c4)}
     <p class="txt">The bank's quarterly payment would be <b data-o="qp"></b>. To compare with the monthly lease:</p>
     <ol class="steps">
       <li data-step="1"><span>Convert the APR with quarterly compounding to an EAR.</span><div class="tex d" data-x="f1"></div></li>
-      <li data-step="2"><span>Convert the EAR to a monthly rate.</span><div class="tex d" data-x="f2"></div></li>
+      <li data-step="2"><span><b>We need a monthly payment, so we need a monthly rate.</b> It is not simply <span data-o="aq"></span>/12, because that APR is quoted with quarterly compounding. Instead, find the monthly rate that gives the same EAR. That monthly rate is the APR with monthly compounding divided by 12: APR<sub>monthly</sub> = 12 × <span data-o="rm"></span> = <b data-o="apr12"></b>.</span><div class="tex d" data-x="f2"></div></li>
       <li data-step="3"><span>Find the equivalent monthly payment on the bank loan.</span><div class="tex d" data-x="f3"></div></li>
     </ol>
     <div class="verdict" data-o="v" data-step="4"></div>
@@ -1020,6 +1035,7 @@ table.grid td.tgt{box-shadow:inset 0 0 0 2px var(--c4)}
       <p class="txt" data-step="2">What happens as N increases and tends to infinity?</p>
       <div class="formula" data-step="3"><div class="tex d big">PV = \dfrac{C}{r}</div></div>
       <p class="txt" data-step="4">Note: the PV is one period before the first cash flow. A perpetuity whose first payment is in year 5 has <span class="tex">PV_4 = \frac{C_5}{r}</span>.</p>
+      <div class="tline" data-c="tl" data-step="4"></div>
     </div>
     <div class="col cbox" data-step="2">
       <p class="txt">C = <span class="ed" data-k="pp_c"></span> a year at r = <span class="ed" data-k="pp_r"></span>: PV = <b data-o="pv"></b></p>
@@ -1036,7 +1052,13 @@ table.grid td.tgt{box-shadow:inset 0 0 0 2px var(--c4)}
     <div class="col">
       <p class="prob">A consol bond pays interest in perpetuity. What is the value of a <span class="ed" data-k="cb_face"></span> face value bond that pays <span class="ed" data-k="cb_cpn"></span> interest every period if the market rate for that risk is <span class="ed" data-k="cb_r"></span> per period?</p>
       <p class="note" data-step="1">The coupon rate is the stated rate offered by the bond. The discount rate is the opportunity cost of capital, the rate on a similar substitute.</p>
-      <div class="news" data-step="2">May 27, 2021 (Reuters): Oman Arab Bank was set to raise $250 million in its first foray into international debt markets with an Additional Tier 1 perpetual bond issue, launched at a yield of 7.625%.</div>
+      <div class="news" data-step="2"><b>Perpetual instruments in practice</b>
+        <ul class="pts sm" style="margin-top:6px">
+          <li><b>British consols</b>: UK government bonds first issued in 1751, with no maturity date. The UK repaid the last of them, including the 3½% War Loan, in 2015.</li>
+          <li><b>A 1648 Dutch water-board bond</b> issued to fund a dike still pays interest today; Yale University owns one and collects it.</li>
+          <li><b>Perpetual preferred stock</b> pays a fixed dividend with no maturity date.</li>
+          <li><b>Bank AT1 bonds</b> are perpetual (callable by the issuer). In May 2021 Oman Arab Bank raised $250 million with one at a yield of 7.625%.</li>
+        </ul></div>
     </div>
     <div class="col"><div class="try" data-a="consol" data-u="$" data-hint="Annual interest = face value × coupon rate. A perpetuity is worth C / r."></div></div>
   </div>
@@ -1167,8 +1189,11 @@ table.grid td.tgt{box-shadow:inset 0 0 0 2px var(--c4)}
   <div class="s-head"><div class="eyebrow">Perpetuities · example<span class="tag">Problem</span></div><h2>Example: flat first, then growing</h2></div>
   <div class="s-body wr">
     <div class="col"><p class="prob">Suppose the dividend is expected to be <span class="ed" data-k="gx_d"></span> each year for the first <span class="ed" data-k="gx_k"></span> years and then grow at <span class="ed" data-k="gx_g"></span> a year. What would you pay for this stock if your opportunity cost of capital is <span class="ed" data-k="gx_r"></span>?</p>
-    <div class="tl" data-o="tl" data-step="1"></div></div>
-    <div class="col"><div class="try" data-a="gx" data-u="$" data-hint="The growing perpetuity starts the year after the flat dividends end, so C/(r − g) values it at the end of the flat period. Discount that, and add the flat dividends."></div></div>
+      <div class="tline" data-c="tl0"></div>
+      <div class="rule" data-step="1"><b>Hint:</b> can you apply the growing perpetuity formula at time 0? Why or why not? When can you apply it?</div>
+      <p class="txt" data-step="2" data-o="ans"></p>
+    </div>
+    <div class="col"><div class="try" data-a="gx" data-u="$" data-hint="Find where the dividends start growing at a constant rate. Value that growing perpetuity one year before it starts with C/(r − g), discount it, and add any dividends before it."></div></div>
   </div>
 </section>
 
@@ -1177,7 +1202,7 @@ table.grid td.tgt{box-shadow:inset 0 0 0 2px var(--c4)}
   <div class="s-body one"><div class="col">
     <div class="tline" data-c="tl"></div>
     <ol class="steps">
-      <li data-step="1"><span>The growing perpetuity starts in year <b data-o="k1"></b>, so its value sits at year <b data-o="k"></b>: <span class="tex">TV_k = \frac{C_{k+1}}{r-g}</span>, with</span><div class="inputs" data-o="inp" data-step="2"></div><div class="tex d" data-x="f1" data-step="3"></div></li>
+      <li data-step="1"><span>From year <b data-o="k"></b> on, the dividends are a growing perpetuity, so its value sits one year earlier, at year <b data-o="k1"></b>: <span class="tex">TV_{t-1} = \frac{C_t}{r-g}</span>, with</span><div class="inputs" data-o="inp" data-step="2"></div><div class="tex d" data-x="f1" data-step="3"></div></li>
       <li data-step="4"><span>Discount everything to today and add it up.</span><div class="tex d" data-x="f2"></div></li>
     </ol>
     <div class="results" data-step="4"><div class="res main"><span class="rl">Value of the share</span><span class="rv" data-o="pv"></span></div></div>
@@ -1212,12 +1237,14 @@ table.grid td.tgt{box-shadow:inset 0 0 0 2px var(--c4)}
 
 <section class="slide" data-sec="Discounted cash flow" data-t="DCF in four settings">
   <div class="s-head"><div class="eyebrow">Discounted cash flow</div><h2>The same three steps, four settings</h2></div>
-  <div class="s-body one"><div class="cards">
-    <div class="card" data-step="1"><h3>Stock</h3><p>Buy, hold for two years, and sell.</p><p><b>Cash flows:</b> dividends and the selling price, D<sub>1</sub>, D<sub>2</sub> + P<sub>2</sub></p><p><b>r:</b> R<sub>e</sub>, the cost of equity (required return to shareholders)</p><div class="tex d">P_0 = \frac{D_1}{1+R_e} + \frac{D_2+P_2}{(1+R_e)^2}</div></div>
-    <div class="card" data-step="2"><h3>Bond</h3><p>Buy, hold for two years, and sell or get principal repayment.</p><p><b>Cash flows:</b> coupons and promised repayment</p><p><b>r:</b> R<sub>d</sub>, the cost of debt (required return to lenders, the yield to maturity)</p><div class="tex d">P_0 = \frac{CPN_1}{1+R_d} + \frac{CPN_2+FV_2}{(1+R_d)^2}</div></div>
-    <div class="card" data-step="3"><h3>Firm</h3><p>Operate the firm, collect cash flows, and sell.</p><p><b>Cash flows:</b> free cash flows and terminal value</p><p><b>r:</b> WACC, the weighted average of the after-tax cost of debt and the cost of equity</p><div class="tex d">P_0 = \frac{FCF_1}{1+W} + \frac{FCF_2+TV_2}{(1+W)^2}</div></div>
-    <div class="card" data-step="4"><h3>Project</h3><p>Invest, collect free cash flow, and liquidate or sell.</p><p><b>Cash flows:</b> FCF<sub>0</sub>, FCF<sub>1</sub>, FCF<sub>2</sub> + TV<sub>2</sub></p><p><b>r:</b> WACC</p><div class="tex d">P_0 = FCF_0 + \frac{FCF_1}{1+W} + \frac{FCF_2+TV_2}{(1+W)^2}</div></div>
-  </div><p class="note">W = WACC.</p></div>
+  <div class="s-body one"><div class="col">
+  <div class="legend"><span><i style="background:var(--c2)"></i>cash flows</span><span><i style="background:var(--c3)"></i>value at the end (sale price, repayment, terminal value)</span><span><i style="background:var(--c1)"></i>discount rate r</span></div>
+  <div class="cards">
+    <div class="card" data-step="1"><h3>Stock</h3><p>Buy, hold for two years, and sell.</p><p><b class="kcf">Cash flows:</b> <span class="kcf">dividends</span> and the <span class="ktv">selling price</span>: <span class="kcf">D<sub>1</sub>, D<sub>2</sub></span> + <span class="ktv">P<sub>2</sub></span></p><p><b class="kr">r:</b> <span class="kr">R<sub>e</sub></span>, the cost of equity (required return to shareholders)</p><div class="tex d">P_0 = \frac{\class{kcf}{D_1}}{1+\class{kr}{R_e}} + \frac{\class{kcf}{D_2}+\class{ktv}{P_2}}{(1+\class{kr}{R_e})^2}</div></div>
+    <div class="card" data-step="2"><h3>Bond</h3><p>Buy, hold for two years, and sell or get principal repayment.</p><p><b class="kcf">Cash flows:</b> <span class="kcf">coupons</span> and the <span class="ktv">promised repayment</span></p><p><b class="kr">r:</b> <span class="kr">R<sub>d</sub></span>, the cost of debt (required return to lenders, the yield to maturity)</p><div class="tex d">P_0 = \frac{\class{kcf}{CPN_1}}{1+\class{kr}{R_d}} + \frac{\class{kcf}{CPN_2}+\class{ktv}{FV_2}}{(1+\class{kr}{R_d})^2}</div></div>
+    <div class="card" data-step="3"><h3>Firm</h3><p>Operate the firm, collect cash flows, and sell.</p><p><b class="kcf">Cash flows:</b> <span class="kcf">free cash flows</span> and the <span class="ktv">terminal value</span></p><p><b class="kr">r:</b> <span class="kr">WACC</span>, the weighted average of the after-tax cost of debt and the cost of equity</p><div class="tex d">P_0 = \frac{\class{kcf}{FCF_1}}{1+\class{kr}{W}} + \frac{\class{kcf}{FCF_2}+\class{ktv}{TV_2}}{(1+\class{kr}{W})^2}</div></div>
+    <div class="card" data-step="4"><h3>Project</h3><p>Invest, collect free cash flow, and liquidate or sell.</p><p><b class="kcf">Cash flows:</b> <span class="kcf">FCF<sub>0</sub>, FCF<sub>1</sub>, FCF<sub>2</sub></span> + <span class="ktv">TV<sub>2</sub></span></p><p><b class="kr">r:</b> <span class="kr">WACC</span></p><div class="tex d">P_0 = \class{kcf}{FCF_0} + \frac{\class{kcf}{FCF_1}}{1+\class{kr}{W}} + \frac{\class{kcf}{FCF_2}+\class{ktv}{TV_2}}{(1+\class{kr}{W})^2}</div></div>
+  </div><p class="note" data-step="5">In the formulas, <span class="kr">W</span> = WACC.</p></div></div>
 </section>
 
 <!-- ===================== APPLICATIONS ===================== -->
@@ -1234,18 +1261,32 @@ table.grid td.tgt{box-shadow:inset 0 0 0 2px var(--c4)}
 <section class="slide" data-sec="Applications" data-t="Corporate example: NPV" data-r="npv">
   <div class="s-head"><div class="eyebrow">Applications<span class="tag t3">Solution</span></div><h2>Corporate example</h2></div>
   <div class="s-body one" style="grid-template-rows:auto auto 1fr">
-    <div class="ctls" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))">
-      <div class="ctl" data-k="np_r"></div>
-      <div class="ctl"><label>After the last year</label><div class="seg" data-k="np_tv"></div></div>
-      <div class="ctl" data-k="np_tvc"></div><div class="ctl" data-k="np_tvs"></div><div class="ctl" data-k="np_tvg"></div>
-    </div>
+    <div class="ctls" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr));max-width:420px"><div class="ctl" data-k="np_r"></div></div>
     <div class="tw" data-step="1"><table data-o="tbl"></table></div>
     <div class="s-body wr" style="gap:28px">
-      <div class="col" data-step="2"><div class="formula"><div class="tex d" data-x="f"></div></div><div class="results"><div class="res main"><span class="rl">NPV ($m)</span><span class="rv" data-o="npv"></span></div></div><div class="verdict" data-o="v"></div></div>
+      <div class="col" data-step="2"><p class="txt">Each discount factor is <span class="tex">\frac{1}{(1+r)^t}</span>: the value today of $1 received in year t. Multiply each cash flow by its factor, then add.</p><div class="results"><div class="res main"><span class="rl">NPV ($m)</span><span class="rv" data-o="npv"></span></div></div><div class="verdict" data-o="v"></div></div>
       <div class="col cbox" data-step="3"><div class="cbar"><span class="ctitle">Cash flows: total vs. discounted ($m)</span><button class="replay">↺ Replay</button></div><div class="chart" data-c="c"></div></div>
     </div>
   </div>
 </section>
+
+<section class="slide" data-sec="Applications" data-t="Corporate example: with a perpetuity" data-r="npvp">
+  <div class="s-head"><div class="eyebrow">Applications<span class="tag t3">Solution</span></div><h2>What if the cash flows never end?</h2></div>
+  <div class="s-body">
+    <div class="col">
+      <p class="txt">Suppose that after year 4 the product earns <span class="ed" data-k="np_tvc"></span> a year forever, starting in year <span class="ed" data-k="np_tvs"></span> and growing at <span class="ed" data-k="np_tvg"></span>. The rate is <span class="ed" data-k="np_r"></span>.</p>
+      <div data-step="1"><div class="tlbl">1. The cash flows, forever</div><div class="tline" data-c="tl1"></div></div>
+      <div data-step="3"><div class="tlbl">3. The future years are now inside TV, so drop them</div><div class="tline" data-c="tl2"></div></div>
+    </div>
+    <div class="col">
+      <div data-step="2"><div class="tlbl">2. Capture them in a terminal value</div><div class="formula"><div class="tex d" data-x="f"></div></div><p class="note" data-o="tvn"></p></div>
+      <div class="tw" data-step="4"><table data-o="tbl"></table></div>
+      <div class="results" data-step="5"><div class="res main"><span class="rl">NPV ($m)</span><span class="rv" data-o="npv"></span></div></div>
+      <div class="verdict" data-o="v" data-step="5"></div>
+    </div>
+  </div>
+</section>
+
 
 <section class="slide" data-sec="Applications" data-t="Corporate example: Excel">
   <div class="s-head"><div class="eyebrow">Applications<span class="tag t2">Excel</span></div><h2>NPV in Excel</h2></div>
@@ -1397,7 +1438,7 @@ table.grid td.tgt{box-shadow:inset 0 0 0 2px var(--c4)}
 </aside>
 <div id="toast" hidden></div>
 <script>
-window.MathJax = { startup:{ typeset:false }, svg:{ fontCache:'local' }, options:{ enableMenu:false } };
+window.MathJax = { loader:{ load:['[tex]/html'] }, tex:{ packages:{'[+]':['html']} }, startup:{ typeset:false }, svg:{ fontCache:'local' }, options:{ enableMenu:false } };
 </script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js" async id="mjx"></script>
 <script>
@@ -1414,10 +1455,10 @@ const FREQ = [[1,'Annual'],[2,'Semiannual'],[4,'Quarterly'],[12,'Monthly'],[52,'
 const PARAMS = {
   sc_rf:['Risk-free rate',.04,0,.10,.25,'%'], sc_rp:['Risk premium',.01,0,.15,.25,'%'],
   fv_pv:['Amount today (PV)',1,0,100,.05,'$'], fv_r:['Rate r',.05,0,.25,.25,'%'], fv_n:['Years N',2,1,30,1,'yr'],
-  pc_r1:['Rate A',0,0,.25,.5,'%'], pc_r2:['Rate B',.05,0,.25,.5,'%'], pc_r3:['Rate C',.07,0,.25,.5,'%'], pc_r4:['Rate D',.10,0,.25,.5,'%'], pc_n:['Horizon (years)',50,5,100,5,'yr'],
+  pc_r1:['Rate A',0,0,.25,.5,'%'], pc_r2:['Rate A',.05,0,.25,.5,'%'], pc_r3:['Rate C',.07,0,.25,.5,'%'], pc_r4:['Rate B',.10,0,.25,.5,'%'], pc_n:['Horizon (years)',50,5,100,5,'yr'],
   pc_rev:{type:'bool',def:false},
   pv_fv:['Future amount (FV)',1.05,0,100,.05,'$'], pv_r:['Rate r',.05,0,.25,.25,'%'], pv_n:['Years N',2,1,50,1,'yr'],
-  dc_r1:['Rate A',0,0,.25,.5,'%'], dc_r2:['Rate B',.05,0,.25,.5,'%'], dc_r3:['Rate C',.07,0,.25,.5,'%'], dc_r4:['Rate D',.10,0,.25,.5,'%'], dc_n:['Horizon (years)',50,5,100,5,'yr'],
+  dc_r1:['Rate A',0,0,.25,.5,'%'], dc_r2:['Rate A',.05,0,.25,.5,'%'], dc_r3:['Rate C',.07,0,.25,.5,'%'], dc_r4:['Rate B',.10,0,.25,.5,'%'], dc_n:['Horizon (years)',50,5,100,5,'yr'],
   dc_rev:{type:'bool',def:false},
   it_amt:['Saving ($m)',1.2,0,10,.1,'$m'], it_r:['Rate r',.10,0,.25,.5,'%'], it_t1:['On-time year',2,1,10,1,'yr'], it_t2:['Delayed year',3,1,10,1,'yr'],
   an_c:['Payment C',100,0,1000,10,'$'], an_r:['Rate r',.08,0,.25,.25,'%'], an_n:['Periods N',3,1,40,1,''],
@@ -1490,7 +1531,7 @@ const earOf = (apr,m) => Math.pow(1+apr/m,m)-1;
 const freqName = m => (FREQ.find(f=>f[0]===m)||[0,m===26?'biweekly':m+'×/yr'])[1].toLowerCase();
 
 /* ---------------- answers to the practice problems ---------------- */
-const gxValue = v => { const {gx_d:d,gx_k:k,gx_g:g,gx_r:r}=v; if (g>=r) return NaN; return d*pvaf(r,k) + d*(1+g)/(r-g)/Math.pow(1+r,k); };
+const gxValue = v => { const {gx_d:d,gx_k:k,gx_g:g,gx_r:r}=v; if (g>=r) return NaN; return d*pvaf(r,k-1) + d/(r-g)/Math.pow(1+r,k-1); };
 const npv0 = v => [v.np_c0,v.np_c1,v.np_c2,v.np_c3,v.np_c4].reduce((a,c,t)=>a+c/Math.pow(1+v.np_r,t),0);
 const poscoNPV = (v,q=v.po_r) => -v.po_cost + v.po_cf*pvaf(q,v.po_n) - (v.po_cl/q)/Math.pow(1+q,v.po_n);
 function retire(v){ const a0=v.re_age, R=Math.max(v.re_ret,a0+1), E=Math.max(v.re_end,R+1); let b=0; const pts=[[a0,0]];
@@ -1516,6 +1557,7 @@ const ANS = {
   posco: v => poscoNPV(v),
   ret: v => retire(v).W,
   apple: v => appleVal(v).P,
+  svaq: () => 'Annuity factor',
   pr1: v => [v.p1_c1,v.p1_c2,v.p1_c3,v.p1_c4].reduce((a,c,i)=>a+c/Math.pow(1+v.p1_r,i+1),0),
   pr2: v => v.p2_pmt*pvaf(v.p2_apr/12, v.p2_n),
   pr3: v => v.p3_c*fvaf(v.p3_r, v.p3_n),
@@ -1960,7 +2002,7 @@ function buildControls(root){
   });
   root.querySelectorAll('.seg[data-k]').forEach(el=>{ const k=el.dataset.k, s=spec(k); el.innerHTML = s.opts.map(([v,l])=>`<button type="button" data-bind="${k}" data-v="${v}">${l}</button>`).join(''); });
   root.querySelectorAll('.tog[data-k]').forEach(el=>{ el.dataset.bind=el.dataset.k; el.dataset.label=el.textContent; });
-  root.querySelectorAll('.try:not([data-sheet])').forEach(el=>{
+  root.querySelectorAll('.try:not([data-sheet]):not([data-nosheet])').forEach(el=>{
     const a=el.dataset.a, k='tx_'+a+'_'+(uid++);
     const keys = el.dataset.givens ? el.dataset.givens.split(',') : [...new Set([...root.querySelectorAll('.edi[data-bind], .seg[data-k]')].map(e=>e.dataset.bind||e.dataset.k))];
     const cells={}; keys.forEach((key,i)=>{ cells['A'+(i+1)]=spec(key).label||key; cells['B'+(i+1)]='{'+key+'}'; });
@@ -1994,7 +2036,7 @@ function checkTry(el, given){
   const n = (+el.dataset.tries||0)+1; el.dataset.tries=n; el.dataset.exp=String(exp);
   fb.className='tryfb '+(ok?'ok':'no');
   const u=el.dataset.u, shown = el.dataset.choices ? (el.dataset.cpre||'')+exp : u==='$' ? money(exp,2) : u==='%' ? pct(exp,2) : u==='$m' ? (exp<0?'−':'')+'$'+num(Math.abs(exp),2)+'m' : num(exp,2)+(u?' '+u:'');
-  fb.textContent = ok ? `Correct: ${shown}.` : `Not quite. ${el.dataset.hint||''}${n>=2?' The worked solution is on the next slide.':''}`;
+  fb.textContent = ok ? `Correct: ${shown}.${el.dataset.why?' '+el.dataset.why:''}` : `Not quite. ${el.dataset.hint||''}${n>=2?' The worked solution is on the next slide.':''}`;
   logResponse(el.dataset.sheet||a, ok);
 }
 document.addEventListener('click', e=>{
@@ -2101,9 +2143,9 @@ function lineChart(o){
     const clip = p => [X(p[0]).toFixed(1), Math.max(m.t-4, Y(p[1])).toFixed(1)];
     if (se.area) s += `<path class="area" d="M${X(pts[0][0])},${Y(Math.max(ymin,0))} ${pts.map(p=>'L'+clip(p).join(',')).join(' ')} L${X(pts[pts.length-1][0])},${Y(Math.max(ymin,0))}Z" fill="${se.c}" fill-opacity=".14"/>`;
     s += `<polyline class="ln" ${se.dash?'stroke-dasharray="6 5"':'pathLength="1"'} fill="none" stroke="${se.c}" stroke-width="${se.w||2.5}" stroke-linejoin="round" points="${pts.map(p=>clip(p).join(',')).join(' ')}"/>`;
-    if (o.endLabels && se.label){ const p=pts[pts.length-1]; s += `<text x="${X(p[0])+6}" y="${Math.max(m.t+8,Y(p[1])+4)}" class="lab mk" style="fill:${se.c}">${esc(se.label)}</text>`; }
+    if (o.endLabels && se.label){ const p=pts[pts.length-1]; s += `${o.labelStep?`<g data-step="${o.labelStep}">`:''}<text x="${X(p[0])+6}" y="${Math.max(m.t+8,Y(p[1])+4)}" class="lab mk" style="fill:${se.c}">${esc(se.label)}</text>${o.labelStep?'</g>':''}`; }
   }
-  for (const mk of (o.marks||[])) if (isFinite(mk.y) && mk.y>=ymin && mk.y<=ymax) s += `<g class="mk"><circle cx="${X(mk.x)}" cy="${Y(mk.y)}" r="5.5" fill="${mk.c||'var(--accent)'}" stroke="var(--paper)" stroke-width="2"/>${mk.label?`<text x="${X(mk.x)+(mk.left?-10:10)}" y="${Y(mk.y)-9}" text-anchor="${mk.left?'end':'start'}" class="lab">${esc(mk.label)}</text>`:''}</g>`;
+  for (const mk of (o.marks||[])) if (isFinite(mk.y) && mk.y>=ymin && mk.y<=ymax) s += `<g class="mk"><circle cx="${X(mk.x)}" cy="${Y(mk.y)}" r="5.5" fill="${mk.c||'var(--accent)'}" stroke="var(--paper)" stroke-width="2"/>${mk.label?`<text x="${X(mk.x)+(mk.left?-10:10)}" y="${Y(mk.y)+(mk.below?20:-9)}" text-anchor="${mk.left?'end':'start'}" class="lab">${esc(mk.label)}</text>`:''}</g>`;
   return s+'</svg>';
 }
 function barChart(o){
@@ -2143,7 +2185,7 @@ function timeline(o){
   let yy=yA+32;
   if (o.box){ const b=o.box, x1=X(b.a)-18, x2=X(b.b)+18;
     s+=`<g data-step="${b.step||0}"><rect x="${x1}" y="${yy}" width="${x2-x1}" height="26" rx="6" fill="none" style="stroke:var(--c3)" stroke-width="1.5"/>`;
-    ts.filter(t=>typeof t==='number' && t>=b.a && t<=b.b).forEach(t=>{ s+=`<text x="${X(t)}" y="${yy+17}" text-anchor="middle" class="bl">${t-b.a}</text>`; });
+    ts.filter(t=>typeof t==='number' && t>=b.a && t<=b.b).forEach(t=>{ s+=`<text x="${X(t)}" y="${yy+17}" text-anchor="middle" class="bl">${t-(b.from??b.a)}</text>`; });
     s+=`<text x="${x1-8}" y="${yy+17}" text-anchor="end" class="bl">${esc(b.label)}</text></g>`; yy+=36; }
   (o.arrows||[]).forEach((a,i)=>{ const d=yy+14+i*28, x1=X(a.from), x2=X(a.to);
     s+=`<g data-step="${a.step||0}"><path d="M${x1},${yA+26} V${d} H${x2+0.01} V${yA+28}" fill="none" style="stroke:var(--c2)" stroke-width="1.6" marker-end="url(#${id})"/><text x="${Math.min(x1,x2)+10}" y="${d-6}" text-anchor="start" class="al">${esc(a.label)}</text></g>`; });
@@ -2155,6 +2197,24 @@ const shortM = x => Math.abs(x)>=1e6 ? '$'+num(x/1e6,2)+'m' : Math.abs(x)>=1e3 ?
 
 /* ---------------- slide renderers ---------------- */
 const R = {
+npvp(s,v){ const r=v.np_r, cfs=[v.np_c0,v.np_c1,v.np_c2,v.np_c3,v.np_c4], S0=v.np_tvs, g=v.np_tvg, C1=v.np_tvc, tvAt=S0-1;
+  const cfAt=t=> t<=4 ? cfs[t] : 0, last=Math.min(S0+2,12), perp=t=> C1*Math.pow(1+g,t-S0);
+  const cfl=t=> t<S0 ? num(cfAt(t),2) : num(perp(t),2);
+  C(s,'tl1', timeline({ts:range(0,last), cf:cfl, ell:true, padL:60, box:{a:S0,b:last,from:tvAt,label:'',step:1}, arrows:[{from:S0,to:tvAt,label:'TV',step:2}]}));
+  const ok=r>g, tv= ok ? C1/(r-g) : NaN;
+  X(s,'f', ok ? `TV_{${tvAt}} = \\dfrac{C_{${S0}}}{r-g} = \\dfrac{${T(C1)}}{${T(r,4)} - ${T(g,4)}} = ${T(tv)}\\text{m}` : `g \\ge r: \\text{ the terminal value is not defined}`);
+  O(s,'tvn', ok ? `TV at year ${tvAt} is the value, at that date, of every cash flow from year ${S0} on. It is added to year ${tvAt}'s cash flow.` : '');
+  C(s,'tl2', timeline({ts:range(0,tvAt), cf:t=> t===tvAt && ok ? num(cfAt(t),2)+' + '+num(tv,2) : num(cfAt(t),2)}));
+  const years=range(0,tvAt), tot=years.map(t=>cfAt(t)+(t===tvAt&&ok?tv:0)), df=years.map(t=>1/Math.pow(1+r,t)), dc=tot.map((x,t)=>x*df[t]), npv=dc.reduce((a,b)=>a+b,0);
+  const fmt=x=> x<0?`<span class="neg">(${num(-x,2)})</span>`:num(x,2);
+  O(s,'tbl', '<tr><th>Year</th>'+years.map(t=>`<th>${t}</th>`).join('')+'</tr>'
+    +'<tr><td>Cash flow</td>'+years.map(t=>`<td>${fmt(cfAt(t))}</td>`).join('')+'</tr>'
+    +'<tr><td>Terminal value</td>'+years.map(t=>`<td>${t===tvAt&&ok?num(tv,2):''}</td>`).join('')+'</tr>'
+    +'<tr><td>Total</td>'+tot.map(x=>`<td>${fmt(x)}</td>`).join('')+'</tr>'
+    +'<tr><td>Discount factor</td>'+df.map((x,t)=>`<td><span class="dff">${t===0?'1/1':`1/${num(1+r,2)}<sup>${t}</sup>`}</span>${num(x,4)}</td>`).join('')+'</tr>'
+    +'<tr><td>Discounted</td>'+dc.map(x=>`<td>${fmt(x)}</td>`).join('')+'</tr>');
+  O(s,'npv', ok ? (npv<0?`(${num(-npv,2)})`:num(npv,2)) : '—');
+  VD(s, npv>=0?'good':'bad', !ok ? '' : npv>=0 ? `With the perpetuity, NPV is positive: allocate the money.` : `Even with the perpetuity, NPV is negative.`); },
 pr1(s,v){ const cs=[v.p1_c1,v.p1_c2,v.p1_c3,v.p1_c4], r=v.p1_r, pvs=cs.map((c,i)=>c/Math.pow(1+r,i+1)), pv=pvs.reduce((a,b)=>a+b,0);
   C(s,'tl0', timeline({ts:range(0,4), cf:t=>t?num(cs[t-1],0):'PV?'}));
   C(s,'tl', timeline({ts:range(0,4), cf:t=>t?num(cs[t-1],0):'', arrows:cs.map((c,i)=>({from:i+1,to:0,label:money(pvs[i]),step:3})).reverse()}));
@@ -2169,6 +2229,7 @@ pr2(s,v){ const r=v.p2_apr/12, n=v.p2_n, a=pvaf(r,n), pv=v.p2_pmt*a;
 pr3(s,v){ const {p3_c:c,p3_n:n,p3_r:r}=v, f=fvaf(r,n), fv=c*f;
   INP(s,'inp',[['C',money(c,0),'deposit each year'],['r',pct(r,2),'interest rate'],['N',String(n),'deposits']]);
   X(s,'f1',`FV_{${n}} = ${T$(c,0)} \\times \\dfrac{(1+${T(r,4)})^{${n}} - 1}{${T(r,4)}} = ${T$(c,0)} \\times ${T(f,4)} = ${T$(fv)}`);
+  C(s,'tl', timeline({ts: n<=6 ? range(0,n) : [0,1,2,'…',n-1,n], cf:t=> t==='…'||t===0 ? '' : num(c,0), arrows:[{from:1,to:n,label:'FV is measured at year '+n+', the last deposit'}]}));
   O(s,'fv',money(fv)); O(s,'dep',money(c*n,0)); OH(s,'xl',`Excel: <b>=FV(${pctT(r)}, ${n}, -${c})</b> → ${money(fv)}`); },
 pr9(s,v){ const {p9_c:c,p9_n:n,p9_s:k,p9_r:r}=v, a=pvaf(r,n), pk=c*a, pv=pk/Math.pow(1+r,k-1);
   const last=Math.min(k+n-1,k+3), ts=range(0,Math.min(last,12));
@@ -2202,47 +2263,58 @@ pr8(s,v){ const {p8_cost:K,p8_sav:c,p8_n:n,p8_r:r}=v, a=pvaf(r,n), npv=-K+c*a;
   INP(s,'inp',[['Cost',money(K,0),'paid today'],['C',money(c,0),'savings each year'],['r',pct(r,2),'cost of capital'],['N',String(n),'years']]);
   X(s,'f1',`NPV = -${T$(K,0)} + ${T$(c,0)} \\times ${T(a,4)} = -${T$(K,0)} + ${T$(c*a)} = ${T$(npv)}`);
   O(s,'npv',money(npv)); VD(s, npv>=0?'good':'bad', npv>=0 ? `Buy it: the savings are worth ${money(npv,0)} more than the machine costs.` : `Don't buy it: the savings are worth ${money(-npv,0)} less than the machine costs. Over ${n} years you save ${money(c*n,0)}, but in today's dollars that is only ${money(c*a,0)}.`); },
-shortcut(s,v){ const r=v.sc_rf+v.sc_rp; O(s,'r',pct(r));
-  C(s,'bars', barChart({cats:['Risk-free rate','Risk premium','r'], groups:[{v:[v.sc_rf*100,v.sc_rp*100,r*100], c:'var(--c2)'}], labels:[pct(v.sc_rf),pct(v.sc_rp),pct(r)], yf:x=>x+'%', h:200})); },
+shortcut(s,v){ const rf=v.sc_rf, rp=v.sc_rp, r=rf+rp; O(s,'r',pct(r));
+  const W=560,H=320,m={l:56,r:16,t:16,b:40}, xmax=2, ymax=Math.max(.02, rf+rp*xmax)*1.15;
+  const X=x=>m.l+x/xmax*(W-m.l-m.r), Y=y=>H-m.b-y/ymax*(H-m.t-m.b);
+  let g=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Security market line">`;
+  for (const t of ticks(0,ymax,5).t) if (t<=ymax) g+=`<line class="gl" x1="${m.l}" x2="${W-m.r}" y1="${Y(t)}" y2="${Y(t)}"/><text x="${m.l-8}" y="${Y(t)+4}" text-anchor="end">${pct(t,0)}</text>`;
+  g+=`<path d="M${X(0)},${Y(0)} L${X(xmax)},${Y(0)} L${X(xmax)},${Y(rf)} L${X(0)},${Y(rf)} Z" style="fill:var(--c2)" fill-opacity=".16" class="area"/>`;
+  g+=`<path d="M${X(0)},${Y(rf)} L${X(xmax)},${Y(rf+rp*xmax)} L${X(xmax)},${Y(rf)} Z" style="fill:var(--c1)" fill-opacity=".14" class="area"/>`;
+  g+=`<text x="${X(1)-12}" y="${Y(rf/2)+4}" text-anchor="end" style="fill:var(--c2)" class="lab mk">Reward for patience ${pct(rf,1)}</text>`;
+  g+=`<text x="${X(1)-12}" y="${Y(rf+rp/2)+4}" text-anchor="end" style="fill:var(--c1)" class="lab mk">Risk premium ${pct(rp,1)}</text>`;
+  g+=`<line x1="${X(0)}" x2="${X(xmax)}" y1="${Y(rf)}" y2="${Y(rf)}" style="stroke:var(--c2)" stroke-dasharray="5 4" stroke-width="1.5"/>`;
+  g+=`<polyline class="ln" pathLength="1" fill="none" style="stroke:var(--ink)" stroke-width="2.5" points="${X(0)},${Y(rf)} ${X(xmax)},${Y(rf+rp*xmax)}"/>`;
+  g+=`<g class="mk"><line x1="${X(1)}" x2="${X(1)}" y1="${Y(0)}" y2="${Y(r)}" style="stroke:var(--muted)" stroke-dasharray="3 3"/>`;
+  g+=`<line x1="${X(1)-5}" x2="${X(1)-5}" y1="${Y(0)}" y2="${Y(rf)}" style="stroke:var(--c2)" stroke-width="5"/><line x1="${X(1)-5}" x2="${X(1)-5}" y1="${Y(rf)}" y2="${Y(r)}" style="stroke:var(--c1)" stroke-width="5"/>`;
+  g+=`<circle cx="${X(1)}" cy="${Y(r)}" r="6" style="fill:var(--accent)" stroke="var(--paper)" stroke-width="2"/><text x="${X(1)+10}" y="${Y(r)+18}" class="lab">Similar substitute: r = ${pct(r,1)}</text>`;
+  g+=`<text x="${X(1.6)}" y="${Y(rf)+16}" class="lab" style="fill:var(--c2)">r<tspan baseline-shift="sub" font-size="9">f</tspan> = ${pct(rf,1)}</text></g>`;
+  g+=`<line class="ax" x1="${m.l}" x2="${W-m.r}" y1="${Y(0)}" y2="${Y(0)}"/><line class="ax" x1="${m.l}" x2="${m.l}" y1="${m.t}" y2="${Y(0)}"/>`;
+  g+=`<text x="${(m.l+W-m.r)/2}" y="${H-10}" text-anchor="middle">Risk →</text><text x="${m.l-40}" y="${m.t+4}" text-anchor="start">r</text>`;
+  C(s,'sml', g+'</svg>'); },
 fv1(s,v){ const fv=v.fv_pv*(1+v.fv_r); O(s,'pv',money(v.fv_pv)); O(s,'fv',money(fv));
   X(s,'f',`FV_1 = PV(1+r) = ${T$(v.fv_pv)} \\times (1 + ${TP(v.fv_r)}) = ${T$(fv)}`); },
-fvn(s,v){ const {fv_pv:pv, fv_r:r, fv_n:n}=v, fv=pv*Math.pow(1+r,n);
-  const body=[]; for(let t=1;t<=n;t++){ const st=pv*Math.pow(1+r,t-1); body.push([t, money(st), money(pv*r), money(st*r-pv*r), money(st*(1+r))]); }
-  O(s,'tbl', rows(['Year','Start','Interest on PV','Interest on interest','End'], body));
+fvn(s,v){ const {fv_pv:pv, fv_r:r, fv_n:n}=v, fv=pv*Math.pow(1+r,n), d = pv<100 ? 4 : 2;
+  const body=[]; for(let t=1;t<=n;t++){ const st=pv*Math.pow(1+r,t-1); body.push([t, money(st,d), money(pv*r,d), money(st*r-pv*r,d), money(st*(1+r),d)]); }
+  O(s,'tbl', rows(['Year','Start',`Interest on ${money(pv,pv<100?2:0)}`,'Interest on interest','End'], body));
+  O(s,'y2', n>=2 ? `Year 2: the original ${money(pv,2)} earns ${money(pv*r,d)}, and the ${money(pv*r,d)} of interest earned in year 1 earns another ${money(pv*r*r,d)} (${pct(r,1)} of ${money(pv*r,d)}). You end year 2 with ${money(pv*Math.pow(1+r,2),d)}.` : '');
   INP(s,'inp',[['PV',money(pv),'amount today'],['r',pct(r,2),'rate per year'],['N',String(n),'years']]);
-  X(s,'f',`FV_{${n}} = ${T$(pv)} \\times (1+${TP(r)})^{${n}} = ${T$(fv)}`);
-  OH(s,'xl',`Excel: <b>=${pv}*(1+${pctT(r)})^${n}</b> &nbsp;→ ${money(fv)} &nbsp;&nbsp; or &nbsp;<b>=FV(${pctT(r)}, ${n}, 0, -${pv})</b>`);
-  const cats=range(0,n).map(String), base=cats.map(()=>pv), si=cats.map((_,t)=>pv*r*t), ii=cats.map((_,t)=>pv*Math.pow(1+r,t)-pv-pv*r*t);
-  C(s,'c', barChart({cats, stacked:true, groups:[{v:base,c:NEU,stroke:NEUS},{v:si,c:'var(--c2)'},{v:ii,c:'var(--c1)'}], yf:x=>money(x, pv>=100?0:2), xl:'Year', h:290}));
-  const share = (fv-pv)>0 ? (fv-pv-pv*r*n)/(fv-pv) : 0;
-  O(s,'take', `After ${n} years, ${pct(share,0)} of the interest earned is interest on interest.`); },
-powc(s,v){ const rs=[v.pc_r1,v.pc_r2,v.pc_r3,v.pc_r4], N=v.pc_n, cs=['var(--c1)','var(--c2)','var(--c3)','var(--c4)'], L='ABCD';
-  const series=rs.map((r,i)=>({pts:range(0,N,Math.max(1,N/100)).map(t=>[t,Math.pow(1+r,t)]), c:cs[i], label: v.pc_rev? pct(r,1) : 'Line '+L[i]}));
-  C(s,'c', lineChart({x:[0,N], series, endLabels:true, yf:x=>'$'+num(x, x<10?1:0), xl:'Years', h:320, aria:'Future value of one dollar'}));
-  O(s,'tbl', rows(['Line','Rate',`FV of $1 at year ${N}`], rs.map((r,i)=>[`<span style="color:${cs[i]};font-weight:600">${L[i]}</span>`, v.pc_rev? pct(r,1) : '?', money(Math.pow(1+r,N))])));
-  const hi=Math.max(...rs), lo=Math.min(...rs.filter(r=>r>0).concat([hi]));
-  O(s,'take', `At ${pct(hi,0)}, $1 grows to ${money(Math.pow(1+hi,N),0)} in ${N} years; at ${pct(lo,0)}, only to ${money(Math.pow(1+lo,N),0)}.`); },
+  X(s,'f',`FV_{${n}} = ${T$(pv)} \\times (1+${TP(r)})^{${n}} = ${T$(fv,d)}`);
+  OH(s,'xl',`Excel: <b>=${pv}*(1+${pctT(r)})^${n}</b> &nbsp;→ ${money(fv,d)} &nbsp;&nbsp; or &nbsp;<b>=FV(${pctT(r)}, ${n}, 0, -${pv})</b>`);
+  const N=Math.max(20,n*2), simple=range(0,N).map(t=>[t,pv*(1+r*t)]), comp=range(0,N).map(t=>[t,pv*Math.pow(1+r,t)]);
+  C(s,'c', lineChart({x:[0,N], series:[{pts:simple,c:'var(--c2)'},{pts:comp,c:'var(--c1)',area:true}], marks:[{x:n,y:fv,label:'compound '+money(fv,2),left:true},{x:n,y:pv*(1+r*n),c:'var(--c2)',label:'simple '+money(pv*(1+r*n),2),below:true}], yf:x=>money(x, pv>=100?0:2), xl:'Years', h:280}));
+  O(s,'take', `After ${n} years, compounding gives ${money(fv-pv*(1+r*n),d)} more than simple interest. After ${N} years the gap is ${money(pv*Math.pow(1+r,N)-pv*(1+r*N),2)}.`); },
+powc(s,v){ const rs=[v.pc_r2,v.pc_r4], N=v.pc_n, cs=['var(--c2)','var(--c1)'];
+  const series=rs.map((r,i)=>({pts:range(0,N,Math.max(1,N/100)).map(t=>[t,Math.pow(1+r,t)]), c:cs[i], label:'r = '+pct(r,1)}));
+  C(s,'c', lineChart({x:[0,N], series, endLabels:true, labelStep:1, mr:80, yf:x=>'$'+num(x, x<10?1:0), xl:'Years', h:340, aria:'Future value of one dollar'})); },
 pv1(s,v){ const pv=v.pv_fv/(1+v.pv_r), df=1/(1+v.pv_r); O(s,'pv',money(pv,4)); O(s,'df',num(df,4));
   X(s,'f',`PV = \\dfrac{FV_1}{1+r} = \\dfrac{${T$(v.pv_fv)}}{1 + ${TP(v.pv_r)}} = ${T$(pv,4)}`); },
-pvn(s,v){ const {pv_fv:f, pv_r:r, pv_n:n}=v, pv=f/Math.pow(1+r,n);
+pvn(s,v){ const {pv_fv:f, pv_r:r, pv_n:n}=v, pv=f/Math.pow(1+r,n), r0=DEF.pv_r, n0=DEF.pv_n;
   O(s,'pv',money(pv,4)); O(s,'df',num(1/Math.pow(1+r,n),4));
   INP(s,'inp',[['FV<sub>N</sub>',money(f),'received later'],['r',pct(r,2),'discount rate'],['N',String(n),'years to wait']]);
   X(s,'f',`PV = \\dfrac{${T$(f)}}{(1+${TP(r)})^{${n}}} = ${T$(pv,4)}`);
-  const Nmax=Math.max(30,n*2);
-  C(s,'vn', lineChart({x:[0,Nmax], series:[{pts:range(0,Nmax).map(t=>[t,f/Math.pow(1+r,t)]), c:'var(--c2)', area:true}], marks:[{x:n,y:pv,label:'N = '+n}], y:[0,Math.max(f,1e-9)*1.05], yf:x=>money(x,f>=100?0:2), xl:'Years until received', h:180}));
+  const Nmax=Math.max(30,n*2), ymax=Math.max(f,1e-9)*1.05, yf=x=>money(x,f>=100?0:2);
+  C(s,'vn', lineChart({x:[0,Nmax], series:[{pts:range(0,Nmax).map(t=>[t,f/Math.pow(1+r0,t)]), c:'var(--muted)', dash:true, w:1.5},{pts:range(0,Nmax).map(t=>[t,f/Math.pow(1+r,t)]), c:'var(--c2)', area:true}], marks:[{x:n,y:pv,label:'N = '+n+': '+money(pv,2)}], y:[0,ymax], yf, xl:'Years until received (curve drawn at r = '+pct(r,1)+')', h:165}));
   const rmax=Math.max(.2, r*1.5);
-  C(s,'vr', lineChart({x:[0,rmax], series:[{pts:range(0,rmax,rmax/80).map(q=>[q,f/Math.pow(1+q,n)]), c:'var(--c1)', area:true}], marks:[{x:r,y:pv,label:'r = '+pct(r,1)}], y:[0,Math.max(f,1e-9)*1.05], yf:x=>money(x,f>=100?0:2), xf:x=>pct(x,0), xl:'Discount rate', h:180}));
+  C(s,'vr', lineChart({x:[0,rmax], series:[{pts:range(0,rmax,rmax/80).map(q=>[q,f/Math.pow(1+q,n0)]), c:'var(--muted)', dash:true, w:1.5},{pts:range(0,rmax,rmax/80).map(q=>[q,f/Math.pow(1+q,n)]), c:'var(--c1)', area:true}], marks:[{x:r,y:pv,label:'r = '+pct(r,1)+': '+money(pv,2)}], y:[0,ymax], yf, xf:x=>pct(x,0), xl:'Discount rate (curve drawn at N = '+n+')', h:165}));
   const half = r>0 ? Math.log(2)/Math.log(1+r) : Infinity;
-  O(s,'take', r>0 ? `At ${pct(r,1)}, money received about ${num(half,0)} years from now is worth half as much today.` : 'With r = 0, waiting costs nothing.'); },
-disc(s,v){ const rs=[v.dc_r1,v.dc_r2,v.dc_r3,v.dc_r4], N=v.dc_n, cs=['var(--c1)','var(--c2)','var(--c3)','var(--c4)'], L='ABCD';
-  const series=rs.map((r,i)=>({pts:range(0,N,Math.max(1,N/100)).map(t=>[t,1/Math.pow(1+r,t)]), c:cs[i], label: v.dc_rev? pct(r,1) : 'Line '+L[i]}));
-  C(s,'c', lineChart({x:[0,N], series, y:[0,1.1], endLabels:true, yf:x=>'$'+num(x,1), xl:'Years until received', h:320, aria:'Present value of one dollar'}));
-  O(s,'tbl', rows(['Line','Rate',`PV of $1 at year ${Math.min(N,10)}`,`at year ${N}`], rs.map((r,i)=>[`<span style="color:${cs[i]};font-weight:600">${L[i]}</span>`, v.dc_rev? pct(r,1) : '?', money(1/Math.pow(1+r,Math.min(N,10)),4), money(1/Math.pow(1+r,N),4)])));
-  const hi=Math.max(...rs);
-  O(s,'take', `At ${pct(hi,0)}, $1 received in ${N} years is worth ${money(1/Math.pow(1+hi,N),3)} today.`); },
+  O(s,'take', r>0 ? `At ${pct(r,1)}, money received about ${num(half,0)} years from now is worth half as much today. A longer wait or a higher rate both lower the PV.` : 'With r = 0, waiting costs nothing.'); },
+disc(s,v){ const rs=[v.dc_r2,v.dc_r4], N=v.dc_n, cs=['var(--c2)','var(--c1)'];
+  const series=rs.map((r,i)=>({pts:range(0,N,Math.max(1,N/100)).map(t=>[t,1/Math.pow(1+r,t)]), c:cs[i], label:'r = '+pct(r,1)}));
+  C(s,'c', lineChart({x:[0,N], series, y:[0,1.1], endLabels:true, labelStep:1, mr:80, yf:x=>'$'+num(x,1), xl:'Years until received', h:340, aria:'Present value of one dollar'})); },
 it(s,v){ const a=v.it_amt, r=v.it_r, t1=v.it_t1, t2=v.it_t2, p1=a/Math.pow(1+r,t1), p2=a/Math.pow(1+r,t2);
   INP(s,'inp',[['FV<sub>N</sub>','$'+num(a,1)+'m','the saving'],['r',pct(r,1),'r on a similar substitute'],['N',t1+' (or '+t2+' if delayed)','years until it arrives']]);
   const last=Math.max(t1,t2,3);
+  C(s,'tl0', timeline({ts:range(0,Math.max(t1,3)), cf:t=> t===0 ? 'PV = ?' : t===t1 ? '$'+num(a,2)+'m' : ''}));
   C(s,'tl', timeline({ts:range(0,last), cf:t=> t===t1 ? '$'+num(a,1)+'m' : t===t2 ? '(delayed)' : '', arrows:[{from:t1,to:0,label:'PV = '+money(p1*1e6,0),step:3},{from:t2,to:0,label:'PV = '+money(p2*1e6,0),step:4}]}));
   X(s,'f1',`${T(a,1)}\\text{m} \\times \\dfrac{1}{(1+${TP(r,1)})^{${t1}}} = ${T(a,1)}\\text{m} \\times ${T(1/Math.pow(1+r,t1),3)} = \\$${T(p1*1e6,0)}`);
   X(s,'f2',`${T(a,1)}\\text{m} \\times \\dfrac{1}{(1+${TP(r,1)})^{${t2}}} = ${T(a,1)}\\text{m} \\times ${T(1/Math.pow(1+r,t2),3)} = \\$${T(p2*1e6,0)}`);
@@ -2261,7 +2333,7 @@ af(s,v){ const {an_c:c, an_r:r, an_n:n}=v, a=pvaf(r,n);
   INP(s,'inp',[['C',money(c),'each payment'],['r',pct(r,2)+' = '+trim(r,4),'interest rate'],['N',String(n),'number of payments']]);
   X(s,'f', r===0 ? `PV = ${T$(c)} \\times ${n} = ${T$(c*n)}` : `PV = ${T$(c)} \\times \\dfrac{1}{${T(r,4)}}\\left[1 - \\dfrac{1}{(1+${T(r,4)})^{${n}}}\\right] = ${T$(c)} \\times ${T(a,4)} = ${T$(c*a)}`);
   O(s,'af', num(a,4)); O(s,'pv', money(c*a));
-  O(s,'z', r===0 ? 'With r = 0 there is no discount for time, so the annuity factor is just N and the PV is C × N.' : 'With r = 0 the factor would be N = '+n+', because nothing is discounted.');
+  OH(s,'z', `<b>Careful when r = 0:</b> the final formula divides by r, so it can’t be used (1/0 is undefined). Go back to the first expression, the sum: with r = 0 every discount factor is 1, so PV = C + C + … + C = C × N${r===0?` = ${money(c)} × ${n} = ${money(c*n)}`:` (here ${money(c)} × ${n} = ${money(c*n)})`}.`);
   OH(s,'xl', `Excel: <b>=PV(${pctT(r)}, ${n}, -${c})</b> &nbsp;→ ${money(c*a)}`); },
 sva(s,v){ const r=v.an_r, n=v.an_n; O(s,'pvf', num(1/Math.pow(1+r,n),4)); O(s,'pvaf', num(pvaf(r,n),4));
   const Nmax=Math.max(60,n+10);
@@ -2269,18 +2341,20 @@ sva(s,v){ const r=v.an_r, n=v.an_n; O(s,'pvf', num(1/Math.pow(1+r,n),4)); O(s,'p
   O(s,'take', r>0 ? `At ${pct(r,1)}, even an endless stream of $1 payments is worth only $${num(1/r,2)} today.` : 'With r = 0 the factor grows without limit.'); },
 lot(s,v){ const P=v.lot_prize, n=v.lot_n, r=v.lot_r, c=P/n, a=pvaf(r,n), pv=c*a;
   O(s,'pv',money(pv,0)); O(s,'pct',pct(pv/P,1));
+  C(s,'tl0', timeline({ts: n<=6 ? range(0,n) : [0,1,2,3,'…',n-1,n], cf:t=> t==='…' ? '' : t===0 ? 'PV = ?' : num(c,0)}));
   X(s,'f0',`\\text{Annual installment} = ${T$(P,0)} / ${n} = ${T$(c,0)}`);
   INP(s,'inp',[['C',money(c,0),'the installment'],['r',pct(r,1)+' = '+trim(r,4),'discount rate'],['N',String(n),'installments']]);
   X(s,'f1',`PV = ${T$(c,0)} \\times \\dfrac{1}{${T(r,4)}}\\left[1-\\dfrac{1}{(1+${T(r,4)})^{${n}}}\\right]`);
   X(s,'f2',`PV = ${T$(c,0)} \\times ${T(a,4)} = ${T$(pv,0)}`);
   C(s,'c', lineChart({x:[0,.2], series:[{pts:range(0,.2,.0025).map(q=>[q,c*pvaf(q,n)]), c:'var(--c1)', area:true}], hlines:[{y:P,label:'Headline '+auto$(P)}], marks:[{x:r,y:pv,label:money(pv,0)}], y:[0,P*1.08], yf:x=>shortM(x), xf:x=>pct(x,0), xl:'Discount rate', h:230}));
   O(s,'take', `At ${pct(r,0)}, the “${auto$(P)}” prize is worth ${pct(pv/P,0)} of its headline.`); },
-fva(s,v){ const {an_c:c, an_r:r, an_n:n}=v, fv=c*fvaf(r,n);
+fva(s,v){ const {an_c:c, an_r:r, an_n:n}=v, fv=c*fvaf(r,n), pv=c*pvaf(r,n);
   INP(s,'inp',[['C',money(c),'each payment'],['r',pct(r,2)+' = '+trim(r,4),'opportunity cost'],['N',String(n),'payments']]);
-  O(s,'fv',money(fv)); O(s,'pv',money(c*pvaf(r,n)));
+  O(s,'fv',money(fv)); O(s,'pv',money(pv));
   X(s,'f', r===0 ? `FV_{${n}} = ${T$(c)} \\times ${n} = ${T$(fv)}` : `FV_{${n}} = ${T$(c)} \\times \\dfrac{1}{${T(r,4)}}\\left[(1+${T(r,4)})^{${n}} - 1\\right] = ${T$(fv)}`);
-  const cats=range(1,n).map(t=>'Pmt '+t);
-  C(s,'c', barChart({cats, groups:[{v:cats.map(()=>c),c:NEU,stroke:NEUS},{v:cats.map((_,i)=>c*Math.pow(1+r,n-i-1)),c:'var(--c3)'}], yf:x=>money(x,0), h:270})); },
+  const ts = n<=6 ? range(0,n) : [0,1,2,'…',n-1,n];
+  C(s,'tlpv', timeline({ts, cf:t=> t==='…'?'': t===0 ? 'PV '+money(pv,0) : num(c,0), arrows:[{from:n,to:0,label:'discount all '+n+' payments to time 0'}]}));
+  C(s,'tlfv', timeline({ts, cf:t=> t==='…'?'': t===0 ? '' : t===n ? num(c,0)+' → FV '+money(fv,0) : num(c,0), arrows:[{from:1,to:n,label:'compound every payment forward to time '+n}]})); },
 due(s,v){ const {an_c:c, an_r:r, an_n:n}=v, po=c*pvaf(r,n), pd=po*(1+r);
   const tl=(due)=>range(0,n).map(t=>`<div class="tk"><div class="cf">${(due? t<n : t>0) ? num(c,0) : ''}</div>${t}</div>`).join('');
   O(s,'tlo', tl(false)); O(s,'tld', tl(true));
@@ -2311,10 +2385,12 @@ gm(s,v){ const g=gmCalc(v);
   X(s,'f2',`\\text{PV of savings} = ${T$(g.p1-g.p2)} \\times ${T(g.a2,4)} = ${T$(g.sv,0)}`);
   VD(s, 'good', g.sv>=0 ? `Take the cash discount and the credit union loan: it is worth ${money(g.sv,0)} more today.` : `Take the dealer financing: it is worth ${money(-g.sv,0)} more today.`); },
 eartab(s,v){ const a=v.ea_apr, fs=[[1,'Annually'],[2,'Semiannually'],[4,'Quarterly'],[12,'Monthly'],[52,'Weekly'],[365,'Daily']];
-  O(s,'tbl', rows(['Compounded','Rate per period','FV of $100 after 1 year','Effective rate'], fs.map(([m,l])=>[l, pct(a/m,4), money(100*Math.pow(1+a/m,m)), pct(earOf(a,m),3)]).concat([['Continuously','—',money(100*Math.exp(a)),pct(Math.exp(a)-1,3)]])));
-  const vals=fs.map(([m])=>earOf(a,m)*100).concat([(Math.exp(a)-1)*100]);
-  C(s,'c', barChart({cats:['Annual','Semi','Qtr','Month','Week','Day','Cont.'], groups:[{v:vals, c:'var(--c2)'}], labels:vals.map(x=>num(x,2)+'%'), yf:x=>x+'%', h:290}));
-  O(s,'take', `Going from annual to monthly compounding adds ${num((earOf(a,12)-a)*100,2)} points; going further to daily adds only ${num((earOf(a,365)-earOf(a,12))*100,2)} more.`); },
+  O(s,'tbl', rows(['Compounded','Rate/period','FV of $100','EAR'], fs.map(([m,l])=>[l, pct(a/m,3), money(100*Math.pow(1+a/m,m)), pct(earOf(a,m),2)]).concat([['Continuously','—',money(100*Math.exp(a)),pct(Math.exp(a)-1,2)]])));
+  const lab={1:['0','1 yr'],2:['0','6 mo','12 mo'],4:['0','Q1','Q2','Q3','Q4']}, nm={1:'Annual',2:'Semiannual',4:'Quarterly'};
+  [1,2,4].forEach(m=>{ const ts=lab[m];
+    C(s,'t'+m, timeline({ts, padL:40, cf:t=>{ const k=ts.indexOf(t); return money(100*Math.pow(1+a/m,k)); }}));
+    OH(s,'l'+m, `${nm[m]}: ${m} period${m>1?'s':''} of ${pct(a/m,2)} <span>→ final ${money(100*Math.pow(1+a/m,m))}, EAR ${pct(earOf(a,m),2)}</span>`); });
+  O(s,'take', `Each extra compounding period lets interest earn interest sooner: quarterly ends at ${money(100*Math.pow(1+a/4,4))} vs. ${money(100*(1+a))} with annual compounding.`); },
 ear(s,v){ const a=v.ear_apr, m=v.ear_m, fv=100*Math.pow(1+a/m,m);
   O(s,'mn', m===1?'once a year':m===2?'twice a year':m===4?'every quarter':m===12?'every month':m===52?'every week':'every day'); O(s,'fv',money(fv)); O(s,'ear',pct(fv/100-1,2));
   X(s,'f1',`\\text{Rate per period} = APR/m = ${TP(a,1)}/${m} = ${TP(a/m,4)}`);
@@ -2331,7 +2407,7 @@ lowc(s,v){ const A=[v.lc_aapr,v.lc_am], B=[v.lc_bapr,v.lc_bm], ea=earOf(...A), e
   X(s,'f2',`EAR_B = \\left[1+\\dfrac{${T(B[0],4)}}{${B[1]}}\\right]^{${B[1]}} - 1 = ${TP(eb,4)}`);
   VD(s,'good', Math.abs(ea-eb)<1e-10 ? 'They cost the same.' : (ea<eb ? `Loan A is cheaper, even though its quoted APR is ${A[0]>B[0]?'higher':'not lower'}.` : `Loan B is cheaper, even though its quoted APR is ${B[0]>A[0]?'higher':'not lower'}.`)); },
 lease(s,v){ const c=leaseCalc(v);
-  O(s,'qp',money(c.qp));
+  O(s,'qp',money(c.qp)); O(s,'aq',pct(c.a,2)); O(s,'rm',pct(c.rm,4)); O(s,'apr12',pct(c.rm*12,4));
   X(s,'f1',`EAR = \\left(1+\\dfrac{${T(c.a,4)}}{4}\\right)^4 - 1 = ${TP(c.e,4)}`);
   X(s,'f2',`r_{\\text{month}} = (1+EAR)^{1/12} - 1 = (1+${T(c.e,6)})^{1/12} - 1 = ${TP(c.rm,5)}`);
   X(s,'f3',`${T$(c.L,0)} = PMT \\times \\dfrac{1}{${T(c.rm,6)}}\\left(1 - \\dfrac{1}{(1+${T(c.rm,6)})^{${c.Y*12}}}\\right) \\Rightarrow PMT = ${T$(c.mp,0)}`);
@@ -2339,7 +2415,8 @@ lease(s,v){ const c=leaseCalc(v);
 perp(s,v){ const c=v.pp_c, r=v.pp_r, pv=c/r; O(s,'pv',money(pv));
   const Nmax=Math.min(400,Math.max(60, Math.ceil(Math.log(100)/Math.log(1+r)))), n90=Math.ceil(Math.log(10)/Math.log(1+r));
   C(s,'c', lineChart({x:[0,Nmax], series:[{pts:range(0,Nmax,Math.max(1,Math.floor(Nmax/150))).map(t=>[t,c*pvaf(r,t)]), c:'var(--c2)', area:true}], hlines:[{y:pv,label:'C/r = '+money(pv),c:'var(--c1)'}], yExtra:[pv*1.08], yf:x=>money(x,0), xl:'Number of payments N', h:250}));
-  O(s,'take', `At ${pct(r,1)}, the first ${n90} payments already make up 90% of the perpetuity's value.`); },
+  O(s,'take', `At ${pct(r,1)}, the first ${n90} payments already make up 90% of the perpetuity's value.`);
+  C(s,'tl', timeline({ts:range(0,8), cf:t=> t===4 ? 'PV₄' : t>=5 ? 'C' : '', ell:true, box:{a:4,b:8,label:'seen from year 4:'}})); },
 consol(s,v){ const F=v.cb_face, c=F*v.cb_cpn, r=v.cb_r, p=c/r;
   INP(s,'inp',[['C',`${money(F,0)} × ${pct(v.cb_cpn,2)} = ${money(c)}`,'interest each period'],['r',pct(r,2)+' = '+trim(r,4),'market rate (similar substitute)']]);
   X(s,'f',`\\text{Interest} = ${T$(F,0)} \\times ${TP(v.cb_cpn)} = ${T$(c)}, \\qquad PV = \\dfrac{C}{r} = \\dfrac{${T$(c)}}{${T(r,4)}} = ${T$(p)}`);
@@ -2362,36 +2439,33 @@ gperp(s,v){ const c=v.gp_c, g=v.gp_g, r=v.gp_r;
   const gmax=r-0.005, gmin=Math.min(-.05,g), pts=range(gmin,gmax,(gmax-gmin)/120).map(q=>[q,c/(r-q)]);
   C(s,'c', lineChart({x:[gmin,r], series:[{pts, c:'var(--c1)'}], vlines:[{x:r,label:'g = r',c:'var(--bad)'}], marks: g<r?[{x:g,y:c/(r-g),label:money(c/(r-g)),left:true}]:[], y:[0, Math.max(c/(r-gmin)*6, g<r?c/(r-g)*1.3:0)], yf:x=>money(x,0), xf:x=>pct(x,0), xl:'Growth rate g', h:240}));
   O(s,'take', g<r ? `Raising g by one point, to ${pct(g+.01,1)}, would lift the value from ${money(c/(r-g))} to ${g+.01<r?money(c/(r-g-.01)):'infinity'}. As g approaches r, the value explodes.` : 'When g reaches r, the formula breaks down: the value is unlimited.'); },
-gx(s,v){ const d=v.gx_d, k=v.gx_k, g=v.gx_g, r=v.gx_r;
-  O(s,'k',k); O(s,'k1',k+1);
-  INP(s,'inp',[['C<sub>'+(k+1)+'</sub>',`${money(d)} × (1 + ${pct(g,2)}) = ${money(d*(1+g))}`,'first growing dividend'],['r',pct(r,2),'discount rate'],['g',pct(g,2),'growth rate'],['k',String(k),'flat years']]);
+gx(s,v){ const d=v.gx_d, k=v.gx_k, g=v.gx_g, r=v.gx_r, last=Math.min(k+3,12), ts=range(0,last);
   const cf=t=> t===0 ? '' : num(t<=k ? d : d*Math.pow(1+g,t-k), 2);
-  O(s,'tl', range(0,Math.min(k+3,12)).map(t=>`<div class="tk"><div class="cf">${cf(t)}</div>${t}</div>`).join('')+'<div class="tk" style="border-top-style:dashed"><div class="cf">…</div>&nbsp;</div>');
-  if (g>=r){ X(s,'f1','g \\ge r: \\text{ the value is not defined}'); X(s,'f2',''); O(s,'pv','—'); return; }
-  const tv=d*(1+g)/(r-g), flat=d*pvaf(r,k), pv=flat+tv/Math.pow(1+r,k);
-  C(s,'tl', timeline({ts:range(0,Math.min(k+3,12)), cf, ell:true, arrows:[{from:k,to:0,label:'TV at year '+k+' = '+money(tv)+', discounted '+k+' years',step:4}]}));
-  X(s,'f1',`TV_{${k}} = \\dfrac{C_{${k+1}}}{r-g} = \\dfrac{${T$(d)}\\times${T(1+g,4)}}{${T(r,4)}-${T(g,4)}} = ${T$(tv)}`);
-  X(s,'f2',`P_0 = ${k<=3 ? range(1,k).map(t=>`\\dfrac{${T(d)}}{${T(1+r,2)}^{${t}}}`).join(' + ') : `${T$(d)}\\times PVAF_{${k}}`} + \\dfrac{${T(tv)}}{${T(1+r,2)}^{${k}}} = ${T$(flat)} + ${T$(tv/Math.pow(1+r,k))} = ${T$(pv)}`);
+  const seq=range(1,Math.min(k+2,last)).map(t=>num(t<=k?d:d*Math.pow(1+g,t-k),2)).join(', ');
+  O(s,'k',k); O(s,'k1',k-1);
+  C(s,'tl0', timeline({ts, cf, ell:true, padL:150, box:{a:k,b:last,from:k-1,label:'seen from year '+(k-1)+':',step:2}}));
+  OH(s,'ans', k===1 ? `Yes: from year 1 on the dividends already grow at ${pct(g,1)}, so P₀ = C₁/(r − g).` : `<b>Not at time 0:</b> the dividends go ${seq}, … so they don't grow at a constant rate from year 1. <b>From year ${k} on they do</b>: ${num(d,2)}, ${num(d*(1+g),2)}, ${num(d*(1+g)*(1+g),2)}, … That is a growing perpetuity whose first payment is in year ${k}, so the formula gives its value at year ${k-1}.`);
+  INP(s,'inp',[['C<sub>'+k+'</sub>',money(d),'first payment of the growing perpetuity'],['r',pct(r,2),'discount rate'],['g',pct(g,2),'growth rate']]);
+  if (g>=r){ X(s,'f1','g \\ge r: \\text{ the value is not defined}'); X(s,'f2',''); O(s,'pv','—'); C(s,'tl', timeline({ts, cf, ell:true})); return; }
+  const tv=d/(r-g), flat=d*pvaf(r,k-1), pv=flat+tv/Math.pow(1+r,k-1);
+  C(s,'tl', timeline({ts, cf, ell:true, padL:150, box:{a:k,b:last,from:k-1,label:'seen from year '+(k-1)+':'}, arrows: k>1 ? [{from:k-1,to:0,label:'TV at year '+(k-1)+' = '+money(tv)+', discounted '+(k-1)+' year'+(k>2?'s':''),step:4}] : []}));
+  X(s,'f1',`TV_{${k-1}} = \\dfrac{${T$(d)}}{${T(r,4)} - ${T(g,4)}} = ${T$(tv)}`);
+  X(s,'f2', k===1 ? `P_0 = TV_0 = ${T$(tv)}` : `P_0 = ${k-1<=3 ? range(1,k-1).map(t=>`\\dfrac{${T(d)}}{${T(1+r,2)}^{${t}}}`).join(' + ') : `${T$(d)}\\times PVAF_{${k-1}}`} + \\dfrac{${T(tv)}}{${T(1+r,2)}^{${k-1}}} = ${T$(flat)} + ${T$(tv/Math.pow(1+r,k-1))} = ${T$(pv)}`);
   O(s,'pv',money(pv)); },
-npv(s,v){ const r=v.np_r, cfs=[v.np_c0,v.np_c1,v.np_c2,v.np_c3,v.np_c4];
-  const perp=v.np_tv===1, S0=v.np_tvs, last=perp?Math.max(4,S0-1):4, g=v.np_tvg;
-  const tvAt=S0-1, years=range(0,last), cf=years.map(t=>t<=4?cfs[t]:0), tv=years.map(t=> (perp && t===tvAt && r>g) ? v.np_tvc/(r-g) : 0);
-  const tot=years.map(t=>cf[t]+tv[t]), df=years.map(t=>1/Math.pow(1+r,t)), dc=tot.map((x,t)=>x*df[t]), npv=dc.reduce((a,b)=>a+b,0);
+npv(s,v){ const r=v.np_r, cfs=[v.np_c0,v.np_c1,v.np_c2,v.np_c3,v.np_c4], years=range(0,4);
+  const df=years.map(t=>1/Math.pow(1+r,t)), dc=cfs.map((x,t)=>x*df[t]), npv=dc.reduce((a,b)=>a+b,0);
   const fmt=x=> x<0?`<span class="neg">(${num(-x,2)})</span>`:num(x,2);
   let h='<tr><th>Year</th>'+years.map(t=>`<th>${t}</th>`).join('')+'</tr>';
-  h+='<tr><td>Cash flow (a)</td>'+years.map(t=> t<=4 ? `<td><input class="cell" type="number" step="0.1" aria-label="Cash flow year ${t}" data-bind="np_c${t}"></td>` : `<td>0.00</td>`).join('')+'</tr>';
-  if (perp) h+='<tr><td>Terminal value (b)</td>'+years.map(t=>`<td>${tv[t]?num(tv[t],2):''}</td>`).join('')+'</tr>';
-  h+='<tr><td>Total cash flow</td>'+tot.map(x=>`<td>${fmt(x)}</td>`).join('')+'</tr>';
-  h+='<tr><td>Discount factor</td>'+df.map(x=>`<td>${num(x,2)}</td>`).join('')+'</tr>';
+  h+='<tr><td>Cash flow ($m)</td>'+years.map(t=>`<td><input class="cell" type="number" step="0.1" aria-label="Cash flow year ${t}" data-bind="np_c${t}"></td>`).join('')+'</tr>';
+  h+='<tr><td>Discount factor 1/(1+r)<sup>t</sup></td>'+df.map((x,t)=>`<td><span class="dff">${t===0?'1/1':`1/${num(1+r,2)}<sup>${t}</sup>`}</span>${num(x,4)}</td>`).join('')+'</tr>';
   h+='<tr><td>Discounted cash flow</td>'+dc.map(x=>`<td>${fmt(x)}</td>`).join('')+'</tr>';
-  const tbl=s.querySelector('[data-o="tbl"]'), key=years.length+'|'+perp;
-  if (tbl.dataset.key!==key){ tbl.innerHTML=h; tbl.dataset.key=key; }
+  const tbl=s.querySelector('[data-o="tbl"]');
+  if (!tbl.dataset.key){ tbl.innerHTML=h; tbl.dataset.key='1'; }
   else { const tmp=document.createElement('table'); tmp.innerHTML=h; [...tmp.rows].forEach((row,i)=>{ if(i===1) return; if (tbl.rows[i]) tbl.rows[i].innerHTML=row.innerHTML; }); }
   syncInputs(s);
   O(s,'npv', npv<0?`(${num(-npv,2)})`:num(npv,2));
-  X(s,'f', perp ? (r>g ? `TV_{${tvAt}} = \\dfrac{${T(v.np_tvc)}}{${T(r,4)} - ${T(g,4)}} = ${T(v.np_tvc/(r-g))}\\text{m: the value at year ${tvAt} of cash flows from year ${S0} on}` : `g \\ge r:\\ \\text{terminal value not defined}`) : `NPV = \\sum_{t=0}^{4} \\dfrac{C_t}{(1+r)^t}`);
   VD(s, npv>=0?'good':'bad', npv>=0 ? 'NPV is positive: allocate the money.' : 'NPV is negative: do not allocate the money.');
-  C(s,'c', barChart({cats:years.map(String), groups:[{v:tot,c:NEU,stroke:NEUS},{v:dc,c:'var(--c2)'}], yf:x=>num(x,1), xl:'Year', h:200})); },
+  C(s,'c', barChart({cats:years.map(String), groups:[{v:cfs,c:NEU,stroke:NEUS},{v:dc,c:'var(--c2)'}], yf:x=>num(x,1), xl:'Year', h:200})); },
 posco(s,v){ const {po_cost:K, po_cf:c, po_n:n, po_cl:cl, po_r:r}=v, npv=poscoNPV(v);
   INP(s,'inp',[['C','W'+num(c,0)+' bn','each year'],['r',pct(r,2)+' = '+trim(r,4),'cost of capital'],['N',String(n),'producing years']]);
   INP(s,'inp2',[['C','W'+num(cl,1)+' bn','clean-up per year'],['r',pct(r,2),'cost of capital'],['N',String(n),'years to discount']]);
