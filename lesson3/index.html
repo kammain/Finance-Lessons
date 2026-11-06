@@ -136,6 +136,7 @@ input[type=range]{width:100%;accent-color:var(--accent);margin:2px 0 0;height:18
 
 /* tables */
 .tw{overflow:auto;min-height:0}
+table.wraph th{white-space:normal;vertical-align:bottom;line-height:1.3}
 table{border-collapse:collapse;font-variant-numeric:tabular-nums;font-size:14px;width:100%}
 th,td{padding:5px 10px;text-align:right;border-bottom:1px solid var(--rule);white-space:nowrap}
 th{font-weight:600;color:var(--muted);font-size:12px;letter-spacing:.04em;text-transform:uppercase}
@@ -756,7 +757,8 @@ table.grid td.tgt{box-shadow:inset 0 0 0 2px var(--c4)}
     </div>
     <div class="col" data-step="5">
       <p class="txt">If the annual rate is <span class="ed" data-k="fq_apr"></span> and the cash flow occurs <span class="ed" data-k="fq_yrs"></span> years from now:</p>
-      <div class="tw"><table data-o="tbl"></table></div>
+      <div class="tw"><table data-o="tbl" class="wraph"></table></div>
+      <p class="take" data-step="6">Notice that although the annual rate stays the same, the compounding frequency m changes what you actually earn: the <i>effective</i> annual rate varies. We will explore this later.</p>
     </div>
   </div>
 </section>
@@ -2363,7 +2365,7 @@ due(s,v){ const {an_c:c, an_r:r, an_n:n}=v, po=c*pvaf(r,n), pd=po*(1+r);
   X(s,'f',`PV_{\\text{due}} = PV_{\\text{ord}} \\times (1+r) = ${T$(po)} \\times ${T(1+r,4)} = ${T$(pd)}`);
   C(s,'c', barChart({cats:['Ordinary','Due'], groups:[{v:[po,pd], c:'var(--c2)'}], labels:[money(po),money(pd)], yf:x=>money(x,0), h:190})); },
 freq(s,v){ const a=v.fq_apr, N=v.fq_yrs;
-  O(s,'tbl', rows(['Compounding','m','Rate per period','Discount over',`FV of $100`], FREQ.map(([m,l])=>[l, m, `${pctT(a)}/${m} = ${pct(a/m,4)}`, `${N}×${m} = ${N*m}`, money(100*Math.pow(1+a/m,N*m))]))); },
+  O(s,'tbl', rows(['Compounding','m','Rate per period','No. of periods to discount over (N × m)',`FV of $100 at end of N × m periods`], FREQ.map(([m,l])=>[l, m, `${pctT(a)}/${m} = ${pct(a/m,4)}`, `${N}×${m} = ${N*m}`, money(100*Math.pow(1+a/m,N*m))]))); },
 mpay(s,v){ const p=v.mp_pmt, r=v.mp_apr/12, n=v.mp_yrs*12+v.mp_mos, a=pvaf(r,n), pv=p*a;
   O(s,'offer',money(v.mp_offer,0)); O(s,'rm',pct(r,3)); O(s,'n',`${v.mp_yrs} × 12 + ${v.mp_mos} = ${n} months`); O(s,'pv',money(pv,0));
   INP(s,'inp',[['C',money(p,0),'monthly payment'],['r',pct(v.mp_apr,2)+' / 12 = '+pct(r,4),'monthly rate'],['N',`${v.mp_yrs} × 12 + ${v.mp_mos} = ${n}`,'monthly payments left']]);
@@ -2412,8 +2414,8 @@ lease(s,v){ const c=leaseCalc(v);
   O(s,'qp',money(c.qp)); O(s,'aq',pct(c.a,2)); O(s,'rm',pct(c.rm,4)); O(s,'apr12',pct(c.rm*12,4));
   X(s,'f1',`EAR = \\left(1+\\dfrac{${T(c.a,4)}}{4}\\right)^4 - 1 = ${TP(c.e,4)}`);
   X(s,'f2a',`\\left(1 + \\dfrac{APR_{?}}{12}\\right)^{12} = 1 + EAR = ${T(1+c.e,6)}`);
-  X(s,'f2b',`APR_{?} = 12 \\times \\left[(${T(1+c.e,6)})^{1/12} - 1\\right] = ${TP(c.rm*12,4)} \\quad\\text{(APR with monthly compounding)}`);
-  X(s,'f2c',`\\text{Correct monthly rate} = \\dfrac{APR_{?}}{12} = \\dfrac{${TP(c.rm*12,4)}}{12} = ${TP(c.rm,5)}`);
+  X(s,'f2b',`\\dfrac{APR_{?}}{12} = (${T(1+c.e,6)})^{1/12} - 1 = ${TP(c.rm,5)} \\quad\\text{(the correct monthly rate)}`);
+  X(s,'f2c',`APR_{?} = 12 \\times ${TP(c.rm,5)} = ${TP(c.rm*12,4)} \\quad\\text{(the true APR with monthly compounding)}`);
   X(s,'f3',`${T$(c.L,0)} = PMT \\times \\dfrac{1}{${T(c.rm,6)}}\\left(1 - \\dfrac{1}{(1+${T(c.rm,6)})^{${c.Y*12}}}\\right) \\Rightarrow PMT = ${T$(c.mp,0)}`);
   VD(s,'good', v.lb_lease < c.mp ? `Lease: ${money(v.lb_lease,0)} a month is less than the bank loan's equivalent ${money(c.mp,0)} a month.` : `Borrow and buy: the bank loan's equivalent ${money(c.mp,0)} a month is less than the ${money(v.lb_lease,0)} lease.`); },
 perp(s,v){ const c=v.pp_c, r=v.pp_r, pv=c/r; O(s,'pv',money(pv));
