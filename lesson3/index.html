@@ -171,6 +171,9 @@ table.grid{width:100%;table-layout:fixed;font-size:14px}
 table.grid th{background:var(--panel);text-align:center;font:500 12px var(--mono);letter-spacing:0;padding:3px;border:1px solid var(--rule);color:var(--muted);text-transform:none}
 table.grid th.rn{width:34px}
 table.grid td{padding:0;border:1px solid var(--rule)}
+table.grid th.hid,table.grid td.hid{background:repeating-linear-gradient(90deg,var(--panel-2) 0 2px,transparent 2px 6px);padding:0;color:var(--muted)}
+table.grid td.ghost,table.grid th.ghost{background:color-mix(in srgb,var(--muted) 10%,transparent)}
+table.grid td.ghost input{color:var(--muted);font-style:italic}
 table.grid.wide td input{padding:4px 4px;font-size:12.5px}
 table.grid td input{width:100%;border:0;background:transparent;font:14px var(--mono);color:var(--ink);padding:5px 7px;text-align:right}
 table.grid td input.txt{text-align:left;font-family:var(--body)}
@@ -209,6 +212,7 @@ table.grid td.tgt{box-shadow:inset 0 0 0 2px var(--c4)}
 .tline svg text{fill:var(--muted);font:13px var(--mono)}
 .tline svg text.cf{fill:var(--c1);font-weight:500}
 .tline svg text.al{fill:var(--c2);font:600 13px var(--body)}
+.tline svg text.ae{font:600 13px var(--mono)}
 .tline svg text.bl{fill:var(--c3);font:600 12px var(--body)}
 
 /* diagram bits */
@@ -1364,7 +1368,7 @@ table.grid td.tgt{box-shadow:inset 0 0 0 2px var(--c4)}
   <div class="s-body one" style="grid-template-rows:auto 1fr;gap:14px">
     <div class="sheet" data-k="sh_po"></div>
     <div class="s-body" style="gap:24px">
-      <div class="col"><p class="txt">Years run across the columns. The clean-up perpetuity starts in year 11, so its terminal value sits in year 10 (L6) and is added to year 10's cash flow. Click any cell to see its formula in the formula bar.</p>
+      <div class="col"><p class="txt">Years run across the columns (years 4–6 are folded away at ⋯ to make room). The clean-up costs from year 11 on, in grey, are captured by the terminal value in year 10 (L6), so they drop out of the total and the NPV. Click any cell to see its formula.</p>
         <p class="note">This sheet is set up for 10 producing years. The cost, cash flow, clean-up cost and r follow the slide's numbers.</p></div>
       <div class="col"><div class="fmls" data-step="1"><span><b>L6</b> =-B4/B5 &nbsp;(clean-up perpetuity, valued at year 10)</span><span><b>L7</b> =L3+L6 &nbsp;(year 10: last cash flow plus TV)</span><span><b>C8</b> =1/(1+$B$5)^C1</span><span><b>B10</b> =SUM(B9:L9) &nbsp;or&nbsp; =B7+NPV(B5, C7:L7)</span></div>
         <div class="results" data-step="2"><div class="res main"><span class="rl">NPV (W billion)</span><span class="rv" data-o="npv"></span></div></div></div>
@@ -1420,7 +1424,7 @@ table.grid td.tgt{box-shadow:inset 0 0 0 2px var(--c4)}
     </div>
     <div class="col">
       <div class="sheet" data-k="sh_ap"></div>
-      <p class="note">Click any cell to see its formula. G7 holds the terminal value: =G6*(1+B4)/(B5-B4). The sheet is set up for 5 years of early growth.</p>
+      <p class="note">Click any cell to see its formula. The dividends from 2027 on, in grey, grow at g₂ and are captured by the terminal value in 2026: G7 = H6/(B5−B4), next year's dividend over r − g₂. So they drop out of the total. The sheet is set up for 5 years of early growth.</p>
     </div>
   </div>
 </section>
@@ -1515,8 +1519,8 @@ const PARAMS = {
 /* ---------------- spreadsheets ---------------- */
 // cells: '{param}' is linked to a slide number; '=…' is a formula; anything else is a value or label.
 const SHEETS = {
-  sh_po:{cols:12, rows:10, target:'B10', aw:'21%', cells:{"A1": "Year", "A2": "Cost to open", "A3": "Cash flow from production", "A4": "Clean-up per year (year 11 on)", "A5": "Cost of capital r", "A6": "Terminal value of clean-up (year 10)", "A7": "Total cash flow", "A8": "Discount factor", "A9": "Discounted cash flow", "A10": "NPV", "B1": "0", "C1": "1", "C3": "{po_cf}", "D1": "2", "D3": "{po_cf}", "E1": "3", "E3": "{po_cf}", "F1": "4", "F3": "{po_cf}", "G1": "5", "G3": "{po_cf}", "H1": "6", "H3": "{po_cf}", "I1": "7", "I3": "{po_cf}", "J1": "8", "J3": "{po_cf}", "K1": "9", "K3": "{po_cf}", "L1": "10", "L3": "{po_cf}", "B2": "{po_cost}", "B4": "{po_cl}", "B5": "{po_r}", "L6": "=-B4/B5", "B7": "=-B2", "B8": "=1/(1+$B$5)^B1", "B9": "=B7*B8", "C7": "=C3", "C8": "=1/(1+$B$5)^C1", "C9": "=C7*C8", "D7": "=D3", "D8": "=1/(1+$B$5)^D1", "D9": "=D7*D8", "E7": "=E3", "E8": "=1/(1+$B$5)^E1", "E9": "=E7*E8", "F7": "=F3", "F8": "=1/(1+$B$5)^F1", "F9": "=F7*F8", "G7": "=G3", "G8": "=1/(1+$B$5)^G1", "G9": "=G7*G8", "H7": "=H3", "H8": "=1/(1+$B$5)^H1", "H9": "=H7*H8", "I7": "=I3", "I8": "=1/(1+$B$5)^I1", "I9": "=I7*I8", "J7": "=J3", "J8": "=1/(1+$B$5)^J1", "J9": "=J7*J8", "K7": "=K3", "K8": "=1/(1+$B$5)^K1", "K9": "=K7*K8", "L7": "=L3+L6", "L8": "=1/(1+$B$5)^L1", "L9": "=L7*L8", "B10": "=SUM(B9:L9)"}},
-  sh_ap:{cols:7, rows:11, target:'B11', aw:'28%', cells:{"A1": "Year", "A2": "t", "A3": "Early growth g₁", "A4": "Long-run growth g₂", "A5": "Discount rate r", "A6": "Dividend", "A7": "Terminal value (2026)", "A8": "Total cash flow", "A9": "Discount factor", "A10": "PV", "A11": "Value per share", "B1": "2021", "B2": "0", "C1": "2022", "C2": "1", "D1": "2023", "D2": "2", "E1": "2024", "E2": "3", "F1": "2025", "F2": "4", "G1": "2026", "G2": "5", "B3": "{ap_g1}", "B4": "{ap_g2}", "B5": "{ap_r}", "B6": "{ap_d0}", "C6": "=B6*(1+$B$3)", "C8": "=C6+C7", "C9": "=1/(1+$B$5)^C2", "C10": "=C8*C9", "D6": "=C6*(1+$B$3)", "D8": "=D6+D7", "D9": "=1/(1+$B$5)^D2", "D10": "=D8*D9", "E6": "=D6*(1+$B$3)", "E8": "=E6+E7", "E9": "=1/(1+$B$5)^E2", "E10": "=E8*E9", "F6": "=E6*(1+$B$3)", "F8": "=F6+F7", "F9": "=1/(1+$B$5)^F2", "F10": "=F8*F9", "G6": "=F6*(1+$B$3)", "G8": "=G6+G7", "G9": "=1/(1+$B$5)^G2", "G10": "=G8*G9", "G7": "=G6*(1+B4)/(B5-B4)", "B11": "=SUM(C10:G10)"}},
+  sh_po:{cols:14, rows:10, target:'B10', aw:'22%', hide:['F','G','H'], ghost:['M','N'], cells:{"A1": "Year", "A2": "Cost to open", "A3": "Cash flow from production", "A4": "Clean-up per year (year 11 on)", "A5": "Cost of capital r", "A6": "Terminal value of clean-up (year 10)", "A7": "Total cash flow", "A8": "Discount factor", "A9": "Discounted cash flow", "A10": "NPV", "B1": "0", "C1": "1", "C3": "{po_cf}", "D1": "2", "D3": "{po_cf}", "E1": "3", "E3": "{po_cf}", "F1": "4", "F3": "{po_cf}", "G1": "5", "G3": "{po_cf}", "H1": "6", "H3": "{po_cf}", "I1": "7", "I3": "{po_cf}", "J1": "8", "J3": "{po_cf}", "K1": "9", "K3": "{po_cf}", "L1": "10", "L3": "{po_cf}", "M1": "11", "M3": "=-$B$4", "N1": "12", "N3": "=-$B$4", "B2": "{po_cost}", "B4": "{po_cl}", "B5": "{po_r}", "L6": "=-B4/B5", "M6": "→ in TV", "N6": "→ in TV", "B7": "=-B2", "B8": "=1/(1+$B$5)^B1", "B9": "=B7*B8", "C7": "=C3", "C8": "=1/(1+$B$5)^C1", "C9": "=C7*C8", "D7": "=D3", "D8": "=1/(1+$B$5)^D1", "D9": "=D7*D8", "E7": "=E3", "E8": "=1/(1+$B$5)^E1", "E9": "=E7*E8", "F7": "=F3", "F8": "=1/(1+$B$5)^F1", "F9": "=F7*F8", "G7": "=G3", "G8": "=1/(1+$B$5)^G1", "G9": "=G7*G8", "H7": "=H3", "H8": "=1/(1+$B$5)^H1", "H9": "=H7*H8", "I7": "=I3", "I8": "=1/(1+$B$5)^I1", "I9": "=I7*I8", "J7": "=J3", "J8": "=1/(1+$B$5)^J1", "J9": "=J7*J8", "K7": "=K3", "K8": "=1/(1+$B$5)^K1", "K9": "=K7*K8", "L7": "=L3+L6", "L8": "=1/(1+$B$5)^L1", "L9": "=L7*L8", "B10": "=SUM(B9:L9)"}},
+  sh_ap:{cols:9, rows:11, target:'B11', aw:'24%', ghost:['H','I'], cells:{"A1": "Year", "A2": "t", "A3": "Early growth g₁", "A4": "Long-run growth g₂", "A5": "Discount rate r", "A6": "Dividend", "A7": "Terminal value (2026)", "A8": "Total cash flow", "A9": "Discount factor", "A10": "PV", "A11": "Value per share", "B1": "2021", "B2": "0", "C1": "2022", "C2": "1", "D1": "2023", "D2": "2", "E1": "2024", "E2": "3", "F1": "2025", "F2": "4", "G1": "2026", "G2": "5", "H1": "2027", "H2": "6", "I1": "2028", "I2": "7", "B3": "{ap_g1}", "B4": "{ap_g2}", "B5": "{ap_r}", "B6": "{ap_d0}", "C6": "=B6*(1+$B$3)", "C8": "=C6+C7", "C9": "=1/(1+$B$5)^C2", "C10": "=C8*C9", "D6": "=C6*(1+$B$3)", "D8": "=D6+D7", "D9": "=1/(1+$B$5)^D2", "D10": "=D8*D9", "E6": "=D6*(1+$B$3)", "E8": "=E6+E7", "E9": "=1/(1+$B$5)^E2", "E10": "=E8*E9", "F6": "=E6*(1+$B$3)", "F8": "=F6+F7", "F9": "=1/(1+$B$5)^F2", "F10": "=F8*F9", "G6": "=F6*(1+$B$3)", "G8": "=G6+G7", "G9": "=1/(1+$B$5)^G2", "G10": "=G8*G9", "H6": "=G6*(1+$B$4)", "I6": "=H6*(1+$B$4)", "H7": "→ in TV", "I7": "→ in TV", "G7": "=H6/(B5-B4)", "B11": "=SUM(C10:G10)"}},
   sh_lot:{cols:2, rows:5, target:'B5', cells:{A1:'Prize',B1:'{lot_prize}',A2:'Installments',B2:'{lot_n}',A3:'Rate r',B3:'{lot_r}',A4:'Installment',A5:'PV today'}},
   sh_mp:{cols:2, rows:8, target:'B8', cells:{A1:'Monthly payment',B1:'{mp_pmt}',A2:'Years left',B2:'{mp_yrs}',A3:'Plus months',B3:'{mp_mos}',A4:'Annual rate',B4:'{mp_apr}',A6:'Monthly rate',A7:'Number of payments',A8:'PV today'}},
   sh_mo:{cols:2, rows:6, target:'B6', cells:{A1:'Loan',B1:'{mo_loan}',A2:'Annual rate',B2:'{mo_apr}',A3:'Years',B3:'{mo_yrs}',A4:'Monthly rate',A5:'Number of payments',A6:'Monthly payment'}},
@@ -1726,10 +1730,11 @@ function sheetDisplay(k, ref, raw, v){
 function buildSheet(el){
   const k=el.dataset.k, d=SHEETS[k], nr=sheetRows(k);
   el._rows = nr;
-  let h=`<div class="sheetw"${d.cols>6?' style="max-width:none"':''}><div class="fbar"><span class="nm">A1</span><button type="button" class="fxb" title="Insert a function">ƒx</button><input type="text" class="fx" aria-label="Formula bar" spellcheck="false" autocomplete="off"></div><div class="fhelp" hidden></div><div class="flist" hidden></div><div class="gridw"><table class="grid${d.cols>6?' wide':''}">${d.aw?`<colgroup><col style="width:34px"><col style="width:${d.aw}">${'<col>'.repeat(d.cols-1)}</colgroup>`:''}<tr><th class="rn"></th>`;
-  for (let c=0;c<d.cols;c++) h+=`<th>${COLS[c]}</th>`;
+  let h=`<div class="sheetw"${d.cols>6?' style="max-width:none"':''}><div class="fbar"><span class="nm">A1</span><button type="button" class="fxb" title="Insert a function">ƒx</button><input type="text" class="fx" aria-label="Formula bar" spellcheck="false" autocomplete="off"></div><div class="fhelp" hidden></div><div class="flist" hidden></div><div class="gridw"><table class="grid${d.cols>6?' wide':''}">${d.aw?`<colgroup><col style="width:34px"><col style="width:${d.aw}">${[...COLS.slice(1,d.cols)].map(c=>(d.hide||[]).includes(c)?'<col style="width:22px">':'<col>').join('')}</colgroup>`:''}<tr><th class="rn"></th>`;
+  const HID=new Set(d.hide||[]), GH=new Set(d.ghost||[]);
+  for (let c=0;c<d.cols;c++) h+= HID.has(COLS[c]) ? `<th class="hid" title="Columns hidden to save space">⋯</th>` : `<th${GH.has(COLS[c])?' class="ghost"':''}>${COLS[c]}</th>`;
   h+='</tr>';
-  for (let r=1;r<=nr;r++){ h+=`<tr><th class="rn">${r}</th>`; for (let c=0;c<d.cols;c++){ const ref=COLS[c]+r; const work = d.work && r>d.givens && c===0; h+=`<td${ref===d.target?' class="tgt"':''}><input type="text" data-ref="${ref}" aria-label="Cell ${ref}" spellcheck="false" autocomplete="off"${work?' placeholder="step label"':''}></td>`; } h+='</tr>'; }
+  for (let r=1;r<=nr;r++){ h+=`<tr><th class="rn">${r}</th>`; for (let c=0;c<d.cols;c++){ const ref=COLS[c]+r; const work = d.work && r>d.givens && c===0; if (HID.has(COLS[c])){ h+='<td class="hid"></td>'; continue; } h+=`<td class="${ref===d.target?'tgt':''}${GH.has(COLS[c])?' ghost':''}"><input type="text" data-ref="${ref}" aria-label="Cell ${ref}" spellcheck="false" autocomplete="off"${work?' placeholder="step label"':''}></td>`; } h+='</tr>'; }
   h+='</table></div>';
   h+=`<div class="sfoot"><button type="button" class="linkbtn addrow">+ Row</button>${nr>d.rows?'<button type="button" class="linkbtn delrow">− Row</button>':''}${d.sol?'<button type="button" class="linkbtn solfill">Fill in the solution</button><button type="button" class="linkbtn solclr">Clear</button>':''}`;
   if (d.target==='ANSWER') h+=`<span class="ansl">Answer</span><input type="text" class="ansin" data-ref="ANSWER" aria-label="Answer cell" placeholder="e.g. =B7" spellcheck="false" autocomplete="off"><span class="ansv"></span>`;
@@ -2205,15 +2210,19 @@ function timeline(o){
   ts.forEach(t=>{ if (t!=='…') s+=`<circle cx="${X(t)}" cy="${yA}" r="3.5" style="fill:var(--c3)"/>`; s+=`<text x="${X(t)}" y="${yA+20}" text-anchor="middle">${t}</text>`; });
   if (o.ell) s+=`<text x="${W-padR+34}" y="${yA+5}" text-anchor="middle">… ∞</text>`;
   let yy=yA+32;
+  let BX=null;
   if (o.box){ const b=o.box, x1=X(b.a)-18, x2=X(b.b)+18;
     const bc = b.fade ? 'var(--muted)' : 'var(--c3)', bh = b.nonum ? 0 : 26;
     s+=`<g data-step="${b.step||0}">` + (b.wrap ? `<rect x="${x1}" y="${yA-32}" width="${x2-x1}" height="${yy+bh-(yA-32)+(b.nonum?-6:0)}" rx="8" style="fill:${bc};stroke:${bc}" fill-opacity="${b.fade?'.12':'.07'}" stroke-width="1.5" ${b.fade?'stroke-dasharray="5 4"':''}/>${b.nonum?'':`<line x1="${x1}" x2="${x2}" y1="${yy}" y2="${yy}" style="stroke:${bc}" stroke-dasharray="3 3"/>`}${b.title?`<text x="${(x1+x2)/2}" y="${yA-37}" text-anchor="middle" class="bl" ${b.fade?'style="fill:var(--muted)"':''}>${esc(b.title)}</text>`:''}` : `<rect x="${x1}" y="${yy}" width="${x2-x1}" height="26" rx="6" fill="none" style="stroke:var(--c3)" stroke-width="1.5"/>`);
     if (!b.nonum) ts.filter(t=>typeof t==='number' && t>=b.a && t<=b.b).forEach(t=>{ s+=`<text x="${X(t)}" y="${yy+17}" text-anchor="middle" class="bl">${t-(b.from??b.a)}</text>`; });
     if (b.label) s+=`<text x="${x1-8}" y="${yy+17}" text-anchor="end" class="bl">${esc(b.label)}</text>`;
+    BX={x1,x2,bot: b.wrap ? yy+bh+(b.nonum?-6:0) : yy+26};
     s+='</g>'; yy+= b.nonum ? 4 : 36; }
-  (o.arrows||[]).forEach((a,i)=>{ const d=yy+14+i*28, x1=X(a.from), x2=X(a.to);
-    s+=`<g data-step="${a.step||0}"><path d="M${x1},${yA+26} V${d} H${x2+0.01} V${yA+28}" fill="none" style="stroke:var(--c2)" stroke-width="1.6" marker-end="url(#${id})"/><text x="${Math.min(x1,x2)+10}" y="${d-6}" text-anchor="start" class="al">${esc(a.label)}</text></g>`; });
-  const H=yy+18+(o.arrows||[]).length*28;
+  const ends=(o.arrows||[]).some(a=>a.sl||a.el), gap=ends?44:28;
+  (o.arrows||[]).forEach((a,i)=>{ const d=yy+14+i*gap, fb=a.fromBox&&BX, x1= fb ? (BX.x1+BX.x2)/2 : X(a.from), x2=X(a.to), y1 = fb ? BX.bot : yA+26;
+    s+=`<g data-step="${a.step||0}"><path d="M${x1},${y1} V${d} H${x2+0.01} V${yA+28}" fill="none" style="stroke:var(--c2)" stroke-width="1.6" marker-end="url(#${id})"/>${fb?`<circle cx="${x1}" cy="${y1}" r="3" style="fill:var(--c2)"/>`:''}<text x="${Math.min(x1,x2)+10}" y="${d-6}" text-anchor="start" class="al">${esc(a.label)}</text>`
+      + (a.sl?`<text x="${x1}" y="${d+16}" text-anchor="middle" class="al ae">${esc(a.sl)}</text>`:'') + (a.el?`<text x="${x2}" y="${d+16}" text-anchor="middle" class="al ae">${esc(a.el)}</text>`:'') + `</g>`; });
+  const H=yy+18+(o.arrows||[]).length*gap;
   return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Time line of cash flows" style="max-width:${W}px">${s}</svg>`;
 }
 const NEU = 'var(--panel-2)', NEUS = 'var(--muted)';
@@ -2223,10 +2232,9 @@ const shortM = x => Math.abs(x)>=1e6 ? '$'+num(x/1e6,2)+'m' : Math.abs(x)>=1e3 ?
 const R = {
 poscox(s,v){ const t=sheetTarget('sh_po'); O(s,'npv', isFinite(t)?num(t,2):'—'); },
 npvp(s,v){ const r=v.np_r, cfs=[v.np_c0,v.np_c1,v.np_c2,v.np_c3,v.np_c4], S0=v.np_tvs, g=v.np_tvg, C1=v.np_tvc, tvAt=S0-1;
-  const cfAt=t=> t<=4 ? cfs[t] : 0, last=Math.min(S0+2,12), perp=t=> C1*Math.pow(1+g,t-S0);
+  const cfAt=t=> t<=4 ? cfs[t] : 0, last=Math.min(S0+2,12), perp=t=> C1*Math.pow(1+g,t-S0), ok=r>g, tv= ok ? C1/(r-g) : NaN;
   const cfl=t=> t<S0 ? num(cfAt(t),2) : num(perp(t),2);
-  C(s,'tl1', timeline({ts:range(0,last), cf:cfl, ell:true, padL:60, box:{a:S0,b:last,from:tvAt,label:'',wrap:true,title:'perpetuity from year '+S0,step:1}, arrows:[{from:S0,to:tvAt,label:'TV',step:2}]}));
-  const ok=r>g, tv= ok ? C1/(r-g) : NaN;
+  C(s,'tl1', timeline({ts:range(0,last), cf:cfl, ell:true, padL:60, box:{a:S0,b:last,from:tvAt,label:'',wrap:true,title:'perpetuity from year '+S0,step:1}, arrows:[{from:S0,to:tvAt,fromBox:true,label:'TV',el: ok ? num(tv,2) : '',step:2}]}));
   X(s,'f', ok ? `TV_{${tvAt}} = \\dfrac{C_{${S0}}}{r-g} = \\dfrac{${T(C1)}}{${T(r,4)} - ${T(g,4)}} = ${T(tv)}\\text{m}` : `g \\ge r: \\text{ the terminal value is not defined}`);
   O(s,'tvn', ok ? `TV at year ${tvAt} is the value, at that date, of every cash flow from year ${S0} on. It is added to year ${tvAt}'s cash flow.` : '');
   C(s,'tl2', timeline({ts:range(0,last), ell:true, padL:60, cf:t=> t>=S0 ? '' : t===tvAt && ok ? '+ TV '+num(tv,2)+'\n'+num(cfAt(t),2) : num(cfAt(t),2), box:{a:S0,b:last,label:'',wrap:true,nonum:true,fade:true,title:'now inside TV, dropped'}}));
@@ -2275,7 +2283,7 @@ pr4(s,v){ const ea=earOf(v.p4_a,12), eb=v.p4_b;
 pr6(s,v){ const {p6_c:c,p6_s:k,p6_r:r}=v, pk=c/r, pv=pk/Math.pow(1+r,k-1), last=Math.min(Math.max(k+2,5),12);
   const cf=t=> t===0?'':t>=k?num(c,0):'0';
   C(s,'tl0', timeline({ts:range(0,last), cf, ell:true}));
-  C(s,'tl', timeline({ts:range(0,last), cf, ell:true, arrows:k>1?[{from:k-1,to:0,label:'discount '+(k-1)+' years',step:4}]:[]}));
+  C(s,'tl', timeline({ts:range(0,last), cf, ell:true, box:k>1?{a:k,b:last,from:k-1,wrap:true,title:'the perpetuity',label:'seen from year '+(k-1)+':',step:2}:null, arrows:k>1?[{from:k-1,to:0,label:'discount '+(k-1)+' years',sl:money(pk),el:money(pv),step:4}]:[]}));
   INP(s,'inp',[['C',money(c),'each payment'],['r',pct(r,2),'required return'],['t',String(k),'first payment, so value at year '+(k-1)]]);
   X(s,'f1',`PV_{${k-1}} = \\dfrac{${T$(c)}}{${T(r,4)}} = ${T$(pk)}`);
   X(s,'f2',`PV_0 = \\dfrac{${T$(pk)}}{(1+${T(r,4)})^{${k-1}}} = ${T$(pv)}`); O(s,'pv',money(pv)); },
@@ -2458,7 +2466,7 @@ stock(s,v){ const d=v.st_d, r=v.st_r, k=v.st_s, v1=d/r, v2=v1/Math.pow(1+r,k-1);
   X(s,'f1',`PV_{${k-1}} = \\dfrac{C_{${k}}}{r} = \\dfrac{${T$(d)}}{${T(r,4)}} = ${T$(v1)}`);
   X(s,'f2',`PV_0 = \\dfrac{${T$(v1)}}{(1+${T(r,4)})^{${k-1}}} = ${T$(v2)}`);
   const last=Math.min(Math.max(k+2,5),12);
-  C(s,'tl', timeline({ts:range(0,last), cf:t=> t===0?'': t>=k ? num(d,2) : '0', ell:true, box:k>1?{a:k,b:last,from:k-1,wrap:true,title:'the perpetuity',label:'seen from year '+(k-1)+':',step:2}:null, arrows:k>1?[{from:k-1,to:0,label:'discount '+(k-1)+' year'+(k-1===1?'':'s')+': '+money(v2),step:4}]:[]})); },
+  C(s,'tl', timeline({ts:range(0,last), cf:t=> t===0?'': t>=k ? num(d,2) : '0', ell:true, box:k>1?{a:k,b:last,from:k-1,wrap:true,title:'the perpetuity',label:'seen from year '+(k-1)+':',step:2}:null, arrows:k>1?[{from:k-1,to:0,label:'discount '+(k-1)+' year'+(k-1===1?'':'s'),sl:money(v1),el:money(v2),step:4}]:[]})); },
 gperp(s,v){ const c=v.gp_c, g=v.gp_g, r=v.gp_r;
   O(s,'tbl', rows(['Year','Cash flow',''], range(1,4).map(t=>[t, money(c*Math.pow(1+g,t-1),4), t===1?'C':`C(1+g)${t>2?'<sup>'+(t-1)+'</sup>':''}`]).concat([['…','…','']])));
   INP(s,'inp',[['C',money(c),'next year\'s dividend'],['r',pct(r,2)+' = '+trim(r,4),'discount rate'],['g',pct(g,2)+' = '+trim(g,4),'growth rate']]);
@@ -2475,7 +2483,7 @@ gx(s,v){ const d=v.gx_d, k=v.gx_k, g=v.gx_g, r=v.gx_r, last=Math.min(k+3,12), ts
   INP(s,'inp',[['C<sub>'+k+'</sub>',money(d),'first payment of the growing perpetuity'],['r',pct(r,2),'discount rate'],['g',pct(g,2),'growth rate']]);
   if (g>=r){ X(s,'f1','g \\ge r: \\text{ the value is not defined}'); X(s,'f2',''); O(s,'pv','—'); C(s,'tl', timeline({ts, cf, ell:true})); return; }
   const tv=d/(r-g), flat=d*pvaf(r,k-1), pv=flat+tv/Math.pow(1+r,k-1);
-  C(s,'tl', timeline({ts, cf, ell:true, padL:150, box:{a:k,b:last,from:k-1,wrap:true,title:'growing perpetuity',label:'seen from year '+(k-1)+':'}, arrows: k>1 ? [{from:k-1,to:0,label:'TV at year '+(k-1)+' = '+money(tv)+', discounted '+(k-1)+' year'+(k>2?'s':''),step:4}] : []}));
+  C(s,'tl', timeline({ts, cf, ell:true, padL:150, box:{a:k,b:last,from:k-1,wrap:true,title:'growing perpetuity',label:'seen from year '+(k-1)+':'}, arrows: k>1 ? [{from:k-1,to:0,label:'TV discounted '+(k-1)+' year'+(k>2?'s':''),sl:money(tv),el:money(tv/Math.pow(1+r,k-1)),step:4}] : []}));
   X(s,'f1',`TV_{${k-1}} = \\dfrac{${T$(d)}}{${T(r,4)} - ${T(g,4)}} = ${T$(tv)}`);
   X(s,'f2', k===1 ? `P_0 = TV_0 = ${T$(tv)}` : `P_0 = ${k-1<=3 ? range(1,k-1).map(t=>`\\dfrac{${T(d)}}{${T(1+r,2)}^{${t}}}`).join(' + ') : `${T$(d)}\\times PVAF_{${k-1}}`} + \\dfrac{${T(tv)}}{${T(1+r,2)}^{${k-1}}} = ${T$(flat)} + ${T$(tv/Math.pow(1+r,k-1))} = ${T$(pv)}`);
   O(s,'pv',money(pv)); },
