@@ -171,6 +171,7 @@ table.grid{width:100%;table-layout:fixed;font-size:14px}
 table.grid th{background:var(--panel);text-align:center;font:500 12px var(--mono);letter-spacing:0;padding:3px;border:1px solid var(--rule);color:var(--muted);text-transform:none}
 table.grid th.rn{width:34px}
 table.grid td{padding:0;border:1px solid var(--rule)}
+table.grid.wide td input{padding:4px 4px;font-size:12.5px}
 table.grid td input{width:100%;border:0;background:transparent;font:14px var(--mono);color:var(--ink);padding:5px 7px;text-align:right}
 table.grid td input.txt{text-align:left;font-family:var(--body)}
 table.grid td input[placeholder]{text-align:left;font-family:var(--body)}
@@ -1293,16 +1294,15 @@ table.grid td.tgt{box-shadow:inset 0 0 0 2px var(--c4)}
 
 
 <section class="slide" data-sec="Applications" data-t="Corporate example: Excel">
-  <div class="s-head"><div class="eyebrow">Applications<span class="tag t2">Excel</span></div><h2>NPV in Excel</h2></div>
-  <div class="s-body wl">
-    <div class="col">
-      <p class="txt">Find the NPV in B8. The cash flows are in B2:B6 and the rate in E1.</p>
-      <div class="sheet" data-k="sh_np"></div>
-      <div class="try" data-sheet="sh_np" data-a="npv0" data-u="$m" data-signed="1" data-hint="Excel's NPV assumes the first cash flow comes in year 1. So use =NPV(E1, B3:B6) for years 1 to 4, then add the year-0 cash flow: =NPV(E1,B3:B6)+B2."></div>
-    </div>
-    <div class="col">
-      <p class="txt" data-step="1"><b>Important detail:</b> Excel's NPV assumes the first cash flow arrives in year 1. A year-0 cash flow must be added outside it.</p>
-      <div class="fmls" data-step="2"><span><b>B8</b> =NPV(E1, B3:B6) + B2</span></div>
+  <div class="s-head"><div class="eyebrow">Applications<span class="tag t2">Excel</span></div><h2>NPV in Excel, with the perpetuity</h2></div>
+  <div class="s-body one" style="grid-template-rows:auto 1fr;gap:14px">
+    <div class="sheet" data-k="sh_np"></div>
+    <div class="s-body" style="gap:24px">
+      <div class="col"><div class="try" data-sheet="sh_np" data-a="npvtv" data-u="$m" data-signed="1" data-label="Find the NPV in B10, including the perpetuity." data-hint="Put the terminal value in F6: =B3/(B5-B4). Add it to year 4's cash flow in row 7, discount each year in rows 8 and 9, and add them up in B10. Or: =B7+NPV(B5, C7:F7)."></div></div>
+      <div class="col">
+        <p class="txt" data-step="1">Years run across the columns. The terminal value goes in year 4 (F6), because it is the value at year 4 of every cash flow from year 5 on.</p>
+        <div class="fmls" data-step="2"><span><b>F6</b> =B3/(B5-B4)</span><span><b>B7</b> =B2+B6 &nbsp;(and C7 … F7)</span><span><b>B8</b> =1/(1+$B$5)^B1 &nbsp;(and C8 … F8)</span><span><b>B9</b> =B7*B8 &nbsp;(and C9 … F9)</span><span><b>B10</b> =SUM(B9:F9) &nbsp;or&nbsp; =B7+NPV(B5, C7:F7)</span></div>
+      </div>
     </div>
   </div>
 </section>
@@ -1359,6 +1359,20 @@ table.grid td.tgt{box-shadow:inset 0 0 0 2px var(--c4)}
   </div>
 </section>
 
+<section class="slide" data-sec="Applications" data-t="Coal mine: Excel" data-r="poscox">
+  <div class="s-head"><div class="eyebrow">Applications · breakout<span class="tag t2">Excel</span></div><h2>The coal mine in Excel</h2></div>
+  <div class="s-body one" style="grid-template-rows:auto 1fr;gap:14px">
+    <div class="sheet" data-k="sh_po"></div>
+    <div class="s-body" style="gap:24px">
+      <div class="col"><p class="txt">Years run across the columns. The clean-up perpetuity starts in year 11, so its terminal value sits in year 10 (L6) and is added to year 10's cash flow. Click any cell to see its formula in the formula bar.</p>
+        <p class="note">This sheet is set up for 10 producing years. The cost, cash flow, clean-up cost and r follow the slide's numbers.</p></div>
+      <div class="col"><div class="fmls" data-step="1"><span><b>L6</b> =-B4/B5 &nbsp;(clean-up perpetuity, valued at year 10)</span><span><b>L7</b> =L3+L6 &nbsp;(year 10: last cash flow plus TV)</span><span><b>C8</b> =1/(1+$B$5)^C1</span><span><b>B10</b> =SUM(B9:L9) &nbsp;or&nbsp; =B7+NPV(B5, C7:L7)</span></div>
+        <div class="results" data-step="2"><div class="res main"><span class="rl">NPV (W billion)</span><span class="rv" data-o="npv"></span></div></div></div>
+    </div>
+  </div>
+</section>
+
+
 <section class="slide" data-sec="Applications" data-t="Retirement: problem">
   <div class="s-head"><div class="eyebrow">Applications<span class="tag">Problem</span></div><h2>Personal example</h2></div>
   <div class="s-body wr">
@@ -1394,19 +1408,19 @@ table.grid td.tgt{box-shadow:inset 0 0 0 2px var(--c4)}
 </section>
 
 <section class="slide" data-sec="Applications" data-t="Apple dividends: solution" data-r="apple">
-  <div class="s-head"><div class="eyebrow">Applications<span class="tag t3">Solution</span></div><h2>The dividend discount model</h2></div>
+  <div class="s-head"><div class="eyebrow">Applications<span class="tag t3">Solution</span><span class="tag t2">Excel</span></div><h2>The dividend discount model</h2></div>
   <div class="s-body wl">
     <div class="col">
       <ol class="steps">
-        <li data-step="1"><span>Forecast the dividends: each year's dividend = last year's × (1 + g).</span></li>
-        <li data-step="2"><span>Estimate the terminal value with the growing perpetuity formula, <span class="tex">TV = \frac{D_{next}}{r-g}</span>, with</span><div class="inputs" data-o="inp" data-step="3"></div><div class="tex d" data-x="f" data-step="4"></div></li>
-        <li data-step="5"><span>Discount the dividends and the terminal value to today.</span></li>
+        <li data-step="1"><span>Forecast the dividends: each year's dividend = last year's × (1 + g₁) (row 6).</span></li>
+        <li data-step="2"><span>Estimate the terminal value in 2026 with the growing perpetuity formula, <span class="tex">TV = \frac{D_{2027}}{r-g_2}</span>, with</span><div class="inputs" data-o="inp" data-step="3"></div><div class="tex d" data-x="f" data-step="4"></div></li>
+        <li data-step="5"><span>Discount each year's dividend plus TV to today (rows 8 to 10) and add them up.</span></li>
       </ol>
       <div class="results" data-step="5"><div class="res main"><span class="rl">Value per share</span><span class="rv" data-o="p"></span></div><div class="res"><span class="rl">Share from terminal value</span><span class="rv" data-o="sh"></span></div></div>
     </div>
     <div class="col">
-      <div class="tw" data-step="1"><table data-o="tbl"></table></div>
-      <div class="cbox" data-step="6"><div class="cbar"><span class="ctitle">Where the value comes from</span><button class="replay">↺ Replay</button></div><div class="chart sm" data-c="c"></div><p class="take" data-o="take"></p></div>
+      <div class="sheet" data-k="sh_ap"></div>
+      <p class="note">Click any cell to see its formula. G7 holds the terminal value: =G6*(1+B4)/(B5-B4). The sheet is set up for 5 years of early growth.</p>
     </div>
   </div>
 </section>
@@ -1501,11 +1515,13 @@ const PARAMS = {
 /* ---------------- spreadsheets ---------------- */
 // cells: '{param}' is linked to a slide number; '=…' is a formula; anything else is a value or label.
 const SHEETS = {
+  sh_po:{cols:12, rows:10, target:'B10', aw:'21%', cells:{"A1": "Year", "A2": "Cost to open", "A3": "Cash flow from production", "A4": "Clean-up per year (year 11 on)", "A5": "Cost of capital r", "A6": "Terminal value of clean-up (year 10)", "A7": "Total cash flow", "A8": "Discount factor", "A9": "Discounted cash flow", "A10": "NPV", "B1": "0", "C1": "1", "C3": "{po_cf}", "D1": "2", "D3": "{po_cf}", "E1": "3", "E3": "{po_cf}", "F1": "4", "F3": "{po_cf}", "G1": "5", "G3": "{po_cf}", "H1": "6", "H3": "{po_cf}", "I1": "7", "I3": "{po_cf}", "J1": "8", "J3": "{po_cf}", "K1": "9", "K3": "{po_cf}", "L1": "10", "L3": "{po_cf}", "B2": "{po_cost}", "B4": "{po_cl}", "B5": "{po_r}", "L6": "=-B4/B5", "B7": "=-B2", "B8": "=1/(1+$B$5)^B1", "B9": "=B7*B8", "C7": "=C3", "C8": "=1/(1+$B$5)^C1", "C9": "=C7*C8", "D7": "=D3", "D8": "=1/(1+$B$5)^D1", "D9": "=D7*D8", "E7": "=E3", "E8": "=1/(1+$B$5)^E1", "E9": "=E7*E8", "F7": "=F3", "F8": "=1/(1+$B$5)^F1", "F9": "=F7*F8", "G7": "=G3", "G8": "=1/(1+$B$5)^G1", "G9": "=G7*G8", "H7": "=H3", "H8": "=1/(1+$B$5)^H1", "H9": "=H7*H8", "I7": "=I3", "I8": "=1/(1+$B$5)^I1", "I9": "=I7*I8", "J7": "=J3", "J8": "=1/(1+$B$5)^J1", "J9": "=J7*J8", "K7": "=K3", "K8": "=1/(1+$B$5)^K1", "K9": "=K7*K8", "L7": "=L3+L6", "L8": "=1/(1+$B$5)^L1", "L9": "=L7*L8", "B10": "=SUM(B9:L9)"}},
+  sh_ap:{cols:7, rows:11, target:'B11', aw:'28%', cells:{"A1": "Year", "A2": "t", "A3": "Early growth g₁", "A4": "Long-run growth g₂", "A5": "Discount rate r", "A6": "Dividend", "A7": "Terminal value (2026)", "A8": "Total cash flow", "A9": "Discount factor", "A10": "PV", "A11": "Value per share", "B1": "2021", "B2": "0", "C1": "2022", "C2": "1", "D1": "2023", "D2": "2", "E1": "2024", "E2": "3", "F1": "2025", "F2": "4", "G1": "2026", "G2": "5", "B3": "{ap_g1}", "B4": "{ap_g2}", "B5": "{ap_r}", "B6": "{ap_d0}", "C6": "=B6*(1+$B$3)", "C8": "=C6+C7", "C9": "=1/(1+$B$5)^C2", "C10": "=C8*C9", "D6": "=C6*(1+$B$3)", "D8": "=D6+D7", "D9": "=1/(1+$B$5)^D2", "D10": "=D8*D9", "E6": "=D6*(1+$B$3)", "E8": "=E6+E7", "E9": "=1/(1+$B$5)^E2", "E10": "=E8*E9", "F6": "=E6*(1+$B$3)", "F8": "=F6+F7", "F9": "=1/(1+$B$5)^F2", "F10": "=F8*F9", "G6": "=F6*(1+$B$3)", "G8": "=G6+G7", "G9": "=1/(1+$B$5)^G2", "G10": "=G8*G9", "G7": "=G6*(1+B4)/(B5-B4)", "B11": "=SUM(C10:G10)"}},
   sh_lot:{cols:2, rows:5, target:'B5', cells:{A1:'Prize',B1:'{lot_prize}',A2:'Installments',B2:'{lot_n}',A3:'Rate r',B3:'{lot_r}',A4:'Installment',A5:'PV today'}},
   sh_mp:{cols:2, rows:8, target:'B8', cells:{A1:'Monthly payment',B1:'{mp_pmt}',A2:'Years left',B2:'{mp_yrs}',A3:'Plus months',B3:'{mp_mos}',A4:'Annual rate',B4:'{mp_apr}',A6:'Monthly rate',A7:'Number of payments',A8:'PV today'}},
   sh_mo:{cols:2, rows:6, target:'B6', cells:{A1:'Loan',B1:'{mo_loan}',A2:'Annual rate',B2:'{mo_apr}',A3:'Years',B3:'{mo_yrs}',A4:'Monthly rate',A5:'Number of payments',A6:'Monthly payment'}},
   sh_st:{cols:2, rows:6, target:'B6', cells:{A1:'C',B1:'{st_d}',A2:'r',B2:'{st_r}',A3:'First payment in year',B3:'{st_s}',A5:'Value one year before',A6:'PV today'}},
-  sh_np:{cols:5, rows:8, target:'B8', cells:{A1:'Year',B1:'Cash flow ($m)',D1:'r',E1:'{np_r}',A2:'0',B2:'{np_c0}',A3:'1',B3:'{np_c1}',A4:'2',B4:'{np_c2}',A5:'3',B5:'{np_c3}',A6:'4',B6:'{np_c4}',A8:'NPV'}},
+  sh_np:{cols:6, rows:10, target:'B10', aw:'32%', cells:{"A1": "Year", "A2": "Cash flow ($m)", "A3": "Perpetual cash flow (year 5 on)", "A4": "Perpetuity growth g", "A5": "Rate r", "A6": "Terminal value (year 4)", "A7": "Total cash flow", "A8": "Discount factor", "A9": "Discounted cash flow", "A10": "NPV", "B1": "0", "B2": "{np_c0}", "C1": "1", "C2": "{np_c1}", "D1": "2", "D2": "{np_c2}", "E1": "3", "E2": "{np_c3}", "F1": "4", "F2": "{np_c4}", "B3": "{np_tvc}", "B4": "{np_tvg}", "B5": "{np_r}"}, sol:{"F6": "=B3/(B5-B4)", "B10": "=SUM(B9:F9)", "B7": "=B2+B6", "B8": "=1/(1+$B$5)^B1", "B9": "=B7*B8", "C7": "=C2+C6", "C8": "=1/(1+$B$5)^C1", "C9": "=C7*C8", "D7": "=D2+D6", "D8": "=1/(1+$B$5)^D1", "D9": "=D7*D8", "E7": "=E2+E6", "E8": "=1/(1+$B$5)^E1", "E9": "=E7*E8", "F7": "=F2+F6", "F8": "=1/(1+$B$5)^F1", "F9": "=F7*F8"}},
 };
 for (const k in SHEETS) PARAMS[k] = {type:'sheet', def:{}};
 
@@ -1562,6 +1578,7 @@ const ANS = {
   ret: v => retire(v).W,
   apple: v => appleVal(v).P,
   svaq: () => 'Annuity factor',
+  npvtv: v => { const r=v.np_r, g=v.np_tvg; if (r<=g) return NaN; return npv0(v) + (v.np_tvc/(r-g))/Math.pow(1+r,4); },
   pr1: v => [v.p1_c1,v.p1_c2,v.p1_c3,v.p1_c4].reduce((a,c,i)=>a+c/Math.pow(1+v.p1_r,i+1),0),
   pr2: v => v.p2_pmt*pvaf(v.p2_apr/12, v.p2_n),
   pr3: v => v.p3_c*fvaf(v.p3_r, v.p3_n),
@@ -1574,7 +1591,7 @@ const ANS = {
 };
 
 /* ---------------- spreadsheet engine (a small subset of Excel) ---------------- */
-const COLS = 'ABCDEFGHIJ';
+const COLS = 'ABCDEFGHIJKLMNOP';
 const XERR = e => ({__err:e});
 function sheetRows(k){ const e=(V && V[k])||{}; return SHEETS[k].rows + Math.max(0, Math.min(20, +e._rows||0)); }
 function sheetRaw(k){ return {...SHEETS[k].cells, ...((V && V[k]) || {})}; }
@@ -1702,19 +1719,19 @@ function sheetDisplay(k, ref, raw, v){
   const m=/^\{(\w+)\}$/.exec(raw||''); const isPct = (m && spec(m[1]).unit==='%') || /%\s*$/.test(raw||'');
   if (isPct) return trim(v*100,4)+'%';
   if (!isFinite(v)) return '#NUM!';
-  if (Number.isInteger(v)) return nf(0).format(v);
+  if (Number.isInteger(v)) return Math.abs(v)>=10000 ? nf(0).format(v) : String(v);
   if (Math.abs(v)>=1) return nf(2).format(v);
-  return trim(v,6);
+  return trim(v,4);
 }
 function buildSheet(el){
   const k=el.dataset.k, d=SHEETS[k], nr=sheetRows(k);
   el._rows = nr;
-  let h=`<div class="sheetw"><div class="fbar"><span class="nm">A1</span><button type="button" class="fxb" title="Insert a function">ƒx</button><input type="text" class="fx" aria-label="Formula bar" spellcheck="false" autocomplete="off"></div><div class="fhelp" hidden></div><div class="flist" hidden></div><div class="gridw"><table class="grid"><tr><th class="rn"></th>`;
+  let h=`<div class="sheetw"${d.cols>6?' style="max-width:none"':''}><div class="fbar"><span class="nm">A1</span><button type="button" class="fxb" title="Insert a function">ƒx</button><input type="text" class="fx" aria-label="Formula bar" spellcheck="false" autocomplete="off"></div><div class="fhelp" hidden></div><div class="flist" hidden></div><div class="gridw"><table class="grid${d.cols>6?' wide':''}">${d.aw?`<colgroup><col style="width:34px"><col style="width:${d.aw}">${'<col>'.repeat(d.cols-1)}</colgroup>`:''}<tr><th class="rn"></th>`;
   for (let c=0;c<d.cols;c++) h+=`<th>${COLS[c]}</th>`;
   h+='</tr>';
   for (let r=1;r<=nr;r++){ h+=`<tr><th class="rn">${r}</th>`; for (let c=0;c<d.cols;c++){ const ref=COLS[c]+r; const work = d.work && r>d.givens && c===0; h+=`<td${ref===d.target?' class="tgt"':''}><input type="text" data-ref="${ref}" aria-label="Cell ${ref}" spellcheck="false" autocomplete="off"${work?' placeholder="step label"':''}></td>`; } h+='</tr>'; }
   h+='</table></div>';
-  h+=`<div class="sfoot"><button type="button" class="linkbtn addrow">+ Row</button>${nr>d.rows?'<button type="button" class="linkbtn delrow">− Row</button>':''}`;
+  h+=`<div class="sfoot"><button type="button" class="linkbtn addrow">+ Row</button>${nr>d.rows?'<button type="button" class="linkbtn delrow">− Row</button>':''}${d.sol?'<button type="button" class="linkbtn solfill">Fill in the solution</button><button type="button" class="linkbtn solclr">Clear</button>':''}`;
   if (d.target==='ANSWER') h+=`<span class="ansl">Answer</span><input type="text" class="ansin" data-ref="ANSWER" aria-label="Answer cell" placeholder="e.g. =B7" spellcheck="false" autocomplete="off"><span class="ansv"></span>`;
   h+='</div></div>';
   el.innerHTML = h;
@@ -1782,6 +1799,7 @@ function buildSheet(el){
   fx.addEventListener('keydown', e=>{
     if (e.key==='Tab' && !help.hidden && help.dataset.mode==='sug'){ e.preventDefault(); const b=help.querySelector('.fsug'); if (b) insertFn(fx, b.dataset.fn, +b.dataset.p); return; }
     if (e.key==='Enter' && cur){ e.preventDefault(); commit(cur, fx.value.trim()); const c=cellOf(cur); if(c) c.dataset.orig=fx.value.trim(); help.hidden=true; } });
+  const sf=el.querySelector('.solfill'); if (sf){ sf.addEventListener('click', ()=>setParam(k, {...((V[k])||{}), ...d.sol})); el.querySelector('.solclr').addEventListener('click', ()=>setParam(k, {})); }
   el.querySelector('.addrow').addEventListener('click', ()=>{ const e={...((V[k])||{})}; e._rows=(+e._rows||0)+1; setParam(k, e); });
   const dr=el.querySelector('.delrow'); if (dr) dr.addEventListener('click', ()=>{ const e={...((V[k])||{})}; const n=sheetRows(k); for (let c=0;c<d.cols;c++) delete e[COLS[c]+n]; e._rows=Math.max(0,(+e._rows||0)-1); if(!e._rows) delete e._rows; setParam(k, e); });
 }
@@ -2180,17 +2198,19 @@ function timeline(o){
   // o.box {a,b,label,step}: re-count years from a; o.arrows [{from,to,label,step}]
   const ts=o.ts, W=640, padL=o.padL||(o.box?170:40), padR=o.ell?64:50;
   const idx = t => ts.indexOf(t), X = t => padL + idx(t)/(ts.length-1)*(W-padL-padR);
-  const yA=o.box&&o.box.wrap&&o.box.title?56:38, id='ah'+(tlN++);
+  const yA=o.box&&o.box.wrap&&(o.box.title||o.top)?56:(o.top?56:38), id='ah'+(tlN++);
   let s=`<defs><marker id="${id}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--c2)"/></marker></defs>`;
-  ts.forEach(t=>{ const c=o.cf(t); if (c!=='' && c!=null) s+=`<text x="${X(t)}" y="${yA-14}" text-anchor="middle" class="cf">${esc(c)}</text>`; });
+  ts.forEach(t=>{ const c=o.cf(t); if (c!=='' && c!=null) String(c).split('\n').reverse().forEach((line,i)=>{ s+=`<text x="${X(t)}" y="${yA-14-i*15}" text-anchor="middle" class="cf">${esc(line)}</text>`; }); });
   s+=`<line x1="${padL-14}" x2="${W-padR+(o.ell?14:10)}" y1="${yA}" y2="${yA}" style="stroke:var(--ink)" stroke-width="1.5"/>`;
   ts.forEach(t=>{ if (t!=='…') s+=`<circle cx="${X(t)}" cy="${yA}" r="3.5" style="fill:var(--c3)"/>`; s+=`<text x="${X(t)}" y="${yA+20}" text-anchor="middle">${t}</text>`; });
   if (o.ell) s+=`<text x="${W-padR+34}" y="${yA+5}" text-anchor="middle">… ∞</text>`;
   let yy=yA+32;
   if (o.box){ const b=o.box, x1=X(b.a)-18, x2=X(b.b)+18;
-    s+=`<g data-step="${b.step||0}">` + (b.wrap ? `<rect x="${x1}" y="${yA-32}" width="${x2-x1}" height="${yy+26-(yA-32)}" rx="8" style="fill:var(--c3);stroke:var(--c3)" fill-opacity=".07" stroke-width="1.5"/><line x1="${x1}" x2="${x2}" y1="${yy}" y2="${yy}" style="stroke:var(--c3)" stroke-dasharray="3 3"/>${b.title?`<text x="${(x1+x2)/2}" y="${yA-37}" text-anchor="middle" class="bl">${esc(b.title)}</text>`:''}` : `<rect x="${x1}" y="${yy}" width="${x2-x1}" height="26" rx="6" fill="none" style="stroke:var(--c3)" stroke-width="1.5"/>`);
-    ts.filter(t=>typeof t==='number' && t>=b.a && t<=b.b).forEach(t=>{ s+=`<text x="${X(t)}" y="${yy+17}" text-anchor="middle" class="bl">${t-(b.from??b.a)}</text>`; });
-    s+=`<text x="${x1-8}" y="${yy+17}" text-anchor="end" class="bl">${esc(b.label)}</text></g>`; yy+=36; }
+    const bc = b.fade ? 'var(--muted)' : 'var(--c3)', bh = b.nonum ? 0 : 26;
+    s+=`<g data-step="${b.step||0}">` + (b.wrap ? `<rect x="${x1}" y="${yA-32}" width="${x2-x1}" height="${yy+bh-(yA-32)+(b.nonum?-6:0)}" rx="8" style="fill:${bc};stroke:${bc}" fill-opacity="${b.fade?'.12':'.07'}" stroke-width="1.5" ${b.fade?'stroke-dasharray="5 4"':''}/>${b.nonum?'':`<line x1="${x1}" x2="${x2}" y1="${yy}" y2="${yy}" style="stroke:${bc}" stroke-dasharray="3 3"/>`}${b.title?`<text x="${(x1+x2)/2}" y="${yA-37}" text-anchor="middle" class="bl" ${b.fade?'style="fill:var(--muted)"':''}>${esc(b.title)}</text>`:''}` : `<rect x="${x1}" y="${yy}" width="${x2-x1}" height="26" rx="6" fill="none" style="stroke:var(--c3)" stroke-width="1.5"/>`);
+    if (!b.nonum) ts.filter(t=>typeof t==='number' && t>=b.a && t<=b.b).forEach(t=>{ s+=`<text x="${X(t)}" y="${yy+17}" text-anchor="middle" class="bl">${t-(b.from??b.a)}</text>`; });
+    if (b.label) s+=`<text x="${x1-8}" y="${yy+17}" text-anchor="end" class="bl">${esc(b.label)}</text>`;
+    s+='</g>'; yy+= b.nonum ? 4 : 36; }
   (o.arrows||[]).forEach((a,i)=>{ const d=yy+14+i*28, x1=X(a.from), x2=X(a.to);
     s+=`<g data-step="${a.step||0}"><path d="M${x1},${yA+26} V${d} H${x2+0.01} V${yA+28}" fill="none" style="stroke:var(--c2)" stroke-width="1.6" marker-end="url(#${id})"/><text x="${Math.min(x1,x2)+10}" y="${d-6}" text-anchor="start" class="al">${esc(a.label)}</text></g>`; });
   const H=yy+18+(o.arrows||[]).length*28;
@@ -2201,14 +2221,15 @@ const shortM = x => Math.abs(x)>=1e6 ? '$'+num(x/1e6,2)+'m' : Math.abs(x)>=1e3 ?
 
 /* ---------------- slide renderers ---------------- */
 const R = {
+poscox(s,v){ const t=sheetTarget('sh_po'); O(s,'npv', isFinite(t)?num(t,2):'—'); },
 npvp(s,v){ const r=v.np_r, cfs=[v.np_c0,v.np_c1,v.np_c2,v.np_c3,v.np_c4], S0=v.np_tvs, g=v.np_tvg, C1=v.np_tvc, tvAt=S0-1;
   const cfAt=t=> t<=4 ? cfs[t] : 0, last=Math.min(S0+2,12), perp=t=> C1*Math.pow(1+g,t-S0);
   const cfl=t=> t<S0 ? num(cfAt(t),2) : num(perp(t),2);
-  C(s,'tl1', timeline({ts:range(0,last), cf:cfl, ell:true, padL:60, box:{a:S0,b:last,from:tvAt,label:'',step:1}, arrows:[{from:S0,to:tvAt,label:'TV',step:2}]}));
+  C(s,'tl1', timeline({ts:range(0,last), cf:cfl, ell:true, padL:60, box:{a:S0,b:last,from:tvAt,label:'',wrap:true,title:'perpetuity from year '+S0,step:1}, arrows:[{from:S0,to:tvAt,label:'TV',step:2}]}));
   const ok=r>g, tv= ok ? C1/(r-g) : NaN;
   X(s,'f', ok ? `TV_{${tvAt}} = \\dfrac{C_{${S0}}}{r-g} = \\dfrac{${T(C1)}}{${T(r,4)} - ${T(g,4)}} = ${T(tv)}\\text{m}` : `g \\ge r: \\text{ the terminal value is not defined}`);
   O(s,'tvn', ok ? `TV at year ${tvAt} is the value, at that date, of every cash flow from year ${S0} on. It is added to year ${tvAt}'s cash flow.` : '');
-  C(s,'tl2', timeline({ts:range(0,tvAt), cf:t=> t===tvAt && ok ? num(cfAt(t),2)+' + '+num(tv,2) : num(cfAt(t),2)}));
+  C(s,'tl2', timeline({ts:range(0,last), ell:true, padL:60, cf:t=> t>=S0 ? '' : t===tvAt && ok ? '+ TV '+num(tv,2)+'\n'+num(cfAt(t),2) : num(cfAt(t),2), box:{a:S0,b:last,label:'',wrap:true,nonum:true,fade:true,title:'now inside TV, dropped'}}));
   const years=range(0,tvAt), tot=years.map(t=>cfAt(t)+(t===tvAt&&ok?tv:0)), df=years.map(t=>1/Math.pow(1+r,t)), dc=tot.map((x,t)=>x*df[t]), npv=dc.reduce((a,b)=>a+b,0);
   const fmt=x=> x<0?`<span class="neg">(${num(-x,2)})</span>`:num(x,2);
   O(s,'tbl', '<tr><th>Year</th>'+years.map(t=>`<th>${t}</th>`).join('')+'</tr>'
@@ -2437,7 +2458,7 @@ stock(s,v){ const d=v.st_d, r=v.st_r, k=v.st_s, v1=d/r, v2=v1/Math.pow(1+r,k-1);
   X(s,'f1',`PV_{${k-1}} = \\dfrac{C_{${k}}}{r} = \\dfrac{${T$(d)}}{${T(r,4)}} = ${T$(v1)}`);
   X(s,'f2',`PV_0 = \\dfrac{${T$(v1)}}{(1+${T(r,4)})^{${k-1}}} = ${T$(v2)}`);
   const last=Math.min(Math.max(k+2,5),12);
-  C(s,'tl', timeline({ts:range(0,last), cf:t=> t===0?'': t>=k ? num(d,2) : '0', ell:true, box:k>1?{a:k-1,b:last,label:'seen from year '+(k-1)+':',step:2}:null, arrows:k>1?[{from:k-1,to:0,label:'discount '+(k-1)+' year'+(k-1===1?'':'s')+': '+money(v2),step:4}]:[]})); },
+  C(s,'tl', timeline({ts:range(0,last), cf:t=> t===0?'': t>=k ? num(d,2) : '0', ell:true, box:k>1?{a:k,b:last,from:k-1,wrap:true,title:'the perpetuity',label:'seen from year '+(k-1)+':',step:2}:null, arrows:k>1?[{from:k-1,to:0,label:'discount '+(k-1)+' year'+(k-1===1?'':'s')+': '+money(v2),step:4}]:[]})); },
 gperp(s,v){ const c=v.gp_c, g=v.gp_g, r=v.gp_r;
   O(s,'tbl', rows(['Year','Cash flow',''], range(1,4).map(t=>[t, money(c*Math.pow(1+g,t-1),4), t===1?'C':`C(1+g)${t>2?'<sup>'+(t-1)+'</sup>':''}`]).concat([['…','…','']])));
   INP(s,'inp',[['C',money(c),'next year\'s dividend'],['r',pct(r,2)+' = '+trim(r,4),'discount rate'],['g',pct(g,2)+' = '+trim(g,4),'growth rate']]);
@@ -2449,12 +2470,12 @@ gx(s,v){ const d=v.gx_d, k=v.gx_k, g=v.gx_g, r=v.gx_r, last=Math.min(k+3,12), ts
   const cf=t=> t===0 ? '' : num(t<=k ? d : d*Math.pow(1+g,t-k), 2);
   const seq=range(1,Math.min(k+2,last)).map(t=>num(t<=k?d:d*Math.pow(1+g,t-k),2)).join(', ');
   O(s,'k',k); O(s,'k1',k-1);
-  C(s,'tl0', timeline({ts, cf, ell:true, padL:150, box:{a:k,b:last,from:k-1,label:'seen from year '+(k-1)+':',step:2}}));
+  C(s,'tl0', timeline({ts, cf, ell:true, padL:150, box:{a:k,b:last,from:k-1,wrap:true,title:'growing perpetuity',label:'seen from year '+(k-1)+':',step:2}}));
   OH(s,'ans', k===1 ? `Yes: from year 1 on the dividends already grow at ${pct(g,1)}, so P₀ = C₁/(r − g).` : `<b>Not at time 0:</b> the dividends go ${seq}, … so they don't grow at a constant rate from year 1. <b>From year ${k} on they do</b>: ${num(d,2)}, ${num(d*(1+g),2)}, ${num(d*(1+g)*(1+g),2)}, … That is a growing perpetuity whose first payment is in year ${k}, so the formula gives its value at year ${k-1}.`);
   INP(s,'inp',[['C<sub>'+k+'</sub>',money(d),'first payment of the growing perpetuity'],['r',pct(r,2),'discount rate'],['g',pct(g,2),'growth rate']]);
   if (g>=r){ X(s,'f1','g \\ge r: \\text{ the value is not defined}'); X(s,'f2',''); O(s,'pv','—'); C(s,'tl', timeline({ts, cf, ell:true})); return; }
   const tv=d/(r-g), flat=d*pvaf(r,k-1), pv=flat+tv/Math.pow(1+r,k-1);
-  C(s,'tl', timeline({ts, cf, ell:true, padL:150, box:{a:k,b:last,from:k-1,label:'seen from year '+(k-1)+':'}, arrows: k>1 ? [{from:k-1,to:0,label:'TV at year '+(k-1)+' = '+money(tv)+', discounted '+(k-1)+' year'+(k>2?'s':''),step:4}] : []}));
+  C(s,'tl', timeline({ts, cf, ell:true, padL:150, box:{a:k,b:last,from:k-1,wrap:true,title:'growing perpetuity',label:'seen from year '+(k-1)+':'}, arrows: k>1 ? [{from:k-1,to:0,label:'TV at year '+(k-1)+' = '+money(tv)+', discounted '+(k-1)+' year'+(k>2?'s':''),step:4}] : []}));
   X(s,'f1',`TV_{${k-1}} = \\dfrac{${T$(d)}}{${T(r,4)} - ${T(g,4)}} = ${T$(tv)}`);
   X(s,'f2', k===1 ? `P_0 = TV_0 = ${T$(tv)}` : `P_0 = ${k-1<=3 ? range(1,k-1).map(t=>`\\dfrac{${T(d)}}{${T(1+r,2)}^{${t}}}`).join(' + ') : `${T$(d)}\\times PVAF_{${k-1}}`} + \\dfrac{${T(tv)}}{${T(1+r,2)}^{${k-1}}} = ${T$(flat)} + ${T$(tv/Math.pow(1+r,k-1))} = ${T$(pv)}`);
   O(s,'pv',money(pv)); },
