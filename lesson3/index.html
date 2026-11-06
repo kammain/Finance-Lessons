@@ -162,6 +162,10 @@ tr.cur td{background:var(--accent-soft)}
 .fsug span,.flist button span{font:12px var(--body);color:var(--muted)}
 .fsug:hover,.flist button:hover{background:var(--panel)}
 .gridw{max-height:none}
+.tvov{position:absolute;inset:0;pointer-events:none}
+.tvb{position:absolute;border:2px dashed var(--muted);border-radius:6px;background:color-mix(in srgb,var(--muted) 16%,transparent)}
+.tvb span{position:absolute;left:4px;right:4px;bottom:4px;text-align:center;font:600 11px/1.25 var(--body);color:var(--muted);background:var(--paper);padding:2px 4px;border-radius:4px}
+.tva{position:absolute;overflow:visible}
 .sfoot{display:flex;align-items:center;gap:10px;padding:6px 8px;border-top:1px solid var(--rule);background:var(--panel)}
 .sfoot .ansl{margin-left:auto;font-weight:600;font-size:14px}
 .sfoot .ansin{width:9em;font:14px var(--mono);border:2px solid var(--c4);border-radius:4px;padding:3px 6px;background:var(--paper);color:var(--ink)}
@@ -172,6 +176,7 @@ table.grid th{background:var(--panel);text-align:center;font:500 12px var(--mono
 table.grid th.rn{width:34px}
 table.grid td{padding:0;border:1px solid var(--rule)}
 table.grid th.hid,table.grid td.hid{background:repeating-linear-gradient(90deg,var(--panel-2) 0 2px,transparent 2px 6px);padding:0;color:var(--muted)}
+table.grid th.gap,table.grid td.gap{border:0;background:transparent}
 table.grid td.ghost,table.grid th.ghost{background:color-mix(in srgb,var(--muted) 10%,transparent)}
 table.grid td.ghost input{color:var(--muted);font-style:italic}
 table.grid.wide td input{padding:4px 4px;font-size:12.5px}
@@ -1413,7 +1418,7 @@ table.grid td.tgt{box-shadow:inset 0 0 0 2px var(--c4)}
 
 <section class="slide" data-sec="Applications" data-t="Apple dividends: solution" data-r="apple">
   <div class="s-head"><div class="eyebrow">Applications<span class="tag t3">Solution</span><span class="tag t2">Excel</span></div><h2>The dividend discount model</h2></div>
-  <div class="s-body wl">
+  <div class="s-body wl" style="grid-template-columns:4fr 7fr;gap:28px">
     <div class="col">
       <ol class="steps">
         <li data-step="1"><span>Forecast the dividends: each year's dividend = last year's × (1 + g₁) (row 6).</span></li>
@@ -1519,8 +1524,8 @@ const PARAMS = {
 /* ---------------- spreadsheets ---------------- */
 // cells: '{param}' is linked to a slide number; '=…' is a formula; anything else is a value or label.
 const SHEETS = {
-  sh_po:{cols:14, rows:10, target:'B10', aw:'22%', hide:['F','G','H'], ghost:['M','N'], cells:{"A1": "Year", "A2": "Cost to open", "A3": "Cash flow from production", "A4": "Clean-up per year (year 11 on)", "A5": "Cost of capital r", "A6": "Terminal value of clean-up (year 10)", "A7": "Total cash flow", "A8": "Discount factor", "A9": "Discounted cash flow", "A10": "NPV", "B1": "0", "C1": "1", "C3": "{po_cf}", "D1": "2", "D3": "{po_cf}", "E1": "3", "E3": "{po_cf}", "F1": "4", "F3": "{po_cf}", "G1": "5", "G3": "{po_cf}", "H1": "6", "H3": "{po_cf}", "I1": "7", "I3": "{po_cf}", "J1": "8", "J3": "{po_cf}", "K1": "9", "K3": "{po_cf}", "L1": "10", "L3": "{po_cf}", "M1": "11", "M3": "=-$B$4", "N1": "12", "N3": "=-$B$4", "B2": "{po_cost}", "B4": "{po_cl}", "B5": "{po_r}", "L6": "=-B4/B5", "M6": "→ in TV", "N6": "→ in TV", "B7": "=-B2", "B8": "=1/(1+$B$5)^B1", "B9": "=B7*B8", "C7": "=C3", "C8": "=1/(1+$B$5)^C1", "C9": "=C7*C8", "D7": "=D3", "D8": "=1/(1+$B$5)^D1", "D9": "=D7*D8", "E7": "=E3", "E8": "=1/(1+$B$5)^E1", "E9": "=E7*E8", "F7": "=F3", "F8": "=1/(1+$B$5)^F1", "F9": "=F7*F8", "G7": "=G3", "G8": "=1/(1+$B$5)^G1", "G9": "=G7*G8", "H7": "=H3", "H8": "=1/(1+$B$5)^H1", "H9": "=H7*H8", "I7": "=I3", "I8": "=1/(1+$B$5)^I1", "I9": "=I7*I8", "J7": "=J3", "J8": "=1/(1+$B$5)^J1", "J9": "=J7*J8", "K7": "=K3", "K8": "=1/(1+$B$5)^K1", "K9": "=K7*K8", "L7": "=L3+L6", "L8": "=1/(1+$B$5)^L1", "L9": "=L7*L8", "B10": "=SUM(B9:L9)"}},
-  sh_ap:{cols:9, rows:11, target:'B11', aw:'24%', ghost:['H','I'], cells:{"A1": "Year", "A2": "t", "A3": "Early growth g₁", "A4": "Long-run growth g₂", "A5": "Discount rate r", "A6": "Dividend", "A7": "Terminal value (2026)", "A8": "Total cash flow", "A9": "Discount factor", "A10": "PV", "A11": "Value per share", "B1": "2021", "B2": "0", "C1": "2022", "C2": "1", "D1": "2023", "D2": "2", "E1": "2024", "E2": "3", "F1": "2025", "F2": "4", "G1": "2026", "G2": "5", "H1": "2027", "H2": "6", "I1": "2028", "I2": "7", "B3": "{ap_g1}", "B4": "{ap_g2}", "B5": "{ap_r}", "B6": "{ap_d0}", "C6": "=B6*(1+$B$3)", "C8": "=C6+C7", "C9": "=1/(1+$B$5)^C2", "C10": "=C8*C9", "D6": "=C6*(1+$B$3)", "D8": "=D6+D7", "D9": "=1/(1+$B$5)^D2", "D10": "=D8*D9", "E6": "=D6*(1+$B$3)", "E8": "=E6+E7", "E9": "=1/(1+$B$5)^E2", "E10": "=E8*E9", "F6": "=E6*(1+$B$3)", "F8": "=F6+F7", "F9": "=1/(1+$B$5)^F2", "F10": "=F8*F9", "G6": "=F6*(1+$B$3)", "G8": "=G6+G7", "G9": "=1/(1+$B$5)^G2", "G10": "=G8*G9", "H6": "=G6*(1+$B$4)", "I6": "=H6*(1+$B$4)", "H7": "→ in TV", "I7": "→ in TV", "G7": "=H6/(B5-B4)", "B11": "=SUM(C10:G10)"}},
+  sh_po:{cols:14, rows:10, target:'B10', aw:'22%', hide:['F','G','H'], ghost:['M','N'], tvbox:{cols:['M','N'], to:'L6', label:'captured in TV, dropped'}, cells:{"A1": "Year", "A2": "Cost to open", "A3": "Cash flow from production", "A4": "Clean-up per year (year 11 on)", "A5": "Cost of capital r", "A6": "Terminal value of clean-up (year 10)", "A7": "Total cash flow", "A8": "Discount factor", "A9": "Discounted cash flow", "A10": "NPV", "B1": "0", "C1": "1", "C3": "{po_cf}", "D1": "2", "D3": "{po_cf}", "E1": "3", "E3": "{po_cf}", "F1": "4", "F3": "{po_cf}", "G1": "5", "G3": "{po_cf}", "H1": "6", "H3": "{po_cf}", "I1": "7", "I3": "{po_cf}", "J1": "8", "J3": "{po_cf}", "K1": "9", "K3": "{po_cf}", "L1": "10", "L3": "{po_cf}", "M1": "11", "M3": "=-$B$4", "N1": "12", "N3": "=-$B$4", "B2": "{po_cost}", "B4": "{po_cl}", "B5": "{po_r}", "L6": "=-B4/B5", "B7": "=-B2", "B8": "=1/(1+$B$5)^B1", "B9": "=B7*B8", "C7": "=C3", "C8": "=1/(1+$B$5)^C1", "C9": "=C7*C8", "D7": "=D3", "D8": "=1/(1+$B$5)^D1", "D9": "=D7*D8", "E7": "=E3", "E8": "=1/(1+$B$5)^E1", "E9": "=E7*E8", "F7": "=F3", "F8": "=1/(1+$B$5)^F1", "F9": "=F7*F8", "G7": "=G3", "G8": "=1/(1+$B$5)^G1", "G9": "=G7*G8", "H7": "=H3", "H8": "=1/(1+$B$5)^H1", "H9": "=H7*H8", "I7": "=I3", "I8": "=1/(1+$B$5)^I1", "I9": "=I7*I8", "J7": "=J3", "J8": "=1/(1+$B$5)^J1", "J9": "=J7*J8", "K7": "=K3", "K8": "=1/(1+$B$5)^K1", "K9": "=K7*K8", "L7": "=L3+L6", "L8": "=1/(1+$B$5)^L1", "L9": "=L7*L8", "B10": "=SUM(B9:L9)"}},
+  sh_ap:{cols:9, rows:11, target:'B11', aw:'21%', ghost:['H','I'], tvbox:{cols:['H','I'], to:'G7', label:'captured in TV, dropped'}, cells:{"A1": "Year", "A2": "t", "A3": "Early growth g₁", "A4": "Long-run growth g₂", "A5": "Discount rate r", "A6": "Dividend", "A7": "Terminal value (2026)", "A8": "Total cash flow", "A9": "Discount factor", "A10": "PV", "A11": "Value per share", "B1": "2021", "B2": "0", "C1": "2022", "C2": "1", "D1": "2023", "D2": "2", "E1": "2024", "E2": "3", "F1": "2025", "F2": "4", "G1": "2026", "G2": "5", "H1": "2027", "H2": "6", "I1": "2028", "I2": "7", "B3": "{ap_g1}", "B4": "{ap_g2}", "B5": "{ap_r}", "B6": "{ap_d0}", "C6": "=B6*(1+$B$3)", "C8": "=C6+C7", "C9": "=1/(1+$B$5)^C2", "C10": "=C8*C9", "D6": "=C6*(1+$B$3)", "D8": "=D6+D7", "D9": "=1/(1+$B$5)^D2", "D10": "=D8*D9", "E6": "=D6*(1+$B$3)", "E8": "=E6+E7", "E9": "=1/(1+$B$5)^E2", "E10": "=E8*E9", "F6": "=E6*(1+$B$3)", "F8": "=F6+F7", "F9": "=1/(1+$B$5)^F2", "F10": "=F8*F9", "G6": "=F6*(1+$B$3)", "G8": "=G6+G7", "G9": "=1/(1+$B$5)^G2", "G10": "=G8*G9", "H6": "=G6*(1+$B$4)", "I6": "=H6*(1+$B$4)", "G7": "=H6/(B5-B4)", "B11": "=SUM(C10:G10)"}},
   sh_lot:{cols:2, rows:5, target:'B5', cells:{A1:'Prize',B1:'{lot_prize}',A2:'Installments',B2:'{lot_n}',A3:'Rate r',B3:'{lot_r}',A4:'Installment',A5:'PV today'}},
   sh_mp:{cols:2, rows:8, target:'B8', cells:{A1:'Monthly payment',B1:'{mp_pmt}',A2:'Years left',B2:'{mp_yrs}',A3:'Plus months',B3:'{mp_mos}',A4:'Annual rate',B4:'{mp_apr}',A6:'Monthly rate',A7:'Number of payments',A8:'PV today'}},
   sh_mo:{cols:2, rows:6, target:'B6', cells:{A1:'Loan',B1:'{mo_loan}',A2:'Annual rate',B2:'{mo_apr}',A3:'Years',B3:'{mo_yrs}',A4:'Monthly rate',A5:'Number of payments',A6:'Monthly payment'}},
@@ -1730,11 +1735,12 @@ function sheetDisplay(k, ref, raw, v){
 function buildSheet(el){
   const k=el.dataset.k, d=SHEETS[k], nr=sheetRows(k);
   el._rows = nr;
-  let h=`<div class="sheetw"${d.cols>6?' style="max-width:none"':''}><div class="fbar"><span class="nm">A1</span><button type="button" class="fxb" title="Insert a function">ƒx</button><input type="text" class="fx" aria-label="Formula bar" spellcheck="false" autocomplete="off"></div><div class="fhelp" hidden></div><div class="flist" hidden></div><div class="gridw"><table class="grid${d.cols>6?' wide':''}">${d.aw?`<colgroup><col style="width:34px"><col style="width:${d.aw}">${[...COLS.slice(1,d.cols)].map(c=>(d.hide||[]).includes(c)?'<col style="width:22px">':'<col>').join('')}</colgroup>`:''}<tr><th class="rn"></th>`;
+  let h=`<div class="sheetw"${d.cols>6?' style="max-width:none"':''}><div class="fbar"><span class="nm">A1</span><button type="button" class="fxb" title="Insert a function">ƒx</button><input type="text" class="fx" aria-label="Formula bar" spellcheck="false" autocomplete="off"></div><div class="fhelp" hidden></div><div class="flist" hidden></div><div class="gridw"><table class="grid${d.cols>6?' wide':''}">${d.aw?`<colgroup><col style="width:34px"><col style="width:${d.aw}">${[...COLS.slice(1,d.cols)].map(c=>(c===(d.tvbox&&d.tvbox.cols[0])?'<col style="width:46px">':'')+((d.hide||[]).includes(c)?'<col style="width:22px">':'<col>')).join('')}</colgroup>`:''}<tr><th class="rn"></th>`;
   const HID=new Set(d.hide||[]), GH=new Set(d.ghost||[]);
-  for (let c=0;c<d.cols;c++) h+= HID.has(COLS[c]) ? `<th class="hid" title="Columns hidden to save space">⋯</th>` : `<th${GH.has(COLS[c])?' class="ghost"':''}>${COLS[c]}</th>`;
+  const GAP = d.tvbox ? d.tvbox.cols[0] : null;
+  for (let c=0;c<d.cols;c++) h+= (COLS[c]===GAP ? '<th class="gap"></th>' : '') + (HID.has(COLS[c]) ? `<th class="hid" title="Columns hidden to save space">⋯</th>` : `<th${GH.has(COLS[c])?' class="ghost"':''}>${COLS[c]}</th>`);
   h+='</tr>';
-  for (let r=1;r<=nr;r++){ h+=`<tr><th class="rn">${r}</th>`; for (let c=0;c<d.cols;c++){ const ref=COLS[c]+r; const work = d.work && r>d.givens && c===0; if (HID.has(COLS[c])){ h+='<td class="hid"></td>'; continue; } h+=`<td class="${ref===d.target?'tgt':''}${GH.has(COLS[c])?' ghost':''}"><input type="text" data-ref="${ref}" aria-label="Cell ${ref}" spellcheck="false" autocomplete="off"${work?' placeholder="step label"':''}></td>`; } h+='</tr>'; }
+  for (let r=1;r<=nr;r++){ h+=`<tr><th class="rn">${r}</th>`; for (let c=0;c<d.cols;c++){ const ref=COLS[c]+r; const work = d.work && r>d.givens && c===0; if (COLS[c]===GAP) h+='<td class="gap"></td>'; if (HID.has(COLS[c])){ h+='<td class="hid"></td>'; continue; } h+=`<td class="${ref===d.target?'tgt':''}${GH.has(COLS[c])?' ghost':''}"><input type="text" data-ref="${ref}" aria-label="Cell ${ref}" spellcheck="false" autocomplete="off"${work?' placeholder="step label"':''}></td>`; } h+='</tr>'; }
   h+='</table></div>';
   h+=`<div class="sfoot"><button type="button" class="linkbtn addrow">+ Row</button>${nr>d.rows?'<button type="button" class="linkbtn delrow">− Row</button>':''}${d.sol?'<button type="button" class="linkbtn solfill">Fill in the solution</button><button type="button" class="linkbtn solclr">Clear</button>':''}`;
   if (d.target==='ANSWER') h+=`<span class="ansl">Answer</span><input type="text" class="ansin" data-ref="ANSWER" aria-label="Answer cell" placeholder="e.g. =B7" spellcheck="false" autocomplete="off"><span class="ansv"></span>`;
@@ -1820,7 +1826,19 @@ function renderSheet(el){
     inp.classList.toggle('err', !!(v && v.__err));
     if (document.activeElement!==inp){ inp.value = ref==='ANSWER' ? (r||'') : sheetDisplay(k, ref, r, v); }
   });
+  if (SHEETS[k].tvbox) requestAnimationFrame(()=>drawTvBox(el, SHEETS[k].tvbox));
   const av=el.querySelector('.ansv'); if (av){ const r=raw.ANSWER, v=val.ANSWER; av.textContent = r ? '= ' + sheetDisplay(k,'ANSWER',r,v) : ''; }
+}
+function drawTvBox(el, tb){
+  const w=el.querySelector('.sheetw'); if (!w || !w.offsetWidth) return;
+  const k=w.getBoundingClientRect().width / w.offsetWidth || 1, R0=w.getBoundingClientRect();
+  const box = ref => { const i=el.querySelector(`input[data-ref="${ref}"]`); if(!i) return null; const r=i.parentElement.getBoundingClientRect(); return {l:(r.left-R0.left)/k, t:(r.top-R0.top)/k, r:(r.right-R0.left)/k, b:(r.bottom-R0.top)/k}; };
+  const rows=el.querySelectorAll('table.grid tr').length-1;
+  const a=box(tb.cols[0]+'1'), z=box(tb.cols[tb.cols.length-1]+rows), tv=box(tb.to); if(!a||!z||!tv) return;
+  let ov=w.querySelector('.tvov'); if(!ov){ ov=document.createElement('div'); ov.className='tvov'; w.appendChild(ov); }
+  const L=a.l+2, T=a.t+2, Wd=z.r-a.l-4, Ht=z.b-a.t-4, y=(tv.t+tv.b)/2;
+  ov.innerHTML = `<div class="tvb" style="left:${L}px;top:${T}px;width:${Wd}px;height:${Ht}px"><span>${esc(tb.label)}</span></div>`
+    + `<svg class="tva" style="left:0;top:0;width:${w.offsetWidth}px;height:${w.offsetHeight}px"><defs><marker id="tvm" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--c2)"/></marker></defs><rect x="${tv.l+1}" y="${tv.t+1}" width="${tv.r-tv.l-2}" height="${tv.b-tv.t-2}" rx="2" fill="none" style="stroke:var(--c2)" stroke-width="2.5"/><circle cx="${L}" cy="${y}" r="3.5" style="fill:var(--c2)"/><path d="M${L},${y} H${tv.r+4}" style="stroke:var(--c2)" stroke-width="2.4" fill="none" marker-end="url(#tvm)"/></svg>`;
 }
 function sheetTarget(k){ const {val}=sheetEval(k); const v=val[SHEETS[k].target]; return (typeof v==='number') ? v : NaN; }
 
@@ -2527,7 +2545,7 @@ apple(s,v){ const a=appleVal(v), {ap_d0:d0,ap_n1:n1,ap_g2:g2,ap_r:r}=v;
   body.push({cls:'tot',cells:['Value','','','',a.ok?money(a.P):'—']});
   O(s,'tbl', rows(['Year','Dividend','Terminal value','Discount factor','PV'], body));
   O(s,'p', a.ok?money(a.P):'—'); O(s,'sh', a.ok?pct(a.pvtv/a.P,0):'—');
-  X(s,'f', a.ok ? `TV_{${2021+n1}} = \\dfrac{D_{${2022+n1}}}{r-g} = \\dfrac{${T$(a.ds[n1-1],4)}\\times${T(1+g2,3)}}{${T(r,3)}-${T(g2,3)}} = \\dfrac{${T$(a.dn1)}}{${T(r-g2,3)}} = ${T$(a.tv)}` : `g \\ge r: \\text{ the terminal value is not defined}`);
+  X(s,'f', a.ok ? `TV_{${2021+n1}} = \\dfrac{D_{${2022+n1}}}{r-g} = \\dfrac{${T$(a.dn1,4)}}{${T(r,3)}-${T(g2,3)}} = ${T$(a.tv)}` : `g \\ge r: \\text{ the terminal value is not defined}`);
   C(s,'c', a.ok ? barChart({cats:['PV of dividends','PV of terminal value'], groups:[{v:[a.P-a.pvtv,a.pvtv],c:'var(--c2)'}], labels:[money(a.P-a.pvtv),money(a.pvtv)], yf:x=>money(x,0), h:180}) : '');
   O(s,'take', a.ok ? `${pct(a.pvtv/a.P,0)} of the value comes from dividends after ${2021+n1}: the terminal value assumption matters most.` : ''); },
 };
